@@ -1,9 +1,7 @@
 package com.cgdms.CGDMS.auth;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,8 +25,9 @@ public class RegistrationRequest {
     @NotEmpty(message = "phone number is mandatory")
     @NotBlank(message = "phone number is mandatory")
     private String phone;
-    @NotEmpty(message = "date of birth is mandatory")
-    @NotBlank(message = "date of birth is mandatory")
+    @NotNull(message = "Date of birth is required")   // 👈 Use @NotNull for LocalDate
+    @Past(message = "Date of birth must be in the past") // 👈 Extra safety
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateOfBirth;
     @Email(message = "Email is not formatted")
     @NotEmpty(message = "Email is mandatory")
