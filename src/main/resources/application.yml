@@ -1,0 +1,105 @@
+#spring.application.name=CGDMS
+server:
+  port: 9191
+  servlet:
+    context-path: /api/v1/
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cgdms
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  servlet:
+    multipart:
+      max-file-size: 50MB
+  mail:
+    host: localhost
+    port: 1025
+    username: josh
+    password: josh
+    properties:
+      mail:
+        smtp:
+          trust: "*"
+        auth: true
+        starttls:
+          enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+springdoc:
+  default-produce-media-type: application/json
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+      expiration: 86400000
+      refresh-token:
+        expiration: 604800000
+  mailing:
+    frontend:
+      activation-url: "http://localhost:1300/active-account"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#spring:
+#  datasource:
+#  url: jdbc:postgresql://localhost:5432/cgdms
+#  username: cgdms
+#  password: change_me
+#jpa:
+#hibernate:
+#ddl-auto: update
+#properties:
+#hibernate:
+#format_sql: true
+#jackson:
+#serialization:
+#WRITE_DATES_AS_TIMESTAMPS: false
+#
+#
+#server:
+#port: 8080
+
+
+#app:
+#jwt:
+#issuer: cgdms
+#secret: "please-change-this-to-256-bit-random"
+#access-token-minutes: 30
+#refresh-token-days: 7
