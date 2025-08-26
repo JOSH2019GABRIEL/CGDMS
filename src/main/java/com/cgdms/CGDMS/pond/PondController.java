@@ -1,7 +1,6 @@
 package com.cgdms.CGDMS.pond;
 
 import com.cgdms.CGDMS.common.PageResponse;
-import com.cgdms.CGDMS.user.UserResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
