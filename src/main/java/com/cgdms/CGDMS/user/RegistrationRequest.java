@@ -1,4 +1,4 @@
-package com.cgdms.CGDMS.auth;
+package com.cgdms.CGDMS.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.*;
