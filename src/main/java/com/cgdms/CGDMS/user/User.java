@@ -47,6 +47,7 @@ public class User implements UserDetails, Principal {
     private String password;
     private boolean accountLocked;
     private boolean enabled;
+    private Integer archived = 0;
 
 //    @OneToMany(mappedBy = "owner")
 //    private List<Book> books;
