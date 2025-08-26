@@ -18,9 +18,6 @@ import java.time.LocalDate;
 @SuperBuilder
 public class Batch extends BaseEntity {
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    private Long id;
     @ManyToOne(optional = false)
     private Pond pond;
     private String source;
