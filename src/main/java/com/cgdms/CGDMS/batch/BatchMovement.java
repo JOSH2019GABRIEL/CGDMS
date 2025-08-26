@@ -1,5 +1,6 @@
 package com.cgdms.CGDMS.batch;
 
+import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.pond.Pond;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -14,12 +15,13 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class BatchMovement {
+public class BatchMovement extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne(optional = false) private Batch batch;
+    @ManyToOne(optional = false)
+    private Batch batch;
     @ManyToOne private Pond fromPond;
     @ManyToOne private Pond toPond;
     private Integer movedCount;
