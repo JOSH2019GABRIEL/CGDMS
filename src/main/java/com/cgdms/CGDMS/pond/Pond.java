@@ -13,13 +13,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @SuperBuilder
 public class Pond extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+
     @Column(nullable = false, unique = true)
     private String name;
     private Integer capacity;
     private String location;
     private String status; // ACTIVE, INACTIVE
+    private Integer archived = 0;
 
 }
