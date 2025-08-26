@@ -1,8 +1,8 @@
-package com.cgdms.CGDMS.user;
+package com.cgdms.CGDMS.token;
 
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 

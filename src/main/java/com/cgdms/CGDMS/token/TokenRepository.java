@@ -1,4 +1,4 @@
-package com.cgdms.CGDMS.user;
+package com.cgdms.CGDMS.token;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
