@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Email Template</title>
+    <style>
+        body {
+          font-family: Arial, sans-serif;
+          background-color: #f4f4f4;
+          margin: 0;
+          padding: 0;
+        }
+        .email-wrapper {
+          max-width: 600px;
+          margin: auto;
+          background: #ffffff;
+          padding: 20px;
+          border-radius: 5px;
+        }
+        .header {
+          background-color: #2e86de;
+          color: white;
+          padding: 20px;
+          text-align: center;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+        }
+        .content {
+          padding: 20px;
+          color: #333;
+        }
+        .button {
+          display: inline-block;
+          background-color: #2e86de;
+          color: #ffffff;
+          padding: 12px 20px;
+          margin-top: 20px;
+          text-decoration: none;
+          border-radius: 4px;
+        }
+        .footer {
+          text-align: center;
+          font-size: 12px;
+          color: #777;
+          padding: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="email-wrapper">
+    <div class="header">
+        <h1>Account Activation!</h1>
+    </div>
+    <div class="content">
+        <p>Hi <span th:text="${username}">Username</span>,</p>
+        <p>Thank you for joining us! We’re excited to have you on board.</p>
+        <p>
+            Get started by exploring our platform and discovering how we support
+            you every step of the way. Activation code = <span th:text="${activation_code}">CODE123</span>
+        </p>
+        <a th:href="${confirmationUrl}" class="button" target="_blank">Activate Now</a>
+    </div>
+    <div class="footer">
+        &copy; 2025 Your Company Name. All rights reserved.<br />
+        123 Your Street, Your City, Your Country
+    </div>
+</div>
+</body>
+</html>
