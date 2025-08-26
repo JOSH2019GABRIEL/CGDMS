@@ -1,6 +1,7 @@
 package com.cgdms.CGDMS.pond;
 
 
+import com.cgdms.CGDMS.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -11,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Pond {
+public class Pond extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -20,8 +21,5 @@ public class Pond {
     private Integer capacity;
     private String location;
     private String status; // ACTIVE, INACTIVE
-//    private OffsetDateTime createdAt;
-//    private OffsetDateTime updatedAt;
-//    @PrePersist void preP(){ this.createdAt = OffsetDateTime.now(); }
-//    @PreUpdate void preU(){ this.updatedAt = OffsetDateTime.now(); }
+
 }
