@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class BatchMovement extends BaseEntity {
+public class BatchMovement {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
