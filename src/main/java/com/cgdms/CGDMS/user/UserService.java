@@ -133,8 +133,7 @@ public class UserService {
     public UserResponse findById(Integer staffId) {
         return userRepository.findById(staffId)
                 .map(userMapperService::toUserResponse)
-                .orElseThrow(()-> new EntityNotFoundException("No Staff with the ID: " + staffId))
-                ;
+                .orElseThrow(()-> new EntityNotFoundException("No Staff with the ID: " + staffId));
     }
 
 //    public PageResponse<UserResponse> findAllStaff(int page, int size) {
@@ -160,7 +159,7 @@ public class UserService {
     public PageResponse<UserResponse> findAllStaff(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<User> users = userRepository.findAll(pageable); // or findAllUsers if you need custom filtering
+        Page<User> users = userRepository.findAllUsers(pageable); // or findAllUsers if you need custom filtering
 
         List<UserResponse> userResponses = users.stream()
                 .map(userMapperService::toUserResponse)

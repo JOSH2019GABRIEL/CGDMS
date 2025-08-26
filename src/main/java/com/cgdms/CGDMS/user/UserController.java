@@ -19,11 +19,10 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-  @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegistrationRequest request) throws MessagingException {
         userService.register(request);
-
         return ResponseEntity.accepted().build();
     }
 
@@ -77,7 +76,7 @@ public class UserController {
 
     @PutMapping("/archive/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
-    public ResponseEntity<?> unarchiveUser(@PathVariable Integer id) {
+    public ResponseEntity<?> archiveUser(@PathVariable Integer id) {
         userService.deleteUser(id);
         return ResponseEntity.ok("User delete successfully");
     }
