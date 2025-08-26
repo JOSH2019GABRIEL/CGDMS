@@ -21,7 +21,7 @@ public class BatchController {
     @Autowired
     private BatchService batchService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<BatchRequest> savePond (@Valid @RequestBody BatchRequest batchRequest) {
         return ResponseEntity.ok(batchService.saveBatch(batchRequest));
