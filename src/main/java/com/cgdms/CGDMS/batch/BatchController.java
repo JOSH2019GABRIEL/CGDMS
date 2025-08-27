@@ -1,16 +1,15 @@
 package com.cgdms.CGDMS.batch;
 
+import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.pond.PondRequest;
+import com.cgdms.CGDMS.pond.PondResponse;
 import com.cgdms.CGDMS.pond.PondService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("batch")
@@ -25,5 +24,26 @@ public class BatchController {
     @PostMapping
     public ResponseEntity<BatchRequest> savePond (@Valid @RequestBody BatchRequest batchRequest) {
         return ResponseEntity.ok(batchService.saveBatch(batchRequest));
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<BatchResponse>> findAllBatch(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size
+    ) {
+        return ResponseEntity.ok(batchService.findAllBatch(page, size));
+    }
+
+//    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+    @GetMapping("/{pond-id}")
+    public ResponseEntity<BatchResponse> getBatch(@PathVariable("batch-id") Long batchId) {
+        return ResponseEntity.ok(batchService.findById(batchId));
+    }
+
+    @PutMapping("/archive/{id}")
+    @PreAuthorize("hasAuthority('ADMIN')")
+    public ResponseEntity<?> archiveBatch (@PathVariable Long id) {
+        batchService.deleteBatch(id);
+        return ResponseEntity.ok("User delete successfully");
     }
 }
