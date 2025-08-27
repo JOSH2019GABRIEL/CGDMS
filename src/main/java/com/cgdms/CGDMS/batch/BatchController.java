@@ -1,9 +1,6 @@
 package com.cgdms.CGDMS.batch;
 
 import com.cgdms.CGDMS.common.PageResponse;
-import com.cgdms.CGDMS.pond.PondRequest;
-import com.cgdms.CGDMS.pond.PondResponse;
-import com.cgdms.CGDMS.pond.PondService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
