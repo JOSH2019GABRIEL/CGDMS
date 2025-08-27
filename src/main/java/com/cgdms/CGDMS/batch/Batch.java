@@ -24,4 +24,5 @@ public class Batch extends BaseEntity {
     private LocalDate stockDate;
     private Double initialAvgWeightG;
     private Integer initialCount;
+    private Integer archived = 0;
 }
