@@ -1,0 +1,83 @@
+export const userInput = [
+   { id: 1,
+    label: "Username",
+    type: "text",
+    placeholder: "Josh_Virus",
+},
+{ id: 2,
+    label: "Name and Surname",
+    type: "text",
+    placeholder: "Josh Virus",
+},
+{ id: 3,
+    label: "Email",
+    type: "email",
+    placeholder: "joshvirus@gmail.com",
+},
+{ id: 4,
+    label: "Phone",
+    type: "text",
+    placeholder: "+234 818 598 0756",
+},
+{ id: 5,
+    label: "Password",
+    type: "password",
+},
+{ id: 6,
+    label: "Address",
+    type: "text",
+    placeholder: "Ogoja, Cross River State",
+},
+{ id: 7,
+    label: "Country",
+    type: "text",
+    placeholder: "Nigeria",
+},
+];
+
+export const productInputs =[
+    {
+        id: 1,
+        label: "Title",
+        type: "text",
+        placeholder: "Apple Macbook Pro",
+    },
+    {
+        id: 2,
+        label: "Description",
+        type: "text",
+        placeholder: "Description",
+    },
+    {
+        id: 3,
+        label: "Category",
+        type: "text",
+        placeholder: "Computers",
+    },
+    {
+        id: 4,
+        label: "Price",
+        type: "text",
+        placeholder: "2400",
+    },
+    {
+        id: 5,
+        label: "Stock",
+        type: "text",
+        placeholder: "in Stock",
+    },
+];
+
+export const loginInput = [
+    {
+        id:1,
+        Label: "Username",
+        type: "text",
+        placeholder: "Enter Username",
+    },
+    {
+        id:2,
+        Label: "Password",
+        type: "password",
+    },
+];

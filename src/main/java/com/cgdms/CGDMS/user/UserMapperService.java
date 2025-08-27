@@ -29,7 +29,6 @@ public class UserMapperService {
                 .dateOfBirth(user.getDateOfBirth())
                 .email(user.getEmail())
                 .password(user.getPassword())
-
                 .build();
     }
 
