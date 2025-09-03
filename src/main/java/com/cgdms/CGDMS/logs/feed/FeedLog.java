@@ -1,10 +1,13 @@
 package com.cgdms.CGDMS.logs.feed;
 
 
+import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.batch.Batch;
 import com.cgdms.CGDMS.pond.Pond;
 import com.cgdms.CGDMS.staff.Staff;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,21 +21,38 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class FeedLog {
+public class FeedLog extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(nullable = false)
     private LocalDate date;
-    @ManyToOne
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "pond_id", nullable = false)
     private Pond pond;
-    @ManyToOne
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "batch_id")
     private Batch batch;
+
+    @Column(nullable = false)
     private String feedType;
+
     private String brand;
+
+    @Min(0)
+    @Column(nullable = false)
     private Double quantityKg;
-    private String method;
+
+    private String method; // e.g., Broadcast, Automatic
+
     private LocalTime timeOfDay;
-    @ManyToOne
-    private Staff staff;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private User staff;
+
+    @Column(length = 500)
+    private String notes;
+
+
 }

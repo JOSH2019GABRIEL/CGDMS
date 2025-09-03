@@ -1,78 +1,105 @@
-import { useState } from "react";
 import "./login.scss";
-import {token, url as baseUrl } from "../../api";
+import React, { useState } from "react";
+import { Visibility, VisibilityOff, Info } from "@mui/icons-material";
+import Logo from "../../components/images/illustration-dashboard.webp";
 import axios from "axios";
-import { toast, ToastContainer} from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { url as baseUrl } from "../../api";
 
 const Login = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-   const handleSubmit = (e) => {
+  const togglePassword = () => setShowPassword((prev) => !prev);
+
+  const handleSubmit = async (e) => {
   e.preventDefault();
 
-  axios.post(
-    `${baseUrl}auth/authenticate`,
-    { email, password }, // ✅ send login credentials
-    { headers: { "Content-Type": "application/json" } }
-  )
-  .then((response) => {
-    // Save token
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("role", response.data.role);
-    console.log(response.data)
-
-    toast.success("Login successful ✅");
-    // redirect example
-    window.location.href = "/";
-  })
-  .catch((error) => {
-    if (error.response) {
-      if (error.response.status === 401) {
-        toast.error("Invalid email or password ❌");
-      } else {
-        toast.error(error.response.data.message || "Something went wrong");
+  try {
+    const response = await axios.post(
+      `${baseUrl}auth/authenticate`,
+      {
+        email,
+        password,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } else {
-      toast.error("Network error. Please try again.");
-    }
-  });
+    );
+    toast.success("Login successful 🎉");
+    localStorage.setItem("token", response.data.token);
+
+    setTimeout(() => {
+      navigate("/dashboard"); // redirect to dashboard
+    }, 1500);
+  } catch (error) {
+    toast.error(
+      error.response?.data?.message || "Login failed. Try again ❌"
+    );
+  }
 };
 
-    return (
-        <div className="login">
-             <ToastContainer position="top-right" autoClose={5000} hideProgressBar={false} />
-            <div className="loginwrapper">
-                <form onSubmit={handleSubmit}>
-                    <span className="desk">Login Credentials</span>
-
-                    <div className="formInput">
-                        <label>Email</label>
-                        <input
-                            type="text"
-                            placeholder="Enter Email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="formInput">
-                        <label>Password</label>
-                        <input
-                            type="password"
-                            placeholder="Enter Password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-
-                    <button type="submit">Login</button>
-                    {error && <p style={{ color: "red" }}>{error}</p>}
-                </form>
-            </div>
+  return (
+    <div className="login-container">
+      <div className="login-left">
+        <div className="brand-logo">CatFish Grow Out D</div>
+        <h1>Hi, Welcome back</h1>
+        <p>More effectively with optimized workflows.</p>
+        <div className="illustration">
+          <img src={Logo} alt="illustration" />
         </div>
-    );
+      </div>
+
+      <div className="login-right">
+        <h2>Sign in to your account</h2>
+
+        <div className="info-box">
+          <Info className="info-icon" />
+          Use <strong> admin@gmail.com </strong> with password{" "}
+          <strong> @Admin2025 </strong>
+        </div>
+
+        <form className="login-form" onSubmit={handleSubmit}>
+          <label>Email address</label>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="admin@gmail.com"
+            required
+          />
+
+          <div className="password-row">
+            <label>Password</label>
+            <a href="#">Forgot password?</a>
+          </div>
+          <div className="password-input">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              required
+            />
+            <span onClick={togglePassword} className="eye-icon">
+              {showPassword ? <VisibilityOff /> : <Visibility />}
+            </span>
+          </div>
+
+          <button type="submit" className="login-btn">
+            Sign in
+          </button>
+        </form>
+      </div>
+      <ToastContainer position="top-right" autoClose={2000} />
+    </div>
+  );
 };
 
 export default Login;

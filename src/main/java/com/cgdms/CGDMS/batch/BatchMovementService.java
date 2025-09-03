@@ -71,7 +71,7 @@ public class BatchMovementService {
     @Transactional //(readOnly = true)
     public PageResponse<BatchMovementResponse> findByBatch(Long batchId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "movementDate"));
-        Page<BatchMovement> p = movementRepository.findByBatch_Id(batchId, pageable);
+        Page<BatchMovement> p = movementRepository.findByBatchId(batchId, pageable);
         var content = p.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(content, p.getNumber(), p.getSize(), p.getTotalElements(), p.getTotalPages(), p.isFirst(), p.isLast());
     }

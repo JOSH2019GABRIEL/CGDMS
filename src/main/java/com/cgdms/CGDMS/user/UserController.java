@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("staff")
-@Tag(name = "staff Registration")
+@Tag(name = "Staff Registration")
 public class UserController {
 
     @Autowired

@@ -2,6 +2,7 @@ package com.cgdms.CGDMS.user;
 
 
 import com.cgdms.CGDMS.base.BaseEntity;
+import com.cgdms.CGDMS.farm.Farm;
 import com.cgdms.CGDMS.role.Role;
 import jakarta.persistence.*;
 import lombok.*;
@@ -47,6 +48,10 @@ public class User implements UserDetails, Principal {
     private boolean accountLocked;
     private boolean enabled;
     private Integer archived = 0;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id")
+    private Farm farm;
 
 //    @OneToMany(mappedBy = "owner")
 //    private List<Book> books;

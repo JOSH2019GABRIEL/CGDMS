@@ -38,7 +38,7 @@ public class BatchController {
     }
 
     @PutMapping("/archive/{id}")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> archiveBatch (@PathVariable Long id) {
         batchService.deleteBatch(id);
         return ResponseEntity.ok("User delete successfully");

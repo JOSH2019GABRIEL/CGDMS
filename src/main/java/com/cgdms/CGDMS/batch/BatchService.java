@@ -84,6 +84,5 @@ public class BatchService {
         Batch batch = batchRepository.findById(batchId).orElseThrow(()-> new RuntimeException("Batch not found"));
         batch.setArchived(1);
         batchRepository.save(batch);
-
     }
 }

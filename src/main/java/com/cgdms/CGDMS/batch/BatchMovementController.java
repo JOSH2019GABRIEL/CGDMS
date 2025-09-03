@@ -19,20 +19,20 @@ public class BatchMovementController {
     private final BatchMovementService service;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<BatchMovementResponse> create(@RequestBody @Valid BatchMovementRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.create(request));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<BatchMovementResponse> get(@PathVariable Long id) {
         return ResponseEntity.ok(service.findById(id));
     }
 
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<PageResponse<BatchMovementResponse>> list(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
@@ -42,7 +42,7 @@ public class BatchMovementController {
 
 
     @GetMapping("/by-batch/{batchId}")
-    @PreAuthorize("hasAnyRole('ADMIN','USER')")
+//    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<PageResponse<BatchMovementResponse>> listByBatch(
             @PathVariable Long batchId,
             @RequestParam(defaultValue = "0") int page,

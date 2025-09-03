@@ -39,4 +39,6 @@ public class BaseEntity {
     @LastModifiedBy
     @Column(insertable = false)
     private Integer lastModifiedBy;
+
+    private Integer archived = 0;
 }
