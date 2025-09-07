@@ -53,12 +53,6 @@ public class User implements UserDetails, Principal {
     @JoinColumn(name = "farm_id")
     private Farm farm;
 
-//    @OneToMany(mappedBy = "owner")
-//    private List<Book> books;
-
-//    @OneToMany(mappedBy = "user")
-//    private List<BookTransactionHistory> histories;
-
     @ManyToMany(fetch = FetchType.EAGER)
     private List<Role> roles;
 

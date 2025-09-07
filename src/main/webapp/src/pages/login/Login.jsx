@@ -48,7 +48,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-left">
-        <div className="brand-logo">CatFish Grow Out D</div>
+        <div className="brand-logo">CATFISH GROW-OUT DATA MANAGEMENT SYSTEM</div>
         <h1>Hi, Welcome back</h1>
         <p>More effectively with optimized workflows.</p>
         <div className="illustration">
@@ -61,8 +61,8 @@ const Login = () => {
 
         <div className="info-box">
           <Info className="info-icon" />
-          Use <strong> admin@gmail.com </strong> with password{" "}
-          <strong> @Admin2025 </strong>
+          Use &nbsp; <strong> admin@gmail.com </strong>&nbsp; with password{" "}
+          <strong>&nbsp; @Admin2025 </strong>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
@@ -77,7 +77,7 @@ const Login = () => {
 
           <div className="password-row">
             <label>Password</label>
-            <a href="#">Forgot password?</a>
+            
           </div>
           <div className="password-input">
             <input

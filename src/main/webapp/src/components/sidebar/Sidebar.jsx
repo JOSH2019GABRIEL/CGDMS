@@ -53,19 +53,19 @@ const Sidebar = () => {
               <span>Task</span>
             </li>
           </Link>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/pond" style={{ textDecoration: "none" }}>
             <li>
-              <PersonOutlineIcon className="icon" />
+              <StoreIcon className="icon" />
               <span>Pond</span>
             </li>
           </Link>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/batch" style={{ textDecoration: "none" }}>
             <li>
               <WorkspacesIcon className="icon" />
               <span>Batch</span>
             </li>
           </Link>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/batch-movement" style={{ textDecoration: "none" }}>
             <li>
               <TimelineIcon className="icon" />
               <span>Batch Movement</span>
@@ -95,20 +95,7 @@ const Sidebar = () => {
               <span>Fish Performance</span>
             </li>
           </Link>
-          <Link to="/dashboard/products" style={{ textDecoration: "none" }}>
-            <li>
-              <StoreIcon className="icon" />
-              <span>Products</span>
-            </li>
-          </Link>
-          <li>
-            <CreditCardIcon className="icon" />
-            <span>Orders</span>
-          </li>
-          <li>
-            <LocalShippingIcon className="icon" />
-            <span>Delivery</span>
-          </li>
+          
           <p className="title">USEFUL</p>
           <li>
             <InsertChartIcon className="icon" />
@@ -129,14 +116,12 @@ const Sidebar = () => {
           </li>
 
         <ul>
-        {/* Other menu items */}
         <li onClick={() => setOpenSettings(!openSettings)} className="menu-item">
           <SettingsApplicationsIcon className="icon" />
           <span>Settings</span>
           {openSettings ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
         </li>
 
-        {/* Dropdown for settings */}
         {openSettings && (
           <ul className="submenu">
             <Link to="/dashboard/organizations" style={{ textDecoration: "none" }}>
@@ -145,14 +130,16 @@ const Sidebar = () => {
             <span>Organization</span>
           </li>
           </Link>
+          <Link to="/dashboard/farms" style={{ textDecoration: "none" }}>
             <li>
             <AgricultureIcon className="icon" />
             <span>Farm</span>
           </li>
+          </Link>
           </ul>
         )}
       </ul>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/staff-user" style={{ textDecoration: "none" }}>
           <p className="title">USER</p>
           <li>
             <AccountCircleOutlinedIcon className="icon" />

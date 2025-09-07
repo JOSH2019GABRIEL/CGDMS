@@ -19,7 +19,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody @Valid RegistrationRequest request) throws MessagingException {
         userService.register(request);

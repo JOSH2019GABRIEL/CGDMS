@@ -8,12 +8,12 @@ import axios from "axios";
 import { url as baseUrl } from "../../api";
 import { useNavigate } from "react-router-dom";
 
-const AddNewOrg = () => {
-  const [newOrg, setNewOrg] = useState({
-    name: "", 
-    contactEmail: "",
-    address: "",
-    contactPhone: "",
+const AddNewFarm = () => {
+  const [newFarm, setNewFarm] = useState({
+    farmName: "", 
+    location: "",
+    organizationId: "",
+    sizeInHectares: "",
   });
 
   const token = localStorage.getItem("token");
@@ -21,7 +21,7 @@ const AddNewOrg = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewOrg((prevState) => ({
+    setNewFarm((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -32,29 +32,30 @@ const AddNewOrg = () => {
 
     try {
       const response = await axios.post(
-        `${baseUrl}organizations`,
-        newOrg,
+        `${baseUrl}farms`,
+        newFarm,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("Organization submitted successfully:", response.data);
+      console.log("Farm submitted successfully:", response.data);
       toast.success("Submitted successfully!");
 
-      setNewOrg({
-        name: "",
-        contactEmail: "",
-        address: "",
-        contactPhone: "",
+      // Reset form
+      setNewFarm({
+        farmName: "", 
+        location: "",
+        organizationId: "",
+        sizeInHectares: "",
       });
 
       // ✅ Redirect after short delay (to let toast show)
       // setTimeout(() => {
-        navigate("/dashboard/organizations");
+        navigate("/dashboard/farms");
       // }, 1000);
 
     } catch (error) {
-      console.error("Error adding organization:", error);
-      toast.error(error.response?.data?.message || "Error adding organization.");
+      console.error("Error adding farm:", error);
+      toast.error(error.response?.data?.message || "Error adding farm.");
     }
   };
 
@@ -64,7 +65,7 @@ const AddNewOrg = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add Organization</h1>
+          <h1>Add Farm</h1>
         </div>
         <div className="bottom">
           <div className="right">
@@ -73,42 +74,58 @@ const AddNewOrg = () => {
                 <label>Name:</label>
                 <input
                   type="text"
-                  name="name"
-                  value={newOrg.name}
+                  name="farmName"
+                  value={newFarm.farmName}
                   onChange={handleChange}
-                  placeholder="Name of Organization"
+                  placeholder="Name of farm"
                 />
               </div>
               <div className="formInput">
-                <label>Email:</label>
-                <input
-                  type="email"
-                  name="contactEmail"
-                  value={newOrg.contactEmail}
-                  onChange={handleChange}
-                  placeholder="Email Address"
-                />
-              </div>
-              <div className="formInput">
-                <label>Address:</label>
+                <label>Location:</label>
                 <input
                   type="text"
-                  name="address"
-                  value={newOrg.address}
+                  name="location"
+                  value={newFarm.location}
                   onChange={handleChange}
-                  placeholder="Address of Organization"
+                  placeholder="Farm Location"
                 />
               </div>
               <div className="formInput">
-                <label>Telephone:</label>
+                <label>Size in Hectare:</label>
                 <input
                   type="text"
-                  name="contactPhone"
-                  value={newOrg.contactPhone}
+                  name="sizeInHectares"
+                  value={newFarm.sizeInHectares}
                   onChange={handleChange}
-                  placeholder="Telephone Number"
+                  placeholder="Enter Size in Hectares"
                 />
               </div>
+              {/* <div className="formInput">
+                <label>Organization:</label>
+                <input
+                  type="text"
+                  name="organizationId"
+                  value={newFarm.organizationId}
+                  onChange={handleChange}
+                  placeholder="Organization Name"
+                />
+              </div> */}
+
+              <div className="formInput">
+              <label>Organization:</label>
+              <select
+                name="organizationId"
+                value={newFarm.organizationId}
+                onChange={handleChange}
+              >
+                <option value="">Select an organization</option>
+                <option value="1">Organization 1</option>
+                <option value="2">Organization 2</option>
+                <option value="3">Organization 3</option>
+                {/* Add more options as needed */}
+              </select>
+            </div>
+
               <button type="submit">Save</button>
             </form>
           </div>
@@ -119,4 +136,4 @@ const AddNewOrg = () => {
   );
 };
 
-export default AddNewOrg;
+export default AddNewFarm;

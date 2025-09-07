@@ -8,12 +8,12 @@ import axios from "axios";
 import { url as baseUrl } from "../../api";
 import { useNavigate } from "react-router-dom";
 
-const AddNewOrg = () => {
-  const [newOrg, setNewOrg] = useState({
-    name: "", 
-    contactEmail: "",
-    address: "",
-    contactPhone: "",
+const AddNewPond = () => {
+  const [newPond, setNewPond] = useState({
+    name: "",
+    capacity: "",
+    location: "",
+    status: ""
   });
 
   const token = localStorage.getItem("token");
@@ -21,7 +21,7 @@ const AddNewOrg = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setNewOrg((prevState) => ({
+    setNewPond((prevState) => ({
       ...prevState,
       [name]: value,
     }));
@@ -32,29 +32,29 @@ const AddNewOrg = () => {
 
     try {
       const response = await axios.post(
-        `${baseUrl}organizations`,
-        newOrg,
+        `${baseUrl}ponds`,
+        newPond,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("Organization submitted successfully:", response.data);
+      console.log("Pond submitted successfully:", response.data);
       toast.success("Submitted successfully!");
 
-      setNewOrg({
-        name: "",
-        contactEmail: "",
-        address: "",
-        contactPhone: "",
+      setNewPond({
+            name: "",
+            capacity: "",
+            location: "",
+            status: ""
       });
 
       // ✅ Redirect after short delay (to let toast show)
       // setTimeout(() => {
-        navigate("/dashboard/organizations");
+        navigate("/dashboard/ponds");
       // }, 1000);
 
     } catch (error) {
-      console.error("Error adding organization:", error);
-      toast.error(error.response?.data?.message || "Error adding organization.");
+      console.error("Error adding pond:", error);
+      toast.error(error.response?.data?.message || "Error adding pond.");
     }
   };
 
@@ -64,7 +64,7 @@ const AddNewOrg = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add Organization</h1>
+          <h1>Add Pond</h1>
         </div>
         <div className="bottom">
           <div className="right">
@@ -74,7 +74,7 @@ const AddNewOrg = () => {
                 <input
                   type="text"
                   name="name"
-                  value={newOrg.name}
+                  value={newPond.name}
                   onChange={handleChange}
                   placeholder="Name of Organization"
                 />
@@ -84,7 +84,7 @@ const AddNewOrg = () => {
                 <input
                   type="email"
                   name="contactEmail"
-                  value={newOrg.contactEmail}
+                  value={newPond.contactEmail}
                   onChange={handleChange}
                   placeholder="Email Address"
                 />
@@ -94,7 +94,7 @@ const AddNewOrg = () => {
                 <input
                   type="text"
                   name="address"
-                  value={newOrg.address}
+                  value={newPond.address}
                   onChange={handleChange}
                   placeholder="Address of Organization"
                 />
@@ -104,7 +104,7 @@ const AddNewOrg = () => {
                 <input
                   type="text"
                   name="contactPhone"
-                  value={newOrg.contactPhone}
+                  value={newPond.contactPhone}
                   onChange={handleChange}
                   placeholder="Telephone Number"
                 />
@@ -119,4 +119,4 @@ const AddNewOrg = () => {
   );
 };
 
-export default AddNewOrg;
+export default AddNewPond;

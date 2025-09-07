@@ -10,6 +10,16 @@ import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import Organization from "./pages/addOrganization/Organization";
 import AddNewOrg from "./pages/addOrganization/AddNewOrg";
+import Farm from "./pages/addFarm/Farm";
+import AddNewFarm from "./pages/addFarm/AddNewFarm";
+import AddNewPond from "./pages/addPond/AddNewPond";
+import Pond from "./pages/addPond/Pond";
+import AddNewBatch from "./pages/addBatch/AddNewBatch";
+import Batch from "./pages/addBatch/Batch";
+import BatchMovement from "./pages/addBatchMovement/BatchMovement";
+import Staff from "./pages/addStaff/Staff";
+import AddNewStaff from "./pages/addStaff/AddNewStaff";
+
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -24,9 +34,6 @@ function App() {
         {/* Dashboard root */}
         <Route path="/dashboard" element={<Home />} />
 
-         <Route path="/dashboard/organization" element={<Organization />} />
-
-        {/* Users */}
         <Route
           path="/dashboard/users"
           element={<List title="Users" path="/dashboard/users/new" />}
@@ -40,7 +47,6 @@ function App() {
           element={<Single title="User Details" />}
         />
 
-        {/* Organizations */}
         <Route
           path="/dashboard/organizations"
           element={<List Component={Organization} path="/dashboard/organizations/new" />}
@@ -49,24 +55,66 @@ function App() {
           path="/dashboard/organizations/new"
           element={<AddNewOrg />}
         />
+
+        <Route
+          path="/dashboard/farm"
+          element={<List Component={Farm} path="/dashboard/farm/new" />}
+        />
+        <Route
+          path="/dashboard/farm/new"
+          element={<AddNewFarm />}
+        />
+
+        <Route
+          path="/dashboard/pond"
+          element={<List Component={Pond} path="/dashboard/pond/new" />}
+        />
+        <Route
+          path="/dashboard/pond/new"
+          element={<AddNewPond />}
+        />
+
+         <Route
+          path="/dashboard/batch"
+          element={<List Component={Batch} path="/dashboard/batch/new" />}
+        />
+        <Route
+          path="/dashboard/batch/new"
+          element={<AddNewBatch />}
+        />
+
+        <Route
+          path="/dashboard/batch-movement"
+          element={<List Component={BatchMovement} path="/dashboard/batch-movement/new" />}
+        />
+        <Route
+          path="/dashboard/batch-movement/new"
+          element={<AddNewBatch />}
+        />
+
+         <Route
+          path="/dashboard/staff-user"
+          element={<List Component={Staff} path="/dashboard/staff-user/new" />}
+        />
+        <Route
+          path="/dashboard/staff-user/new"
+          element={<AddNewStaff />}
+        />
+
         <Route
           path="/dashboard/organizations/:orgId"
           element={<Single title="Organization Details" />}
         />
 
-          {/* Tasks */}
-        <Route
-          path="/dashboard/task"
-          element={<List title="Task" path="/dashboard/task/new" />}
+          <Route
+          path="/dashboard/farms"
+          element={<List Component={Farm} />}
         />
         {/* <Route
-          path="/dashboard/task/new"
-          element={<New inputs={organizationInputs} title="Add New Task" />}
+          path="/dashboard/farm/new"
+          element={<AddNewFarm />}
         /> */}
-        <Route
-          path="/dashboard/task/:orgId"
-          element={<Single title="Task Details" />}
-        />
+
 
         {/* Products */}
         <Route

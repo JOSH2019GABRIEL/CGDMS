@@ -3,6 +3,7 @@ package com.cgdms.CGDMS.user;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.email.EmailService;
 import com.cgdms.CGDMS.email.EmailTemplateName;
+import com.cgdms.CGDMS.farm.FarmRepository;
 import com.cgdms.CGDMS.role.RoleRepository;
 import com.cgdms.CGDMS.security.JWTService;
 import com.cgdms.CGDMS.token.Token;
@@ -31,6 +32,8 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private FarmRepository farmRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
     @Autowired
     private UserRepository userRepository;
@@ -51,9 +54,12 @@ public class UserService {
 
 
     public void register(RegistrationRequest request) throws MessagingException {
+        var userRole = roleRepository.findById(request.getRoleId())
+                .orElseThrow(() -> new IllegalStateException("ROLE was not initialized"));
+        System.out.println(userRole);
+        var userFarm = farmRepository.findById(request.getFarmId())
+                .orElseThrow(() -> new IllegalStateException("FARM was not initialized"));
 
-        var userRole = roleRepository.findByName("ADMIN")
-                .orElseThrow(() -> new IllegalStateException("ROLE ADMIN was not initialized"));
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
@@ -64,12 +70,15 @@ public class UserService {
                 .password(passwordEncoder.encode(request.getPassword()))
                 .accountLocked(false)
                 .enabled(false)
+                .archived(0)
                 .roles(List.of(userRole))
+                .farm(userFarm)
                 .build();
+
         userRepository.save(user);
         sendValidationEmail(user);
-
     }
+
 
     private void sendValidationEmail(User user) throws MessagingException {
 
