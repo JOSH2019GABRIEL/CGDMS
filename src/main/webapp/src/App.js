@@ -19,6 +19,7 @@ import Batch from "./pages/addBatch/Batch";
 import BatchMovement from "./pages/addBatchMovement/BatchMovement";
 import Staff from "./pages/addStaff/Staff";
 import AddNewStaff from "./pages/addStaff/AddNewStaff";
+import ChangePassword from "./pages/addStaff/ChangePassword";
 
 
 function App() {
@@ -75,11 +76,11 @@ function App() {
         />
 
          <Route
-          path="/dashboard/batch"
+          path="/dashboard/batches"
           element={<List Component={Batch} path="/dashboard/batch/new" />}
         />
         <Route
-          path="/dashboard/batch/new"
+          path="/dashboard/batches/new"
           element={<AddNewBatch />}
         />
 
@@ -110,6 +111,8 @@ function App() {
           path="/dashboard/farms"
           element={<List Component={Farm} />}
         />
+        <Route path="/dashboard/staff-user/change-password" 
+        element={<ChangePassword />} />
         {/* <Route
           path="/dashboard/farm/new"
           element={<AddNewFarm />}

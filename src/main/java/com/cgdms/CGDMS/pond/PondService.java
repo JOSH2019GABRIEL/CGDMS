@@ -25,18 +25,14 @@ public class PondService {
         Pond pond;
 
         if (pondRequest.getId() != null) {
-            // Updating an existing pond
             pond = pondRepository.findById(pondRequest.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Pond not found with id: " + pondRequest.getId()));
-
-            // update only relevant fields
             pond.setName(pondRequest.getName());
             pond.setCapacity(pondRequest.getCapacity());
             pond.setLocation(pondRequest.getLocation());
             pond.setStatus(pondRequest.getStatus());
 
         } else {
-            // Creating new pond
             pond = pondMapperService.toPond(pondRequest);
         }
 

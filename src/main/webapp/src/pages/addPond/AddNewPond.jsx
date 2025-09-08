@@ -1,7 +1,7 @@
 import "./new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -10,10 +10,11 @@ import { useNavigate } from "react-router-dom";
 
 const AddNewPond = () => {
   const [newPond, setNewPond] = useState({
+    id: "",
     name: "",
     capacity: "",
     location: "",
-    status: ""
+    status: "",
   });
 
   const token = localStorage.getItem("token");
@@ -27,34 +28,28 @@ const AddNewPond = () => {
     }));
   };
 
-  const handleAddOrg = async (e) => {
+  const handleAddPond = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${baseUrl}ponds`,
-        newPond,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      const response = await axios.post(`${baseUrl}ponds`, newPond, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      console.log("Pond submitted successfully:", response.data);
+      console.log("Batch submitted successfully:", response.data);
       toast.success("Submitted successfully!");
 
       setNewPond({
-            name: "",
-            capacity: "",
-            location: "",
-            status: ""
+        id: "",
+        name: "",
+        capacity: "",
+        location: "",
+        status: "",
       });
-
-      // ✅ Redirect after short delay (to let toast show)
-      // setTimeout(() => {
-        navigate("/dashboard/ponds");
-      // }, 1000);
-
+      navigate("/dashboard/batches");
     } catch (error) {
-      console.error("Error adding pond:", error);
-      toast.error(error.response?.data?.message || "Error adding pond.");
+      console.error("Error adding batch:", error);
+      toast.error(error.response?.data?.message || "Error adding batch.");
     }
   };
 
@@ -68,7 +63,7 @@ const AddNewPond = () => {
         </div>
         <div className="bottom">
           <div className="right">
-            <form onSubmit={handleAddOrg}>
+            <form onSubmit={handleAddPond}>
               <div className="formInput">
                 <label>Name:</label>
                 <input
@@ -76,39 +71,46 @@ const AddNewPond = () => {
                   name="name"
                   value={newPond.name}
                   onChange={handleChange}
-                  placeholder="Name of Organization"
+                  placeholder="Name of Pond"
+                  required
                 />
               </div>
               <div className="formInput">
-                <label>Email:</label>
+                <label>Capacity of Pond:</label>
                 <input
-                  type="email"
-                  name="contactEmail"
-                  value={newPond.contactEmail}
+                  type="number"
+                  name="capacity"
+                  value={newPond.capacity}
                   onChange={handleChange}
-                  placeholder="Email Address"
+                  placeholder="Pond capacity"
+                  required
                 />
               </div>
               <div className="formInput">
-                <label>Address:</label>
-                <input
-                  type="text"
-                  name="address"
-                  value={newPond.address}
-                  onChange={handleChange}
-                  placeholder="Address of Organization"
-                />
-              </div>
-              <div className="formInput">
-                <label>Telephone:</label>
+                <label>Location:</label>
                 <input
                   type="text"
-                  name="contactPhone"
-                  value={newPond.contactPhone}
+                  name="location"
+                  value={newPond.location}
                   onChange={handleChange}
-                  placeholder="Telephone Number"
+                  placeholder="Location of Pond"
+                  required
                 />
               </div>
+              <div className="formInput">
+                <label>Pond Status:</label>
+                <select
+                  name="status"
+                  value={newPond.status}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">-- Select Pond Status --</option>
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="NOT_ACTIVE">NOT ACTIVE</option>
+                </select>
+              </div>
+
               <button type="submit">Save</button>
             </form>
           </div>

@@ -22,6 +22,7 @@ public class BatchMapperService {
                 .stockDate(request.getStockDate())
                 .initialAvgWeightG(request.getInitialAvgWeightG())
                 .initialCount(request.getInitialCount())
+                .archived(0)
                 .build();
     }
 
@@ -33,8 +34,6 @@ public class BatchMapperService {
                 .stockDate(batch.getStockDate())
                 .initialAvgWeightG(batch.getInitialAvgWeightG())
                 .initialCount(batch.getInitialCount())
-//                .createdBy(batch.getCreatedBy())
-//                .createdDate(batch.getCreatedDate())
                 .build();
     }
 }

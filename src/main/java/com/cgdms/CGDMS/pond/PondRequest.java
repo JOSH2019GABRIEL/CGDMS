@@ -28,7 +28,5 @@ public class PondRequest {
     @NotBlank(message = "pond status cannot be blank")
     @NotEmpty(message = "pond status cannot be empty")
     private String status; // ACTIVE, INACTIVE
-    @JsonIgnore
-    private Integer archived = 0;
 
 }

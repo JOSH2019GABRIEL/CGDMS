@@ -12,8 +12,7 @@ const Staff = () => {
   const [rowCount, setRowCount] = useState(0);
   const token = localStorage.getItem("token");
   const ROLE = localStorage.getItem("role");
-  console.log("Role is ", ROLE)
-
+  console.log("Role is ", ROLE);
 
   // Fetch staff with backend pagination
   const fetchStaffs = async (page, pageSize) => {
@@ -43,9 +42,13 @@ const Staff = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.put(`${baseUrl}staff/archive/${id}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `${baseUrl}staff/archive/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setStaffList(staffList.filter((staff) => staff.id !== id));
     } catch (error) {
@@ -96,6 +99,9 @@ const Staff = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Staffs
+        <Link to="/dashboard/staff-user/change-password" className="link">
+          Change Password
+        </Link>
         <Link to="/dashboard/staff-user/new" className="link">
           Reset Password
         </Link>

@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
 import { useNavigate } from "react-router-dom";
+import { Visibility, VisibilityOff, Info } from "@mui/icons-material";
 
 const AddNewStaff = () => {
   const [newStaff, setNewStaff] = useState({
@@ -25,7 +26,8 @@ const AddNewStaff = () => {
   const navigate = useNavigate();
   const [roles, setRoles] = useState([]);
   const [farms, setFarms] = useState([]);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const togglePassword = () => setShowPassword((prev) => !prev);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -169,13 +171,18 @@ const AddNewStaff = () => {
 
               <div className="formInput">
                 <label>Password:</label>
-                <input
-                  type="password"
-                  name="password"
-                  value={newStaff.password}
-                  onChange={handleChange}
-                  placeholder="Enter password"
-                />
+                <div className="passwordWrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={newStaff.password}
+                    onChange={handleChange}
+                    placeholder="Enter password"
+                  />
+                  <span onClick={togglePassword} className="eye-icon">
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </span>
+                </div>
               </div>
 
               <div className="formInput">
@@ -193,7 +200,6 @@ const AddNewStaff = () => {
                   ))}
                 </select>
               </div>
-
 
               <div className="formInput">
                 <label>Role:</label>

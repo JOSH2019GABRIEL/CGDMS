@@ -59,7 +59,7 @@ const Sidebar = () => {
               <span>Pond</span>
             </li>
           </Link>
-          <Link to="/dashboard/batch" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/batches" style={{ textDecoration: "none" }}>
             <li>
               <WorkspacesIcon className="icon" />
               <span>Batch</span>

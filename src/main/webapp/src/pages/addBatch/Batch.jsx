@@ -66,7 +66,7 @@ const Batch = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/batch/${params.row.id}`}
+            to={`/dashboard/batches/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">View</div>
@@ -86,7 +86,7 @@ const Batch = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Batch
-        <Link to="/dashboard/batch/new" className="link">
+        <Link to="/dashboard/batches/new" className="link">
           Add New
         </Link>
       </div>

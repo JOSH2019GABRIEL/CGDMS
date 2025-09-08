@@ -30,6 +30,7 @@ public class UserMapperService {
                 .dateOfBirth(user.getDateOfBirth())
                 .email(user.getEmail())
                 .password(user.getPassword())
+                .enabled(user.isEnabled())
                 .build();
     }
 
