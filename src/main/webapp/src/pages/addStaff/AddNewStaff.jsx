@@ -1,4 +1,4 @@
-import "./new.scss";
+import "../../style/new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useState, useEffect } from "react";
@@ -6,8 +6,8 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
-import { useNavigate } from "react-router-dom";
-import { Visibility, VisibilityOff, Info } from "@mui/icons-material";
+import { useNavigate, useParams } from "react-router-dom";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const AddNewStaff = () => {
   const [newStaff, setNewStaff] = useState({
@@ -24,6 +24,7 @@ const AddNewStaff = () => {
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const { id } = useParams(); // <-- get staffId from route (for edit)
   const [roles, setRoles] = useState([]);
   const [farms, setFarms] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
@@ -37,6 +38,7 @@ const AddNewStaff = () => {
     }));
   };
 
+  // Fetch roles
   useEffect(() => {
     const fetchRoles = async () => {
       try {
@@ -65,35 +67,53 @@ const AddNewStaff = () => {
     fetchFarms();
   }, [token]);
 
-  const handleAddStaff = async (e) => {
-    e.preventDefault();
-    try {
-      await toast.promise(
-        axios.post(`${baseUrl}staff/register`, newStaff, {
-          headers: { Authorization: `Bearer ${token}` },
-        }),
-        {
-          pending: "Saving staff...",
-          success: "Submitted successfully",
-          error: "Error adding staff",
+  useEffect(() => {
+    if (id) {
+      const fetchStaff = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}staff/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setNewStaff(response.data);
+        } catch (error) {
+          console.error("Error fetching staff:", error);
         }
-      );
+      };
+      fetchStaff();
+    }
+  }, [id, token]);
 
-      setNewStaff({
-        firstname: "",
-        lastname: "",
-        cadre: "",
-        phone: "",
-        dateOfBirth: "",
-        email: "",
-        password: "",
-        roleId: "",
-        farmId: "",
-      });
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (id) {
+        await toast.promise(
+          axios.put(`${baseUrl}staff/${id}`, newStaff, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          {
+            pending: "Updating staff...",
+            success: "Staff updated successfully!",
+            error: "Error updating staff",
+          }
+        );
+      } else {
+        await toast.promise(
+          axios.post(`${baseUrl}staff/register`, newStaff, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          {
+            pending: "Saving staff...",
+            success: "Staff added successfully!",
+            error: "Error adding staff",
+          }
+        );
+      }
 
       navigate("/dashboard/staff-user");
     } catch (error) {
-      console.error("Error adding staff:", error);
+      console.error("Error saving staff:", error);
     }
   };
 
@@ -103,11 +123,11 @@ const AddNewStaff = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add Staff</h1>
+          <h1>{id ? "Edit Staff" : "Add Staff"}</h1>
         </div>
         <div className="bottom">
           <div className="right">
-            <form onSubmit={handleAddStaff}>
+            <form onSubmit={handleSubmit}>
               <div className="formInput">
                 <label>First Name:</label>
                 <input
@@ -125,7 +145,7 @@ const AddNewStaff = () => {
                   name="lastname"
                   value={newStaff.lastname}
                   onChange={handleChange}
-                  placeholder="Enter Last name"
+                  placeholder="Enter last name"
                 />
               </div>
               <div className="formInput">
@@ -135,7 +155,7 @@ const AddNewStaff = () => {
                   name="cadre"
                   value={newStaff.cadre}
                   onChange={handleChange}
-                  placeholder="Enter Cadre"
+                  placeholder="Enter cadre"
                 />
               </div>
               <div className="formInput">
@@ -145,16 +165,15 @@ const AddNewStaff = () => {
                   name="phone"
                   value={newStaff.phone}
                   onChange={handleChange}
-                  placeholder="Enter telephone Number"
+                  placeholder="Enter phone number"
                 />
               </div>
-
               <div className="formInput">
                 <label>Date of Birth:</label>
                 <input
                   type="date"
                   name="dateOfBirth"
-                  value={newStaff.dateOfBirth}
+                  value={newStaff.dateOfBirth || ""}
                   onChange={handleChange}
                 />
               </div>
@@ -165,31 +184,32 @@ const AddNewStaff = () => {
                   name="email"
                   value={newStaff.email}
                   onChange={handleChange}
-                  placeholder="Enter email address"
+                  placeholder="Enter email"
                 />
               </div>
-
-              <div className="formInput">
-                <label>Password:</label>
-                <div className="passwordWrapper">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    name="password"
-                    value={newStaff.password}
-                    onChange={handleChange}
-                    placeholder="Enter password"
-                  />
-                  <span onClick={togglePassword} className="eye-icon">
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </span>
+              {!id && ( // only show password input when creating
+                <div className="formInput">
+                  <label>Password:</label>
+                  <div className="passwordWrapper">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      name="password"
+                      value={newStaff.password}
+                      onChange={handleChange}
+                      placeholder="Enter password"
+                    />
+                    <span onClick={togglePassword} className="eye-icon">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              )}
 
               <div className="formInput">
                 <label>Farm:</label>
                 <select
                   name="farmId"
-                  value={newStaff.farmId}
+                  value={newStaff.farmId || ""}
                   onChange={handleChange}
                 >
                   <option value="">-- Select Farm --</option>
@@ -205,7 +225,7 @@ const AddNewStaff = () => {
                 <label>Role:</label>
                 <select
                   name="roleId"
-                  value={newStaff.roleId}
+                  value={newStaff.roleId || ""}
                   onChange={handleChange}
                 >
                   <option value="">-- Select Role --</option>
@@ -216,19 +236,8 @@ const AddNewStaff = () => {
                   ))}
                 </select>
               </div>
-              <div className="formInput">
-                {/* <label>Farm:</label> */}
-                <input
-                  type="text"
-                  name="farmId"
-                  value={newStaff.farmId}
-                  onChange={handleChange}
-                  placeholder="Enter Farm"
-                  hidden
-                />
-              </div>
 
-              <button type="submit">Save</button>
+              <button type="submit">{id ? "Update" : "Save"}</button>
             </form>
           </div>
         </div>

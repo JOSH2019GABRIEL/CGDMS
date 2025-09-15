@@ -1,6 +1,8 @@
 package com.cgdms.CGDMS.task;
 
 
+import com.cgdms.CGDMS.batch.BatchResponse;
+import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,14 @@ public class TaskController {
     public ResponseEntity<TaskResponse> updateTask(@PathVariable Long id,
                                                    @RequestBody TaskRequest request) {
         return ResponseEntity.ok(taskService.updateTask(id, request));
+    }
+
+    @GetMapping
+    public ResponseEntity<PageResponse<TaskResponse>> findAllBatch(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size
+    ) {
+        return ResponseEntity.ok(taskService.getAllTasks(page, size));
     }
 
     @PutMapping("/{id}/archive")

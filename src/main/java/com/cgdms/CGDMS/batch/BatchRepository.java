@@ -15,4 +15,12 @@ public interface BatchRepository extends JpaRepository<Batch, Long> {
                 WHERE batch.archived = 0
                 """)
     Page<Batch> findAllNotArchived(Pageable pageable);
+
+
+    @Query(value = """
+                SELECT SUM(batch.initialCount) 
+                FROM Batch batch
+                WHERE batch.archived = 0
+                """)
+    Integer getSumOfAllFingerlings();
 }

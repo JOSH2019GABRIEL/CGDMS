@@ -80,7 +80,7 @@ public class UserService {
     }
 
 
-    private void sendValidationEmail(User user) throws MessagingException {
+    public void sendValidationEmail(User user) throws MessagingException {
 
         var newToken = generateAndSaveActivationToken(user);
 //        send mail
@@ -246,6 +246,10 @@ public class UserService {
         user.setArchived(1);
         userRepository.save(user);
 
+    }
+
+    public Integer totalNumberOfUsers() {
+        return userRepository.findAllCount();
     }
 
 }

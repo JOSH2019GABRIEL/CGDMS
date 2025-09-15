@@ -19,6 +19,7 @@ public class Pond extends BaseEntity {
     private Integer capacity;
     private String location;
     private String status; // ACTIVE, INACTIVE
+    private Integer availableFingerlin;
     private Integer archived = 0;
 
 }

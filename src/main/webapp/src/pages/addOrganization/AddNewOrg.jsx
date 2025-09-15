@@ -1,16 +1,16 @@
-import "./new.scss";
+import "../../style/new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddNewOrg = () => {
   const [newOrg, setNewOrg] = useState({
-    name: "", 
+    name: "",
     contactEmail: "",
     address: "",
     contactPhone: "",
@@ -18,6 +18,7 @@ const AddNewOrg = () => {
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const { id } = useParams(); // <-- get orgId from route for editing
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,34 +28,57 @@ const AddNewOrg = () => {
     }));
   };
 
-  const handleAddOrg = async (e) => {
+  // Fetch organization if editing
+  useEffect(() => {
+    if (id) {
+      const fetchOrg = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}organizations/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setNewOrg(response.data);
+        } catch (error) {
+          console.error("Error fetching organization:", error);
+          toast.error("Failed to load organization details.");
+        }
+      };
+      fetchOrg();
+    }
+  }, [id, token]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${baseUrl}organizations`,
-        newOrg,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      if (id) {
+        // Update existing organization
+        await toast.promise(
+          axios.put(`${baseUrl}organizations/${id}`, newOrg, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          {
+            pending: "Updating organization...",
+            success: "Organization updated successfully!",
+            error: "Error updating organization",
+          }
+        );
+      } else {
+        // Add new organization
+        await toast.promise(
+          axios.post(`${baseUrl}organizations`, newOrg, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          {
+            pending: "Saving organization...",
+            success: "Organization added successfully!",
+            error: "Error adding organization",
+          }
+        );
+      }
 
-      console.log("Organization submitted successfully:", response.data);
-      toast.success("Submitted successfully!");
-
-      setNewOrg({
-        name: "",
-        contactEmail: "",
-        address: "",
-        contactPhone: "",
-      });
-
-      // ✅ Redirect after short delay (to let toast show)
-      // setTimeout(() => {
-        navigate("/dashboard/organizations");
-      // }, 1000);
-
+      navigate("/dashboard/organizations");
     } catch (error) {
-      console.error("Error adding organization:", error);
-      toast.error(error.response?.data?.message || "Error adding organization.");
+      console.error("Error saving organization:", error);
     }
   };
 
@@ -64,11 +88,11 @@ const AddNewOrg = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add Organization</h1>
+          <h1>{id ? "Edit Organization" : "Add Organization"}</h1>
         </div>
         <div className="bottom">
           <div className="right">
-            <form onSubmit={handleAddOrg}>
+            <form onSubmit={handleSubmit}>
               <div className="formInput">
                 <label>Name:</label>
                 <input
@@ -77,6 +101,7 @@ const AddNewOrg = () => {
                   value={newOrg.name}
                   onChange={handleChange}
                   placeholder="Name of Organization"
+                  required
                 />
               </div>
               <div className="formInput">
@@ -87,6 +112,7 @@ const AddNewOrg = () => {
                   value={newOrg.contactEmail}
                   onChange={handleChange}
                   placeholder="Email Address"
+                  required
                 />
               </div>
               <div className="formInput">
@@ -97,6 +123,7 @@ const AddNewOrg = () => {
                   value={newOrg.address}
                   onChange={handleChange}
                   placeholder="Address of Organization"
+                  required
                 />
               </div>
               <div className="formInput">
@@ -107,9 +134,10 @@ const AddNewOrg = () => {
                   value={newOrg.contactPhone}
                   onChange={handleChange}
                   placeholder="Telephone Number"
+                  required
                 />
               </div>
-              <button type="submit">Save</button>
+              <button type="submit">{id ? "Update" : "Save"}</button>
             </form>
           </div>
         </div>

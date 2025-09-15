@@ -1,9 +1,11 @@
 package com.cgdms.CGDMS.role;
 
+import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.user.User;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -13,16 +15,13 @@ import java.util.List;
 
 @Getter
 @Setter
-@Builder
+@SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-public class Role {
+public class Role extends BaseEntity {
 
-    @Id
-    @GeneratedValue
-    private Integer id;
     @Column(unique = true)
     private String name;
 
@@ -30,12 +29,4 @@ public class Role {
     @JsonIgnore
     private List<User> users;
 
-
-
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime createdDate;
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime lastModifiedDate;
 }

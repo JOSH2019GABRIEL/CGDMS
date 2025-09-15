@@ -32,7 +32,7 @@ public class BatchController {
     }
 
 //    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @GetMapping("/{pond-id}")
+    @GetMapping("/{batch-id}")
     public ResponseEntity<BatchResponse> getBatch(@PathVariable("batch-id") Long batchId) {
         return ResponseEntity.ok(batchService.findById(batchId));
     }
@@ -42,5 +42,11 @@ public class BatchController {
     public ResponseEntity<?> archiveBatch (@PathVariable Long id) {
         batchService.deleteBatch(id);
         return ResponseEntity.ok("User delete successfully");
+    }
+
+    @GetMapping("/get-count")
+    public ResponseEntity<Integer> getTotalFingerLings () {
+        Integer number = batchService.totalNumberOfFingerlings();
+        return ResponseEntity.ok(number);
     }
 }

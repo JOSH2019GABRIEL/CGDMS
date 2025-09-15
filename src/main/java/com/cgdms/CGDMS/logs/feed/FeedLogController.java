@@ -6,10 +6,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 
 @RestController
 @RequestMapping("feed-logs")
@@ -50,22 +48,13 @@ public class FeedLogController {
 //    @PreAuthorize("hasAnyRole('ADMIN','USER')")
     public ResponseEntity<PageResponse<FeedLogResponse>> findAllFeedLogs(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size,
-            @RequestParam(required = false) Long pondId,
-            @RequestParam(required = false) Long batchId,
-            @RequestParam(required = false) String startDate, // yyyy-MM-dd
-            @RequestParam(required = false) String endDate
+            @RequestParam(defaultValue = "10") int size
+//            @RequestParam(required = false) Long pondId,
+//            @RequestParam(required = false) Long batchId,
+//            @RequestParam(required = false) String startDate, // yyyy-MM-dd
+//            @RequestParam(required = false) String endDate
     ) {
-        if (pondId != null) {
-            return ResponseEntity.ok(service.findByPond(pondId, page, size));
-        } else if (batchId != null) {
-            return ResponseEntity.ok(service.findByBatch(batchId, page, size));
-        } else if (startDate != null && endDate != null) {
-            LocalDate start = LocalDate.parse(startDate);
-            LocalDate end = LocalDate.parse(endDate);
-            return ResponseEntity.ok(service.findByDateRange(start, end, page, size));
-        } else {
-            return ResponseEntity.ok(service.findAll(page, size));
-        }
+
+        return ResponseEntity.ok(service.findAll(page, size));
     }
 }

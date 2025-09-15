@@ -73,4 +73,12 @@ public class PondService {
         pondRepository.save(pond);
 
     }
+
+    public Integer totalNumberOfPonds() {
+        return pondRepository.findAllCount();
+    }
+
+    public Integer totalNumberOfAvailableFingerlings() {
+        return pondRepository.getAvailableFingerlingsInPonds();
+    }
 }

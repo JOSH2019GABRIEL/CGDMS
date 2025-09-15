@@ -23,4 +23,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     )
     Page<User> findAllUsers(Pageable pageable);
 
+    @Query("""
+    SELECT COUNT(u)
+    FROM User u
+    WHERE u.archived = 0
+""")
+    Integer findAllCount();
+
+
 }

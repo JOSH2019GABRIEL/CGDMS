@@ -47,7 +47,7 @@ const Sidebar = () => {
           </Link>
           <p className="title">LISTS</p>
 
-        <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+        <Link to="/dashboard/tasks" style={{ textDecoration: "none" }}>
             <li>
               <AddTaskIcon className="icon" />
               <span>Task</span>
@@ -71,25 +71,25 @@ const Sidebar = () => {
               <span>Batch Movement</span>
             </li>
           </Link>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/feed-log" style={{ textDecoration: "none" }}>
             <li>
               <PsychologyOutlinedIcon className="icon" />
               <span>Feed Logs</span>
             </li>
           </Link>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/medication-logs" style={{ textDecoration: "none" }}>
             <li>
               <MediationIcon className="icon" />
               <span>Medication Logs</span>
             </li>
           </Link>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/environment-logs" style={{ textDecoration: "none" }}>
             <li>
               <SensorsIcon className="icon" />
               <span>Environment Logs</span>
             </li>
           </Link>
-          <Link to="/dashboard/users" style={{ textDecoration: "none" }}>
+          <Link to="/dashboard/fish-performances" style={{ textDecoration: "none" }}>
             <li>
               <PersonOutlineIcon className="icon" />
               <span>Fish Performance</span>
@@ -146,10 +146,13 @@ const Sidebar = () => {
             <span>Profile</span>
           </li>
           </Link>
+          <Link to="/dashboard/logout" style={{ textDecoration: "none" }}>
+
           <li>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
           </li>
+          </Link>
         </ul>
       </div>
       <div className="bottom">

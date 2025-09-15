@@ -22,6 +22,7 @@ public class EnvLogMapper {
                 .salinityPpt(r.getSalinityPpt())
                 .notes(r.getNotes())
                 .fromSensor(Boolean.TRUE.equals(r.getFromSensor()))
+                .archived(0)
                 .build();
 
         Pond pond = pondRepository.findById(r.getPondId())

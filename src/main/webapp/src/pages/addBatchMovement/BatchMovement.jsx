@@ -1,4 +1,4 @@
-import "./organization.scss";
+import "../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -12,7 +12,6 @@ const BatchMovement = () => {
   const [rowCount, setRowCount] = useState(0);
   const token = localStorage.getItem("token");
 
-  // Fetch batch with backend pagination
   const fetchBatchMovement = async (page, pageSize) => {
     try {
       const response = await axios.get(
@@ -46,7 +45,7 @@ const BatchMovement = () => {
 
       setbatchMovementList(batchMovementList.filter((batch) => batch.id !== id));
     } catch (error) {
-      console.error("Error deleting batch:", error);
+      console.error("Error deleting batch movement:", error);
     }
   };
 
@@ -67,7 +66,7 @@ const BatchMovement = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/batch-movements/${params.row.id}`}
+            to={`/dashboard/batch-movement/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">View</div>

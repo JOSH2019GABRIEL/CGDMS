@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.logs.feed;
 
-import com.cgdms.CGDMS.batch.Batch;
 import com.cgdms.CGDMS.common.PageResponse;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

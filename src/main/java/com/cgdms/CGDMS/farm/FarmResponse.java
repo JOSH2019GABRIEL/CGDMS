@@ -7,7 +7,14 @@ import lombok.Data;
 @Builder
 public class FarmResponse {
     private Long id;
-    private String name;
+//    private String name;
+//    private String location;
+//    private String organizationName;
+
+
+
+    private String farmName;
     private String location;
-    private String organizationName;
+    private double sizeInHectares;
+    private Long organizationId;
 }

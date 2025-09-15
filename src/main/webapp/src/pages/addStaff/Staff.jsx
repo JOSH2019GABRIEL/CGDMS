@@ -1,4 +1,4 @@
-import "./organization.scss";
+import "../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -14,7 +14,6 @@ const Staff = () => {
   const ROLE = localStorage.getItem("role");
   console.log("Role is ", ROLE);
 
-  // Fetch staff with backend pagination
   const fetchStaffs = async (page, pageSize) => {
     try {
       const response = await axios.get(

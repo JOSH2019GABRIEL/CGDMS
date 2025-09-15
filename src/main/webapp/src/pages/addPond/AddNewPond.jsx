@@ -1,4 +1,4 @@
-import "./new.scss";
+import "../../style/new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useState, useEffect } from "react";
@@ -6,9 +6,10 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddNewPond = () => {
+  const { id } = useParams();
   const [newPond, setNewPond] = useState({
     id: "",
     name: "",
@@ -20,6 +21,24 @@ const AddNewPond = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  // fetch pond details if editing
+  useEffect(() => {
+    if (id) {
+      const fetchPond = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}ponds/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setNewPond(response.data);
+        } catch (error) {
+          console.error("Error fetching pond:", error);
+          toast.error("Could not load pond details.");
+        }
+      };
+      fetchPond();
+    }
+  }, [id, token]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewPond((prevState) => ({
@@ -28,28 +47,19 @@ const AddNewPond = () => {
     }));
   };
 
-  const handleAddPond = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${baseUrl}ponds`, newPond, {
+      await axios.post(`${baseUrl}ponds`, newPond, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Batch submitted successfully:", response.data);
-      toast.success("Submitted successfully!");
-
-      setNewPond({
-        id: "",
-        name: "",
-        capacity: "",
-        location: "",
-        status: "",
-      });
-      navigate("/dashboard/batches");
+      toast.success(id ? "Pond updated successfully!" : "Pond created successfully!");
+      navigate("/dashboard/pond");
     } catch (error) {
-      console.error("Error adding batch:", error);
-      toast.error(error.response?.data?.message || "Error adding batch.");
+      console.error("Error saving pond:", error);
+      toast.error(error.response?.data?.message || "Error saving pond.");
     }
   };
 
@@ -59,17 +69,17 @@ const AddNewPond = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add Pond</h1>
+          <h1>{id ? "Edit Pond" : "Add Pond"}</h1>
         </div>
         <div className="bottom">
           <div className="right">
-            <form onSubmit={handleAddPond}>
+            <form onSubmit={handleSubmit}>
               <div className="formInput">
                 <label>Name:</label>
                 <input
                   type="text"
                   name="name"
-                  value={newPond.name}
+                  value={newPond.name || ""}
                   onChange={handleChange}
                   placeholder="Name of Pond"
                   required
@@ -80,7 +90,7 @@ const AddNewPond = () => {
                 <input
                   type="number"
                   name="capacity"
-                  value={newPond.capacity}
+                  value={newPond.capacity || ""}
                   onChange={handleChange}
                   placeholder="Pond capacity"
                   required
@@ -91,7 +101,7 @@ const AddNewPond = () => {
                 <input
                   type="text"
                   name="location"
-                  value={newPond.location}
+                  value={newPond.location || ""}
                   onChange={handleChange}
                   placeholder="Location of Pond"
                   required
@@ -101,7 +111,7 @@ const AddNewPond = () => {
                 <label>Pond Status:</label>
                 <select
                   name="status"
-                  value={newPond.status}
+                  value={newPond.status || ""}
                   onChange={handleChange}
                   required
                 >
@@ -111,7 +121,7 @@ const AddNewPond = () => {
                 </select>
               </div>
 
-              <button type="submit">Save</button>
+              <button type="submit">{id ? "Update" : "Save"}</button>
             </form>
           </div>
         </div>

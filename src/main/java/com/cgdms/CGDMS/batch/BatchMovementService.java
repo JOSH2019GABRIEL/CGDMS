@@ -34,19 +34,38 @@ public class BatchMovementService {
         Pond to = pondRepository.findById(req.getToPondId())
                 .orElseThrow(() -> new EntityNotFoundException("Pond not found with id: " + req.getToPondId()));
 
-        // Check batch currently in fromPond
-        if (batch.getPond() == null || !batch.getPond().getId().equals(from.getId())) {
-            throw new IllegalStateException("Batch is not currently in the specified fromPond");
+        if (req.getMovedCount() > batch.getInitialCount()) {
+            throw new IllegalStateException("Not enough fish in batch to move. Available: "
+                    + batch.getInitialCount() + ", Requested: " + req.getMovedCount());
         }
 
-        // Create movement record
-        BatchMovement movement = BatchMovement.builder().build();
-        mapper.apply(movement, batch, from, to, req);
+        BatchMovement movement = BatchMovement.builder()
+                .batch(batch)
+                .fromPond(from)
+                .toPond(to)
+                .movedCount(req.getMovedCount())
+                .movementDate(req.getMovementDate())
+                .build();
 
-        // Update batch current pond → toPond
-        batch.setPond(to);
+        int newAvailableFrom = from.getAvailableFingerlin() - req.getMovedCount();
 
-        // Persist both (movement first or batch first is fine in one TX)
+        if (newAvailableFrom < 0) {
+            throw new IllegalStateException("Cannot move more fingerlings than available in the source pond. "
+                    + "Available: " + from.getAvailableFingerlin() + ", Trying to move: " + req.getMovedCount());
+        }
+
+        from.setAvailableFingerlin(newAvailableFrom);
+        pondRepository.save(from);
+
+        int newAvailableTo = to.getAvailableFingerlin() + req.getMovedCount();
+        if (newAvailableTo > to.getCapacity()) {
+            throw new IllegalStateException("Destination pond capacity exceeded. Capacity: "
+                    + to.getCapacity() + ", Trying to add: " + req.getMovedCount());
+        }
+
+        to.setAvailableFingerlin(newAvailableTo);
+        pondRepository.save(to);
+
         movementRepository.save(movement);
         batchRepository.save(batch);
 

@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
@@ -20,8 +21,8 @@ public class EnvLogController {
 
     @PostMapping
 //    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    public ResponseEntity<EnvLogResponse> create(@RequestBody @Valid EnvLogRequest request) {
-        return ResponseEntity.ok(service.create(request));
+    public ResponseEntity<EnvLogResponse> create(@RequestBody @Valid EnvLogRequest request, Authentication connectedUser) {
+        return ResponseEntity.ok(service.create(request, connectedUser));
     }
 
     @PutMapping("/{id}")

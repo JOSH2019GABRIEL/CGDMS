@@ -1,23 +1,25 @@
-import "./new.scss";
+import "../../style/new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddNewFarm = () => {
   const [newFarm, setNewFarm] = useState({
-    farmName: "", 
+    farmName: "",
     location: "",
     organizationId: "",
     sizeInHectares: "",
   });
 
+  const [organizations, setOrganizations] = useState([]);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
+  const { id } = useParams(); // <-- if editing
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -27,35 +29,73 @@ const AddNewFarm = () => {
     }));
   };
 
-  const handleAddOrg = async (e) => {
+  // Fetch organizations for dropdown
+  useEffect(() => {
+    const fetchOrgs = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}organizations`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setOrganizations(response.data.content || response.data);
+      } catch (error) {
+        console.error("Error fetching organizations:", error);
+        toast.error("Could not load organizations");
+      }
+    };
+    fetchOrgs();
+  }, [token]);
+
+  // Fetch farm if editing
+  useEffect(() => {
+    if (id) {
+      const fetchFarm = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}farms/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setNewFarm(response.data);
+        } catch (error) {
+          console.error("Error fetching farm:", error);
+          toast.error("Failed to load farm details.");
+        }
+      };
+      fetchFarm();
+    }
+  }, [id, token]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        `${baseUrl}farms`,
-        newFarm,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      if (id) {
+        // Update farm
+        await toast.promise(
+          axios.put(`${baseUrl}farms/${id}`, newFarm, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          {
+            pending: "Updating farm...",
+            success: "Farm updated successfully!",
+            error: "Error updating farm",
+          }
+        );
+      } else {
+        // Add new farm
+        await toast.promise(
+          axios.post(`${baseUrl}farms`, newFarm, {
+            headers: { Authorization: `Bearer ${token}` },
+          }),
+          {
+            pending: "Saving farm...",
+            success: "Farm added successfully!",
+            error: "Error adding farm",
+          }
+        );
+      }
 
-      console.log("Farm submitted successfully:", response.data);
-      toast.success("Submitted successfully!");
-
-      // Reset form
-      setNewFarm({
-        farmName: "", 
-        location: "",
-        organizationId: "",
-        sizeInHectares: "",
-      });
-
-      // ✅ Redirect after short delay (to let toast show)
-      // setTimeout(() => {
-        navigate("/dashboard/farms");
-      // }, 1000);
-
+      navigate("/dashboard/farms");
     } catch (error) {
-      console.error("Error adding farm:", error);
-      toast.error(error.response?.data?.message || "Error adding farm.");
+      console.error("Error saving farm:", error);
     }
   };
 
@@ -65,11 +105,11 @@ const AddNewFarm = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add Farm</h1>
+          <h1>{id ? "Edit Farm" : "Add Farm"}</h1>
         </div>
         <div className="bottom">
           <div className="right">
-            <form onSubmit={handleAddOrg}>
+            <form onSubmit={handleSubmit}>
               <div className="formInput">
                 <label>Name:</label>
                 <input
@@ -78,6 +118,7 @@ const AddNewFarm = () => {
                   value={newFarm.farmName}
                   onChange={handleChange}
                   placeholder="Name of farm"
+                  required
                 />
               </div>
               <div className="formInput">
@@ -88,45 +129,39 @@ const AddNewFarm = () => {
                   value={newFarm.location}
                   onChange={handleChange}
                   placeholder="Farm Location"
+                  required
                 />
               </div>
               <div className="formInput">
                 <label>Size in Hectare:</label>
                 <input
-                  type="text"
+                  type="number"
                   name="sizeInHectares"
                   value={newFarm.sizeInHectares}
                   onChange={handleChange}
                   placeholder="Enter Size in Hectares"
+                  required
                 />
               </div>
-              {/* <div className="formInput">
+
+              <div className="formInput">
                 <label>Organization:</label>
-                <input
-                  type="text"
+                <select
                   name="organizationId"
                   value={newFarm.organizationId}
                   onChange={handleChange}
-                  placeholder="Organization Name"
-                />
-              </div> */}
+                  required
+                >
+                  <option value="">-- Select Organization --</option>
+                  {organizations.map((org) => (
+                    <option key={org.id} value={org.id}>
+                      {org.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
-              <div className="formInput">
-              <label>Organization:</label>
-              <select
-                name="organizationId"
-                value={newFarm.organizationId}
-                onChange={handleChange}
-              >
-                <option value="">Select an organization</option>
-                <option value="1">Organization 1</option>
-                <option value="2">Organization 2</option>
-                <option value="3">Organization 3</option>
-                {/* Add more options as needed */}
-              </select>
-            </div>
-
-              <button type="submit">Save</button>
+              <button type="submit">{id ? "Update" : "Save"}</button>
             </form>
           </div>
         </div>

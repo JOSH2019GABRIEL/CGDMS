@@ -48,7 +48,7 @@ const Login = () => {
   return (
     <div className="login-container">
       <div className="login-left">
-        <div className="brand-logo">CATFISH GROW-OUT DATA MANAGEMENT SYSTEM</div>
+        <div className="brand-logo"> LIVESTOCK DATA MANAGEMENT SYSTEM</div>
         <h1>Hi, Welcome back</h1>
         <p>More effectively with optimized workflows.</p>
         <div className="illustration">

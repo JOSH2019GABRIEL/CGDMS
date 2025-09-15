@@ -15,5 +15,7 @@ public class PondResponse {
     private String location;
     private String status;
     private Integer archived;
+    private Integer availableFingerlin;
+
 
 }

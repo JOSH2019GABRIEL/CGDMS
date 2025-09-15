@@ -16,4 +16,19 @@ public interface PondRepository extends JpaRepository<Pond, Long> {
            WHERE pond.archived = 0     
                 """)
     Page<Pond> findAllNotArchived(Pageable pageable);
+
+
+    @Query(value = """
+           SELECT COUNT(pond)
+           FROM Pond pond
+           WHERE pond.archived = 0     
+                """)
+    Integer findAllCount();
+
+    @Query(value = """
+           SELECT SUM(pond.availableFingerlin)
+           FROM Pond pond
+           WHERE pond.archived = 0     
+                """)
+    Integer getAvailableFingerlingsInPonds();
 }

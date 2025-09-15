@@ -44,4 +44,16 @@ public class PondController {
         return ResponseEntity.ok("User delete successfully");
     }
 
+    @GetMapping("/get-count")
+    public ResponseEntity<Integer> getTotalPonds () {
+        Integer number = pondService.totalNumberOfPonds();
+        return ResponseEntity.ok(number);
+    }
+
+    @GetMapping("/get-available")
+    public ResponseEntity<Integer> getTotalBalanceFingerLings () {
+        Integer number = pondService.totalNumberOfAvailableFingerlings();
+        return ResponseEntity.ok(number);
+    }
+
 }

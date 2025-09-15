@@ -1,6 +1,7 @@
 package com.cgdms.CGDMS.logs.env;
 
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -21,8 +23,11 @@ public class EnvLogService {
     private final EnvLogMapper mapper;
 
     @Transactional
-    public EnvLogResponse create(EnvLogRequest req) {
+    public EnvLogResponse create(EnvLogRequest req, Authentication connectedUser) {
+        User loggedInUser = ((User) connectedUser.getPrincipal());
+
         EnvLog e = mapper.toEntity(req);
+        e.setStaff(loggedInUser);
         EnvLog saved = repo.save(e);
         return mapper.toResponse(saved);
     }

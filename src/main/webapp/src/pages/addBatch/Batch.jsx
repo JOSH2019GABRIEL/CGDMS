@@ -1,4 +1,4 @@
-import "./organization.scss";
+import "../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -12,7 +12,6 @@ const Batch = () => {
   const [rowCount, setRowCount] = useState(0);
   const token = localStorage.getItem("token");
 
-  // Fetch batch with backend pagination
   const fetchBatch = async (page, pageSize) => {
     try {
       const response = await axios.get(
@@ -66,7 +65,7 @@ const Batch = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/batches/${params.row.id}`}
+            to={`/dashboard/batch/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">View</div>

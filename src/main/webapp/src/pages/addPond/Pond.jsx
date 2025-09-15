@@ -1,4 +1,4 @@
-import "./organization.scss";
+import "../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -26,6 +26,7 @@ const Pond = () => {
         id: pond.id || index,
         ...pond,
       }));
+      console.log(content)
 
       setPondList(rows);
       setRowCount(totalElements);
@@ -50,13 +51,15 @@ const Pond = () => {
     }
   };
 
-  // Define DataGrid columns
+
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "name", headerName: "Name", width: 200 },
     { field: "capacity", headerName: "Capacity", width: 150 },
     { field: "location", headerName: "Location", width: 200 },
+    { field: "availableFingerlin", headerName: "available Fingerlin", width: 150 },
     { field: "status", headerName: "Status", width: 150 },
+
     {
       field: "action",
       headerName: "Action",
@@ -64,7 +67,7 @@ const Pond = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/ponds/${params.row.id}`}
+            to={`/dashboard/pond/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">View</div>

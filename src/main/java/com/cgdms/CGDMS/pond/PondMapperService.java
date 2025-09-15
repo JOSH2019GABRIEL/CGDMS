@@ -7,22 +7,24 @@ public class PondMapperService {
 
     public Pond toPond(PondRequest pondRequest) {
         return Pond.builder()
-//                .id(pondRequest.getId())
+                .id(pondRequest.getId())
                 .name(pondRequest.getName())
                 .capacity(pondRequest.getCapacity())
                 .location(pondRequest.getLocation())
                 .status(pondRequest.getStatus())
+                .availableFingerlin(0)
                 .archived(0)
                 .build();
     }
 
     public PondResponse toPondResponse(Pond pond) {
         return PondResponse.builder()
-//                .id(pond.getId())
+                .id(pond.getId())
                 .name(pond.getName())
                 .capacity(pond.getCapacity())
                 .location(pond.getLocation())
                 .status(pond.getStatus())
+                .availableFingerlin(pond.getAvailableFingerlin())
                 .build();
     }
 }

@@ -23,6 +23,7 @@ public class FeedLogMapper {
                 .method(req.getMethod())
                 .timeOfDay(req.getTimeOfDay())
                 .notes(req.getNotes())
+                .archived(0)
                 .build();
 
         // pond (required)

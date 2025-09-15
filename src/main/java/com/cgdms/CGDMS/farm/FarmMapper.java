@@ -1,10 +1,15 @@
 package com.cgdms.CGDMS.farm;
 
 import com.cgdms.CGDMS.organization.Organization;
+import com.cgdms.CGDMS.organization.OrganizationRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@RequiredArgsConstructor
 public class FarmMapper {
+
+    private final OrganizationRepository orgRepo;
 
     public static Farm toEntity(FarmRequest request, Organization organization) {
         return Farm.builder()
@@ -17,9 +22,11 @@ public class FarmMapper {
     public static FarmResponse toResponse(Farm farm) {
         return FarmResponse.builder()
                 .id(farm.getId())
-                .name(farm.getFarmName())
+                .farmName(farm.getFarmName())
                 .location(farm.getLocation())
-                .organizationName(farm.getOrganization() != null ? farm.getOrganization().getName() : null)
+                .sizeInHectares(farm.getSizeInHectares())
+                .organizationId(farm.getOrganization() != null ? farm.getOrganization().getId() : null)
                 .build();
     }
+
 }

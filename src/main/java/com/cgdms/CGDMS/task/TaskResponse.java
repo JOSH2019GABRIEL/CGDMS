@@ -16,7 +16,9 @@ public class TaskResponse {
     private String title;
     private String description;
     private LocalDate dueDate;
-    private String assignedTo;
+    private Integer assignedTo;
+    private String assignedToName;
     private Integer createdBy;
+    private String createdByName;
     private Integer archived;
 }

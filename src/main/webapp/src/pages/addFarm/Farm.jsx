@@ -1,4 +1,4 @@
-import "./organization.scss";
+import "../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
@@ -47,7 +47,7 @@ const Farm = () => {
   // Define DataGrid columns
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
-    { field: "name", headerName: "Name", width: 200 },
+    { field: "farmName", headerName: "Name", width: 200 },
     { field: "location", headerName: "Location", width: 200 },
     { field: "organizationName", headerName: "Organization Name", width: 200 },
     {

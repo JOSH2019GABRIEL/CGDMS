@@ -1,6 +1,7 @@
 package com.cgdms.CGDMS.performance;
 
 
+import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.batch.Batch;
 import com.cgdms.CGDMS.pond.Pond;
 import jakarta.persistence.*;
@@ -16,11 +17,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class Performance {
+public class Performance extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private LocalDate date;
     @ManyToOne
     private Pond pond;

@@ -82,4 +82,12 @@ public class UserController {
     }
 
 
+    @GetMapping("/get-count")
+    public ResponseEntity<Integer> getTotalUser () {
+        Integer number = userService.totalNumberOfUsers();
+        return ResponseEntity.ok(number);
+    }
+
+
+
 }

@@ -32,10 +32,9 @@ public class BatchMovement extends BaseEntity {
     /** Date the movement happened (not just when it was recorded) */
     private LocalDate movementDate;
 
-    /** Optional: number of fish moved (for audit). Not used to split batches in this simple flow. */
+
     private Integer movedCount;
 
-    /** Optional reason/note */
     @Column(length = 500)
     private String reason;
 

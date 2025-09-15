@@ -4,6 +4,7 @@ package com.cgdms.CGDMS.logs.env;
 import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.pond.Pond;
 import com.cgdms.CGDMS.staff.Staff;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -43,6 +44,9 @@ public class EnvLog extends BaseEntity {
     private String notes;
 
     private Boolean fromSensor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "staff_id")
+    private User staff;
 
 //    /** Optimistic locking */
 //    @Version

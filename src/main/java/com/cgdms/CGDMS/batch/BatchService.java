@@ -27,7 +27,7 @@ public class BatchService {
     @Autowired
     private BatchMapperService batchMapper;
 
-        public BatchRequest saveBatch(BatchRequest batchRequest) {
+    public BatchRequest saveBatch(BatchRequest batchRequest) {
         Batch batch;
 
         if (batchRequest.getId() != null) {
@@ -38,21 +38,49 @@ public class BatchService {
             Pond pond = pondRepository.findById(batchRequest.getPondId())
                     .orElseThrow(() -> new EntityNotFoundException("Pond not found with id: " + batchRequest.getPondId()));
 
-            // update only relevant fields
+            int newAvailable = pond.getAvailableFingerlin() + batch.getInitialCount();
+
+            if (newAvailable > pond.getCapacity()) {
+                throw new IllegalStateException("Pond capacity exceeded. Capacity: "
+                        + pond.getCapacity() + ", Trying to add: " + newAvailable);
+            }
+
+            pond.setAvailableFingerlin(newAvailable);
+            pondRepository.save(pond);
+
+            // ✅ update only relevant fields
             batch.setPond(pond);
             batch.setSource(batchRequest.getSource());
             batch.setStockDate(batchRequest.getStockDate());
-            batch.setInitialAvgWeightG(batch.getInitialAvgWeightG());
-            batch.setInitialCount(batch.getInitialCount());
+            batch.setInitialAvgWeightG(batchRequest.getInitialAvgWeightG());
+            batch.setInitialCount(batchRequest.getInitialCount());
 
         } else {
             // Creating new batch
             batch = batchMapper.toBatch(batchRequest);
+
+            Pond pond = pondRepository.findById(batchRequest.getPondId())
+                    .orElseThrow(() -> new EntityNotFoundException("Pond not found with id: " + batchRequest.getPondId()));
+
+            // ✅ check pond capacity before assigning
+            int newAvailable = pond.getAvailableFingerlin() + batch.getInitialCount();
+
+            if (newAvailable > pond.getCapacity()) {
+                throw new IllegalStateException("Pond capacity exceeded. Capacity: "
+                        + pond.getCapacity() + ", Trying to add: " + newAvailable);
+            }
+
+            pond.setAvailableFingerlin(newAvailable);
+            pondRepository.save(pond);
+
+//            batch.setPond(pond);
         }
 
         batchRepository.save(batch);
+
         return batchRequest;
     }
+
 
     public PageResponse<BatchResponse> findAllBatch(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
@@ -84,5 +112,9 @@ public class BatchService {
         Batch batch = batchRepository.findById(batchId).orElseThrow(()-> new RuntimeException("Batch not found"));
         batch.setArchived(1);
         batchRepository.save(batch);
+    }
+
+    public Integer totalNumberOfFingerlings() {
+        return batchRepository.getSumOfAllFingerlings();
     }
 }

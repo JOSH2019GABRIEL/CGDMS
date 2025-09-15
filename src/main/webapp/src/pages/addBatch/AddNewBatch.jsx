@@ -1,4 +1,4 @@
-import "./new.scss";
+import "../../style/new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useState, useEffect } from "react";
@@ -6,10 +6,12 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const AddNewBatch = () => {
+  const { id } = useParams();
   const [newBatch, setNewBatch] = useState({
+    id: "",
     pondId: "",
     source: "",
     stockDate: "",
@@ -21,6 +23,7 @@ const AddNewBatch = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  // Fetch ponds
   useEffect(() => {
     const fetchPonds = async () => {
       try {
@@ -36,6 +39,24 @@ const AddNewBatch = () => {
     fetchPonds();
   }, [token]);
 
+  // Fetch batch details if editing
+  useEffect(() => {
+    if (id) {
+      const fetchBatch = async () => {
+        try {
+          const response = await axios.get(`${baseUrl}batch/${id}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setNewBatch(response.data); // prefill form
+        } catch (error) {
+          console.error("Error fetching batch:", error);
+          toast.error("Could not load batch details.");
+        }
+      };
+      fetchBatch();
+    }
+  }, [id, token]);
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setNewBatch((prevState) => ({
@@ -44,28 +65,19 @@ const AddNewBatch = () => {
     }));
   };
 
-  const handleAddBatch = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post(`${baseUrl}batch`, newBatch, {
+      await axios.post(`${baseUrl}batch`, newBatch, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log("Batch submitted successfully:", response.data);
-      toast.success("Submitted successfully!");
-
-      setNewBatch({
-        pondId: "",
-        source: "",
-        stockDate: "",
-        initialAvgWeightG: "",
-        initialCount: "",
-      });
-        navigate("/dashboard/batches");
+      toast.success(id ? "Batch updated successfully!" : "Batch created successfully!");
+      navigate("/dashboard/batches");
     } catch (error) {
-      console.error("Error adding batch:", error);
-      toast.error(error.response?.data?.message || "Error adding batch.");
+      console.error("Error saving batch:", error);
+      toast.error(error.response?.data?.message || "Error saving batch.");
     }
   };
 
@@ -75,11 +87,11 @@ const AddNewBatch = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>Add Batch</h1>
+          <h1>{id ? "Edit Batch" : "Add Batch"}</h1>
         </div>
         <div className="bottom">
           <div className="right">
-            <form onSubmit={handleAddBatch}>
+            <form onSubmit={handleSubmit}>
               <div className="formInput">
                 <label>Pond:</label>
                 <select
@@ -102,7 +114,7 @@ const AddNewBatch = () => {
                 <input
                   type="text"
                   name="source"
-                  value={newBatch.source}
+                  value={newBatch.source || ""}
                   onChange={handleChange}
                   placeholder="Enter source"
                   required
@@ -114,7 +126,7 @@ const AddNewBatch = () => {
                 <input
                   type="date"
                   name="stockDate"
-                  value={newBatch.stockDate}
+                  value={newBatch.stockDate || ""}
                   onChange={handleChange}
                   required
                 />
@@ -125,7 +137,7 @@ const AddNewBatch = () => {
                 <input
                   type="number"
                   name="initialAvgWeightG"
-                  value={newBatch.initialAvgWeightG}
+                  value={newBatch.initialAvgWeightG || ""}
                   onChange={handleChange}
                   required
                 />
@@ -136,16 +148,13 @@ const AddNewBatch = () => {
                 <input
                   type="number"
                   name="initialCount"
-                  value={newBatch.initialCount}
+                  value={newBatch.initialCount || ""}
                   onChange={handleChange}
                   required
                 />
               </div>
-               <div className="formInput">
-                
-               </div>
 
-              <button type="submit">Save</button>
+              <button type="submit">{id ? "Update" : "Save"}</button>
             </form>
           </div>
         </div>
