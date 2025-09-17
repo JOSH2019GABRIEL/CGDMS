@@ -2,14 +2,22 @@
 server:
   port: 9191
   servlet:
-    context-path: /api/v1/
+    context-path: /api/v1
 
 spring:
+  web:
+    resources:
+      static-locations: classpath:/static/
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
   datasource:
     url: jdbc:postgresql://localhost:5432/cgdms
     username: postgres
     password: admin
     driver-class-name: org.postgresql.Driver
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -19,9 +27,11 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
   servlet:
     multipart:
       max-file-size: 50MB
+
   mail:
     host: localhost
     port: 1025
@@ -51,6 +61,65 @@ application:
   mailing:
     frontend:
       activation-url: "http://localhost:1300/active-account"
+
+#server:
+#  port: 9191
+#  servlet:
+#    context-path: /api/v1/
+#
+#
+#spring:
+#  mvc:
+#    pathmatch:
+#      matching-strategy: ant_path_matcher
+#    servlet:
+#      path=/api/v1:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/cgdms
+#    username: postgres
+#    password: admin
+#    driver-class-name: org.postgresql.Driver
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: false
+#    properties:
+#      hibernate:
+#        format_sql: true
+#    database: postgresql
+#    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#  servlet:
+#    multipart:
+#      max-file-size: 50MB
+#  mail:
+#    host: localhost
+#    port: 1025
+#    username: josh
+#    password: josh
+#    properties:
+#      mail:
+#        smtp:
+#          trust: "*"
+#        auth: true
+#        starttls:
+#          enable: true
+#        connectiontimeout: 5000
+#        timeout: 3000
+#        writetimeout: 5000
+#
+#springdoc:
+#  default-produce-media-type: application/json
+#
+#application:
+#  security:
+#    jwt:
+#      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+#      expiration: 86400000
+#      refresh-token:
+#        expiration: 604800000
+#  mailing:
+#    frontend:
+#      activation-url: "http://localhost:1300/active-account"
 
 
 

@@ -1,7 +1,8 @@
 {
-  "name": "Cgdms",
+  "name": "cgdms",
   "version": "0.1.0",
   "private": true,
+  "homepage": "/api/v1/",
   "dependencies": {
     "@emotion/react": "^11.8.1",
     "@emotion/styled": "^11.8.1",
@@ -28,7 +29,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "dev": "concurrently \"npm start\" \"cd .. && mvn spring-boot:run\"",
+    "build-and-run": "npm run build && cd .. && mvn spring-boot:run"
   },
   "eslintConfig": {
     "extends": [
@@ -47,5 +50,9 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "proxy": "http://localhost:9191/api/v1",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
   }
 }
