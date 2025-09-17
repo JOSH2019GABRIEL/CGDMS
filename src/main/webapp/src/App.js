@@ -4,7 +4,7 @@ import List from "./pages/list/List";
 import Single from "./pages/single/Single";
 import New from "./pages/new/New";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { organizationInputs, productInputs, userInputs } from "./formSource";
+import { productInputs, userInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
@@ -39,7 +39,7 @@ function App() {
 
   return (
     <div className={darkMode ? "app dark" : "app"}>
-       <BrowserRouter>
+       <BrowserRouter basename="/api/v1">
       <Routes>
         <Route path="/" element={<Login />} />
 

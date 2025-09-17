@@ -35,7 +35,7 @@ const BatchMovement = () => {
 
   useEffect(() => {
     fetchBatchMovement(page, pageSize);
-  }, [page, pageSize]);
+  }, [page, pageSize, fetchBatchMovement]);
 
   const handleDelete = async (id) => {
     try {
