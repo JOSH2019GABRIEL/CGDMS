@@ -48,7 +48,6 @@ public class DataInitializer implements CommandLineRunner {
                                 .archived(0)
                         .build()));
 
-        // ✅ Ensure we have at least one farm
         Farm defaultFarm = farmRepository.findByFarmName("Demo Farm")
                 .orElseGet(() -> farmRepository.save(Farm.builder()
                         .farmName("Demo Farm")
@@ -61,7 +60,6 @@ public class DataInitializer implements CommandLineRunner {
                         .archived(0)
                         .build()));
 
-        // ✅ Create a default ADMIN user if not exist
         if (userRepository.findByEmail("admin@system.com").isEmpty()) {
             User admin = User.builder()
                     .firstname("System")
@@ -73,6 +71,7 @@ public class DataInitializer implements CommandLineRunner {
                     .password(passwordEncoder.encode("Admin123"))
                     .roles(List.of(adminRole))
                     .farm(defaultFarm)
+                    .enabled(true)
                     .build();
 
             userRepository.save(admin);

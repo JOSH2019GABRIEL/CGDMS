@@ -13,10 +13,16 @@ spring:
       matching-strategy: ant_path_matcher
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/cgdms
+    url: jdbc:postgresql://localhost:5432/railway
     username: postgres
-    password: mechack200
+    password: JHPNJEegPdcSEeuDLNOtRpcWImcxzirR
     driver-class-name: org.postgresql.Driver
+
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/cgdms
+#    username: postgres
+#    password: admin
+#    driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:

@@ -15,7 +15,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/cgdms
     username: postgres
-    password: mechack200
+    password: admin
     driver-class-name: org.postgresql.Driver
 
   jpa:
