@@ -37,7 +37,7 @@ const List = () => {
         setTotalElements(totalElements);
       } catch (error) {
         console.error("Error fetching fish performance:", error);
-        toast.error("Could not load fish performance data");
+        toast.error("Could not load fish performance data here");
       }
     };
 
