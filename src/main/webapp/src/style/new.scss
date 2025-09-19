@@ -48,11 +48,61 @@
             }
           }
 
+          /* ✅ Toggle Switch (checkboxInput) */
+          .checkboxInput {
+            flex: 1 1 45%;
+            display: flex;
+            flex-direction: column;
+
+            label {
+              display: flex;
+              align-items: center;
+              cursor: pointer;
+              font-size: 14px;
+              font-weight: 500;
+              color: #333;
+
+              input[type="checkbox"] {
+                display: none; // hide default checkbox
+              }
+
+              .slider {
+                position: relative;
+                width: 50px;
+                height: 24px;
+                background-color: #ccc;
+                border-radius: 34px;
+                transition: 0.3s;
+              }
+
+              .slider::before {
+                content: "";
+                position: absolute;
+                height: 18px;
+                width: 18px;
+                left: 3px;
+                bottom: 3px;
+                background-color: white;
+                border-radius: 50%;
+                transition: 0.3s;
+              }
+
+              input:checked + .slider {
+                background-color: #4caf50; // green when active
+              }
+
+              input:checked + .slider::before {
+                transform: translateX(26px);
+              }
+            }
+          }
+
           .passwordWrapper {
             position: relative;
             display: flex;
             align-items: center;
           }
+
           .eye-icon {
             position: absolute;
             right: 10px;

@@ -8,19 +8,19 @@ import axios from "axios";
 import { url as baseUrl } from "../../api";
 import { useNavigate, useParams } from "react-router-dom";
 
-const AddMedicationLog = () => {
-  const [medicationLog, setMedicationLog] = useState({
+const AddNewEnvironmentLog = () => {
+  const [envLog, setEnvLog] = useState({
     id: "",
-    treatmentDate: "",
     pondId: "",
-    diagnosis: "",
-    medication: "",
-    dosage: "",
-    dosageUnit: "",
-    quantityUsed: "",
-    method: "",
+    measuredAt: "",
+    temperatureC: "",
+    dissolvedOxygenMgL: "",
+    ammoniaMgL: "",
+    turbidityNtu: "",
+    salinityPpt: "",
+    ph: "",
+    fromSensor: false,
     notes: "",
-    withdrawalDays: "",
   });
 
   const [ponds, setPonds] = useState([]);
@@ -44,30 +44,30 @@ const AddMedicationLog = () => {
     fetchPonds();
   }, [token]);
 
-  // Fetch medication log if editing
+  // Fetch env log if editing
   useEffect(() => {
     if (id) {
-      const fetchMedicationLog = async () => {
+      const fetchEnvLog = async () => {
         try {
-          const response = await axios.get(`${baseUrl}medication-logs/${id}`, {
+          const response = await axios.get(`${baseUrl}env-logs/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          setMedicationLog(response.data);
+          setEnvLog(response.data);
         } catch (error) {
-          console.error("Error fetching medication log:", error);
-          toast.error("Could not load medication log");
+          console.error("Error fetching environment log:", error);
+          toast.error("Could not load environment log");
         }
       };
-      fetchMedicationLog();
+      fetchEnvLog();
     }
   }, [id, token]);
 
-  // Handle form change
+  // Handle input change
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setMedicationLog((prevState) => ({
+    const { name, value, type, checked } = e.target;
+    setEnvLog((prevState) => ({
       ...prevState,
-      [name]: value,
+      [name]: type === "checkbox" ? checked : value,
     }));
   };
 
@@ -77,22 +77,22 @@ const AddMedicationLog = () => {
 
     try {
       if (id) {
-        await axios.put(`${baseUrl}medication-logs/${id}`, medicationLog, {
+        await axios.put(`${baseUrl}env-logs/${id}`, envLog, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        toast.success("Medication log updated successfully!");
+        toast.success("Environment log updated successfully!");
       } else {
-        await axios.post(`${baseUrl}medication-logs`, medicationLog, {
+        await axios.post(`${baseUrl}env-logs`, envLog, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        toast.success("Medication log submitted successfully!");
+        toast.success("Environment log submitted successfully!");
       }
 
-      navigate("/dashboard/medication-logs");
+      navigate("/dashboard/environment-logs");
     } catch (error) {
-      console.error("Error saving medication log:", error);
+      console.error("Error saving environment log:", error);
       toast.error(
-        error.response?.data?.message || "Error saving medication log."
+        error.response?.data?.message || "Error saving environment log."
       );
     }
   };
@@ -103,17 +103,17 @@ const AddMedicationLog = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>{id ? "Edit Medication Log" : "Add Medication Log"}</h1>
+          <h1>{id ? "Edit Environment Log" : "Add Environment Log"}</h1>
         </div>
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
               <div className="formInput">
-                <label>Treatment Date:</label>
+                <label>Measured At:</label>
                 <input
-                  type="date"
-                  name="treatmentDate"
-                  value={medicationLog.treatmentDate || ""}
+                  type="datetime-local"
+                  name="measuredAt"
+                  value={envLog.measuredAt || ""}
                   onChange={handleChange}
                   required
                 />
@@ -123,7 +123,7 @@ const AddMedicationLog = () => {
                 <label>Pond:</label>
                 <select
                   name="pondId"
-                  value={medicationLog.pondId || ""}
+                  value={envLog.pondId || ""}
                   onChange={handleChange}
                   required
                 >
@@ -137,91 +137,67 @@ const AddMedicationLog = () => {
               </div>
 
               <div className="formInput">
-                <label>Diagnosis:</label>
-                <input
-                  type="text"
-                  name="diagnosis"
-                  value={medicationLog.diagnosis || ""}
-                  onChange={handleChange}
-                  placeholder="Enter diagnosis"
-                  required
-                />
-              </div>
-
-              <div className="formInput">
-                <label>Medication:</label>
-                <input
-                  type="text"
-                  name="medication"
-                  value={medicationLog.medication || ""}
-                  onChange={handleChange}
-                  placeholder="Enter medication name"
-                  required
-                />
-              </div>
-
-              <div className="formInput">
-                <label>Dosage:</label>
+                <label>Temperature (°C):</label>
                 <input
                   type="number"
-                  name="dosage"
-                  value={medicationLog.dosage || ""}
+                  name="temperatureC"
+                  value={envLog.temperatureC || ""}
+                  onChange={handleChange}
+                  step="0.1"
+                />
+              </div>
+
+              <div className="formInput">
+                <label>Dissolved Oxygen (mg/L):</label>
+                <input
+                  type="number"
+                  name="dissolvedOxygenMgL"
+                  value={envLog.dissolvedOxygenMgL || ""}
+                  onChange={handleChange}
+                  step="0.1"
+                />
+              </div>
+
+              <div className="formInput">
+                <label>Ammonia (mg/L):</label>
+                <input
+                  type="number"
+                  name="ammoniaMgL"
+                  value={envLog.ammoniaMgL || ""}
                   onChange={handleChange}
                   step="0.01"
-                  placeholder="e.g., 0.5"
-                  required
                 />
               </div>
 
               <div className="formInput">
-                <label>Dosage Unit:</label>
-                <input
-                  type="text"
-                  name="dosageUnit"
-                  value={medicationLog.dosageUnit || ""}
-                  onChange={handleChange}
-                  placeholder="e.g., mg/kg"
-                  required
-                />
-              </div>
-
-              <div className="formInput">
-                <label>Quantity Used:</label>
+                <label>Turbidity (NTU):</label>
                 <input
                   type="number"
-                  name="quantityUsed"
-                  value={medicationLog.quantityUsed || ""}
+                  name="turbidityNtu"
+                  value={envLog.turbidityNtu || ""}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <div className="formInput">
+                <label>Salinity (ppt):</label>
+                <input
+                  type="number"
+                  name="salinityPpt"
+                  value={envLog.salinityPpt || ""}
+                  onChange={handleChange}
+                  step="0.1"
+                />
+              </div>
+
+              <div className="formInput">
+                <label>pH:</label>
+                <input
+                  type="number"
+                  name="ph"
+                  value={envLog.ph || ""}
                   onChange={handleChange}
                   step="0.01"
-                  placeholder="Enter total quantity used"
-                  required
-                />
-              </div>
-
-              <div className="formInput">
-                <label>Method:</label>
-                <select
-                  name="method"
-                  value={medicationLog.method || ""}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">-- Select Method --</option>
-                  <option value="BATH">Bath</option>
-                  <option value="FEED">Feed</option>
-                  <option value="INJECTION">Injection</option>
-                  <option value="WATER">Water</option>
-                </select>
-              </div>
-
-              <div className="formInput">
-                <label>Withdrawal Days:</label>
-                <input
-                  type="number"
-                  name="withdrawalDays"
-                  value={medicationLog.withdrawalDays || ""}
-                  onChange={handleChange}
-                  placeholder="e.g., 7"
                 />
               </div>
 
@@ -229,10 +205,26 @@ const AddMedicationLog = () => {
                 <label>Notes:</label>
                 <textarea
                   name="notes"
-                  value={medicationLog.notes || ""}
+                  value={envLog.notes || ""}
                   onChange={handleChange}
                   placeholder="Additional notes..."
                 />
+              </div>
+
+              <div className="formInput checkboxInput">
+                <label></label>
+                <label>
+                  <input
+                    type="checkbox"
+                    name="fromSensor"
+                    checked={envLog.fromSensor}
+                    onChange={(e) =>
+                      setEnvLog({ ...envLog, fromSensor: e.target.checked })
+                    }
+                  />
+                  <span className="slider"></span>
+                  <span style={{ marginLeft: "8px" }}>From Sensor</span>
+                </label>
               </div>
 
               <button type="submit">{id ? "Update" : "Save"}</button>
@@ -245,4 +237,4 @@ const AddMedicationLog = () => {
   );
 };
 
-export default AddMedicationLog;
+export default AddNewEnvironmentLog;

@@ -68,7 +68,7 @@ const Batch = () => {
             to={`/dashboard/batch/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
-            <div className="viewButton">View</div>
+            <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"

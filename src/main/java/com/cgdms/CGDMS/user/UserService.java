@@ -69,12 +69,11 @@ public class UserService {
                 .dateOfBirth(request.getDateOfBirth())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .accountLocked(false)
-                .enabled(false)
+                .enabled(true)
                 .archived(0)
                 .roles(List.of(userRole))
                 .farm(userFarm)
                 .build();
-
         userRepository.save(user);
         sendValidationEmail(user);
     }

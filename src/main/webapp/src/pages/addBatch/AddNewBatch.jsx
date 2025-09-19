@@ -154,6 +154,10 @@ const AddNewBatch = () => {
                 />
               </div>
 
+                  <div className="formInput">
+                    <input hidden/>
+                  </div>
+
               <button type="submit">{id ? "Update" : "Save"}</button>
             </form>
           </div>

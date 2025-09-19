@@ -61,7 +61,7 @@ const Organization = () => {
             to={`/dashboard/organizations/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
-            <div className="viewButton">View</div>
+            <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"

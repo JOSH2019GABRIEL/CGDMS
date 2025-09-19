@@ -26,7 +26,7 @@ import AddNewFeedLog from "./pages/addFeedLog/AddNewFeedLog";
 import MedicationLog from "./pages/addMedicationLogs/MedicationLog";
 import AddMedicationLog from "./pages/addMedicationLogs/AddMedicationLog";
 import EnvironmentLog from "./pages/addEnvironmentLogs/EnvironmentLog";
-import AddNewEnvironmentLog from "./pages/addMedicationLogs/AddMedicationLog";
+import AddNewEnvironmentLog from "./pages/addEnvironmentLogs/AddNewEnvironmentLog";
 import FishPerformance from "./pages/addFishPerformance/FishPerformance";
 import AddFishPerformance from "./pages/addFishPerformance/AddFishPerformance";
 import Task from "./pages/addTask/Task";

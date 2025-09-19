@@ -70,7 +70,7 @@ const MedicationLog = () => {
             to={`/dashboard/medication-log/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
-            <div className="viewButton">View</div>
+            <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"
@@ -86,7 +86,7 @@ const MedicationLog = () => {
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        Feed Log
+        Medication Log
         <Link to="/dashboard/medication-log/new" className="link">
           Add New
         </Link>

@@ -215,7 +215,7 @@ const AddNewStaff = () => {
                   <option value="">-- Select Farm --</option>
                   {farms.map((farm) => (
                     <option key={farm.id} value={farm.id}>
-                      {farm.name}
+                      {farm.farmName}
                     </option>
                   ))}
                 </select>
