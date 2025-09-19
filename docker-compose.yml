@@ -1,20 +1,105 @@
-
+#
+#services:
+#  postgres:
+#    container_name: postgres-sql-cgdms
+#    image: postgres
+#    environment:
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: admin
+#      PGDATA: /var/lib/postgresql/data
+#      POSTGRES_DB: cmgdms
+#    volumes:
+#      - postgres:/data/postgres
+#    ports:
+#      - "5432:5432"
+#    networks:
+#      - spring-demo
+#    restart: unless-stopped
+#
+#  mail-dev:
+#    container_name: mail-dev-cgdms
+#    image: maildev/maildev
+#    ports:
+#      - "1080:1080"  # Web UI
+#      - "1025:1025"  # SMTP
+#    networks:
+#      - spring-demo
+#
+#networks:
+#  spring-demo:
+#    driver: bridge
+#
+#volumes:
+#  postgres:
+#    driver: local
 services:
   postgres:
     container_name: postgres-sql-cgdms
-    image: postgres
+    image: postgres:15-alpine
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
       PGDATA: /var/lib/postgresql/data
       POSTGRES_DB: cmgdms
     volumes:
-      - postgres:/data/postgres
+      - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
     networks:
       - spring-demo
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  backend:
+    container_name: java-backend-cgdms
+    build:
+      context: .
+      dockerfile: src/main/java/Dockerfile
+    ports:
+      - "9191:9191"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/cmgdms
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: admin
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
+      SPRING_MAIL_HOST: mail-dev
+      SPRING_MAIL_PORT: 1025
+      SPRING_MAIL_USERNAME: ""
+      SPRING_MAIL_PASSWORD: ""
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mail-dev:
+        condition: service_started
+    networks:
+      - spring-demo
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+
+  frontend:
+    container_name: react-frontend-cgdms
+    build:
+      context: ./src/main/webapp
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_API_URL: http://localhost:9191/api/v1
+      REACT_APP_API_BASE_URL: http://localhost:9191/api/v1
+    depends_on:
+      - backend
+    networks:
+      - spring-demo
+    restart: unless-stopped
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
 
   mail-dev:
     container_name: mail-dev-cgdms
@@ -24,6 +109,7 @@ services:
       - "1025:1025"  # SMTP
     networks:
       - spring-demo
+    restart: unless-stopped
 
 networks:
   spring-demo:
