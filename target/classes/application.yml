@@ -5,8 +5,8 @@ server:
     context-path: /api/v1
 
 spring:
-#  profiles:
-#    active: prod   # ✅ Correct placement
+  profiles:
+    active: prod   # ✅ Correct placement
   web:
     resources:
       static-locations: classpath:/static/
