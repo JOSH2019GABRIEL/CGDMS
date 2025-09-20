@@ -21,7 +21,7 @@ WORKDIR /app
 COPY --from=backend-builder /app/target/*.jar app.jar
 
 # Copy frontend build (Spring Boot will serve static files)
-COPY --from=frontend-builder /webapp/build ./src/main/resources/static/
+COPY --from=frontend-builder /webapp/build /app/src/main/resources/static/
 
 # Expose port
 EXPOSE 9191
