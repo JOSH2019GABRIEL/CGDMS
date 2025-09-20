@@ -4,20 +4,23 @@ server:
     context-path: /api/v1
 
 spring:
-  profiles:
-    active: prod
-
   datasource:
     url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/cgdms}
     driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 20000
+      idle-timeout: 300000
 
   jpa:
     hibernate:
       ddl-auto: update
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-    show-sql: true
+    show-sql: false
+    open-in-view: false
 
-  # Static resources
+  # Static resources (for embedded React frontend)
   web:
     resources:
       static-locations: classpath:/static/
@@ -34,9 +37,3 @@ management:
   endpoint:
     health:
       show-details: always
-
-logging:
-  level:
-    com.zaxxer.hikari: DEBUG
-    org.springframework.boot.autoconfigure.jdbc: DEBUG
-    org.springframework.jdbc.datasource: DEBUG
