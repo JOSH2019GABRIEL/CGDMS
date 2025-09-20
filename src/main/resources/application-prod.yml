@@ -1,0 +1,89 @@
+server:
+  port: ${PORT:9191}
+  servlet:
+    context-path: /api/v1
+  compression:
+    enabled: true
+  tomcat:
+    max-threads: 200
+
+spring:
+  profiles:
+    active: prod
+
+  datasource:
+    url: postgresql://cgdms_user:HM4p6AOKkKMZevg92z91nKA5CVq8ZZeJ@dpg-d37bk3ur433s73ek0hi0-a:5432/cgdms
+    username: cgdms_user
+    password: HM4p6AOKkKMZevg92z91nKA5CVq8ZZeJ
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      idle-timeout: 300000
+      connection-timeout: 20000
+      leak-detection-threshold: 60000
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 25
+        order_inserts: true
+        order_updates: true
+        batch_versioned_data: true
+    open-in-view: false
+
+  # Static resources (for embedded React frontend)
+  web:
+    resources:
+      static-locations: classpath:/static/
+      cache:
+        period: 31536000 # 1 year for static assets
+  mvc:
+    static-path-pattern: /**
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  # Logging
+  logging:
+    level:
+      com.cgdms: INFO
+      org.springframework.web: WARN
+      org.hibernate: WARN
+    pattern:
+      console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+    logback:
+      rollingpolicy:
+        max-file-size: 10MB
+        max-history: 30
+
+  # Security
+  security:
+    require-ssl: false # Render handles SSL termination
+
+# Actuator for health checks
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+      base-path: /actuator
+  endpoint:
+    health:
+      show-details: when-authorized
+  health:
+    db:
+      enabled: true
+
+# Application specific properties
+app:
+  cors:
+    allowed-origins: "*"
+    allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+    allowed-headers: "*"
+    allow-credentials: true

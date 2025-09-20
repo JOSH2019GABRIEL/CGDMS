@@ -23,72 +23,38 @@
 ## Run application
 #ENTRYPOINT ["java", "-jar", "app.jar"]
 
-# Dockerfile with PostgreSQL and Java 17 to run JAR file
-FROM ubuntu:22.04
 
-# Install required packages
-RUN apt-get update && apt-get install -y \
-    openjdk-17-jdk \
-    postgresql \
-    postgresql-contrib \
-    supervisor \
-    curl \
-    && rm -rf /var/lib/apt/lists/*
+# Production Dockerfile for Render deployment with external PostgreSQL
+FROM openjdk:17-jdk-alpine
 
-# Set up PostgreSQL
-USER postgres
-RUN /etc/init.d/postgresql start && \
-    psql --command "CREATE USER postgres WITH SUPERUSER PASSWORD 'admin';" && \
-    createdb -O postgres cmgdms
+# Install curl for health checks
+RUN apk add --no-cache curl
 
-# Switch back to root
-USER root
-
-# Set working directory
+# Create application directory
 WORKDIR /app
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -S appuser -u 1001 -G appgroup
 
 # Copy the JAR file from target folder
 COPY target/CGDMS-0.0.1-SNAPSHOT.jar app.jar
 
-# Create supervisor configuration to manage both services
-RUN mkdir -p /var/log/supervisor
-RUN echo '[supervisord]\n\
-nodaemon=true\n\
-user=root\n\
-\n\
-[program:postgresql]\n\
-command=/usr/lib/postgresql/14/bin/postgres -D /var/lib/postgresql/14/main -c config_file=/etc/postgresql/14/main/postgresql.conf\n\
-user=postgres\n\
-autorestart=true\n\
-stdout_logfile=/var/log/supervisor/postgresql.log\n\
-stderr_logfile=/var/log/supervisor/postgresql.log\n\
-\n\
-[program:spring-app]\n\
-command=java -jar /app/app.jar\n\
-directory=/app\n\
-user=root\n\
-autorestart=true\n\
-stdout_logfile=/var/log/supervisor/spring-app.log\n\
-stderr_logfile=/var/log/supervisor/spring-app.log\n\
-environment=SPRING_DATASOURCE_URL="jdbc:postgresql://localhost:5432/cmgdms",SPRING_DATASOURCE_USERNAME="postgres",SPRING_DATASOURCE_PASSWORD="admin"' > /etc/supervisor/conf.d/supervisord.conf
+# Change ownership to non-root user
+RUN chown -R appuser:appgroup /app
 
-# Configure PostgreSQL
-RUN echo "host all all 0.0.0.0/0 md5" >> /etc/postgresql/14/main/pg_hba.conf
-RUN echo "listen_addresses='*'" >> /etc/postgresql/14/main/postgresql.conf
+# Switch to non-root user
+USER appuser
 
-# Initialize PostgreSQL data directory
-USER postgres
-RUN /usr/lib/postgresql/14/bin/initdb -D /var/lib/postgresql/14/main
+# Expose port 8080 (Render will map this to public port)
+EXPOSE 8080
 
-# Switch back to root
-USER root
-
-# Expose ports
-EXPOSE 9191 5432
-
-# Health check
+# Health check for Render monitoring
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:9191/api/v1/actuator/health || exit 1
+    CMD curl -f http://localhost:8080/api/v1/actuator/health || exit 1
 
-# Start supervisor to manage both PostgreSQL and Spring Boot
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Set JVM options optimized for containerized environment
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=prod"
+
+# Run the JAR file with optimized JVM settings
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar"]
