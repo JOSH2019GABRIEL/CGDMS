@@ -5,18 +5,14 @@ server:
     context-path: /api/v1
 
 spring:
+#  profiles:
+#    active: prod   # ✅ Correct placement
   web:
     resources:
       static-locations: classpath:/static/
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
-
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/railway
-#    username: postgres
-#    password: JHPNJEegPdcSEeuDLNOtRpcWImcxzirR
-#    driver-class-name: org.postgresql.Driver
 
   datasource:
     url: jdbc:postgresql://localhost:5432/cgdms
@@ -67,6 +63,7 @@ application:
   mailing:
     frontend:
       activation-url: "http://localhost:1300/active-account"
+
 
 #server:
 #  port: 9191

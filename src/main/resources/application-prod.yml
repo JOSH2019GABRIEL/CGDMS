@@ -1,11 +1,9 @@
 server:
   port: ${PORT:8080}
-  servlet:
-    context-path: /api/v1
 
 spring:
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/cgdms}
+    url: ${DATABASE_URL}   # Render injects DATABASE_URL
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -16,18 +14,18 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
     show-sql: false
-    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
 
-  # Static resources (for embedded React frontend)
   web:
     resources:
       static-locations: classpath:/static/
   mvc:
     static-path-pattern: /**
 
-# Actuator for health checks
 management:
   endpoints:
     web:
@@ -37,3 +35,9 @@ management:
   endpoint:
     health:
       show-details: always
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: INFO
+    org.hibernate.SQL: WARN
