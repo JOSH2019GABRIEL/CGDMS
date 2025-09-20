@@ -3,15 +3,6 @@ import React from "react";
 import App from "./App";
 import { DarkModeContextProvider } from "./context/darkModeContext";
 
-// ReactDOM.render(
-//   <React.StrictMode>
-//     <DarkModeContextProvider>
-//       <App />
-//     </DarkModeContextProvider>
-//   </React.StrictMode>,
-//   document.getElementById("root")
-// );
-
 import { createRoot } from 'react-dom/client';
 
 const container = document.getElementById('root');
