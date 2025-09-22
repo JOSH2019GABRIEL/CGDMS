@@ -33,6 +33,28 @@ spring:
       matching-strategy: ant_path_matcher
     static-path-pattern: /**
 
+  # Mail configuration for production
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+  # Multipart file upload
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
 management:
   endpoints:
     web:
@@ -61,28 +83,6 @@ application:
     frontend:
       activation-url: ${FRONTEND_URL:http://localhost:3000}/active-account
 
-# Mail configuration for production
-spring:
-  mail:
-    host: ${MAIL_HOST:smtp.gmail.com}
-    port: ${MAIL_PORT:587}
-    username: ${MAIL_USERNAME:}
-    password: ${MAIL_PASSWORD:}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-        connectiontimeout: 5000
-        timeout: 3000
-        writetimeout: 5000
-
-# Multipart file upload
-  servlet:
-    multipart:
-      max-file-size: 50MB
-      max-request-size: 50MB
 
 springdoc:
   default-produce-media-type: application/json
