@@ -5,10 +5,7 @@ server:
 
 spring:
   datasource:
-    url: ${DATABASE_URL}   # Render injects DATABASE_URL
-#    url: ${DATABASE_JDBC_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://cgdms_user:HM4p6AOKkKMZevg92z91nKA5CVq8ZZeJ@dpg-d37bk3ur433s73ek0hi0-a:5432/cgdms
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
