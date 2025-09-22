@@ -1,4 +1,4 @@
-# Build stage: Java backend (includes frontend build inside jar)
+# Build stage: Java backend only (using pre-built frontend)
 FROM maven:3.8.4-openjdk-17 AS backend-builder
 WORKDIR /app
 
@@ -9,9 +9,15 @@ ENV MAVEN_OPTS="-Xmx2048m -XX:MaxMetaspaceSize=512m"
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copy source and build with increased memory
-COPY src ./src
-RUN mvn clean package -DskipTests -Dmaven.test.skip=true
+# Copy Java source only (excluding webapp to skip frontend build)
+COPY src/main/java ./src/main/java
+COPY src/main/resources ./src/main/resources
+
+# Copy pre-built frontend assets from target/classes/static
+COPY target/classes/static ./src/main/resources/static
+
+# Build only the backend (skip frontend maven plugin)
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true -Dfrontend.skip=true
 
 # Runtime image optimized for Render
 FROM openjdk:17-jdk-alpine

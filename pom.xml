@@ -139,6 +139,7 @@
 					<workingDirectory>src/main/webapp</workingDirectory>
 					<nodeVersion>v20.11.1</nodeVersion>
 					<npmVersion>10.2.4</npmVersion>
+					<skip>${frontend.skip}</skip>
 				</configuration>
 				<executions>
 					<!-- Install Node and npm -->
@@ -183,6 +184,7 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
+							<skip>${frontend.skip}</skip>
 							<outputDirectory>${project.build.directory}/classes/static</outputDirectory>
 							<resources>
 								<resource>
