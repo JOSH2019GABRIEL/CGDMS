@@ -1,5 +1,7 @@
 server:
   port: ${PORT:8080}
+  servlet:
+    context-path: /api/v1
 
 spring:
   datasource:
@@ -27,6 +29,8 @@ spring:
     resources:
       static-locations: classpath:/static/
   mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
     static-path-pattern: /**
 
 management:
@@ -44,3 +48,41 @@ logging:
     root: INFO
     org.springframework.web: INFO
     org.hibernate.SQL: WARN
+
+# Production-specific configurations
+application:
+  security:
+    jwt:
+      secret-key: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+      expiration: ${JWT_EXPIRATION:86400000}
+      refresh-token:
+        expiration: ${JWT_REFRESH_EXPIRATION:604800000}
+  mailing:
+    frontend:
+      activation-url: ${FRONTEND_URL:http://localhost:3000}/active-account
+
+# Mail configuration for production
+spring:
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        connectiontimeout: 5000
+        timeout: 3000
+        writetimeout: 5000
+
+# Multipart file upload
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+springdoc:
+  default-produce-media-type: application/json

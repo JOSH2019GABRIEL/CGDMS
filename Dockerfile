@@ -10,18 +10,38 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Runtime image
+# Runtime image optimized for Render
 FROM openjdk:17-jdk-alpine
 WORKDIR /app
+
+# Install curl for health checks
+RUN apk add --no-cache curl
+
+# Create non-root user for security
+RUN addgroup -g 1001 -S appgroup && \
+    adduser -S appuser -u 1001 -G appgroup
 
 # Copy built jar from builder
 COPY --from=backend-builder /app/target/*.jar app.jar
 
-# Expose port
+# Change ownership to non-root user
+RUN chown -R appuser:appgroup /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose port (Render will map PORT environment variable)
 EXPOSE 8080
 
-# Run application with prod profile
-ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]
+# Health check for Render monitoring
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Set JVM options optimized for containerized environment
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -Djava.security.egd=file:/dev/./urandom"
+
+# Run application with prod profile and optimized JVM settings
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar --spring.profiles.active=prod"]
 
 
 

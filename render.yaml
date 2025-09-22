@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: cgdms-app
+    runtime: docker
+    plan: starter  # Change to 'standard' or 'pro' for production
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: DATABASE_URL
+        fromDatabase:
+          name: cgdms-db
+          property: connectionString
+      - key: DB_USERNAME
+        fromDatabase:
+          name: cgdms-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: cgdms-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true  # Render will generate a secure random value
+      - key: JWT_EXPIRATION
+        value: "86400000"  # 24 hours
+      - key: JWT_REFRESH_EXPIRATION
+        value: "604800000"  # 7 days
+      - key: FRONTEND_URL
+        value: "https://cgdms-app.onrender.com"  # Update with your actual domain
+      - key: MAIL_HOST
+        value: "smtp.gmail.com"  # Update with your mail provider
+      - key: MAIL_PORT
+        value: "587"
+      - key: MAIL_USERNAME
+        value: ""  # Add your email username
+      - key: MAIL_PASSWORD
+        value: ""  # Add your email password or app password
+    buildCommand: ""  # Docker builds automatically
+    startCommand: ""  # Uses Dockerfile ENTRYPOINT
+    healthCheckPath: "/api/v1/actuator/health"
+    numInstances: 1
+
+databases:
+  - name: cgdms-db
+    databaseName: cgdms
+    user: cgdms_user
+    plan: starter  # Change to 'standard' or 'pro' for production
