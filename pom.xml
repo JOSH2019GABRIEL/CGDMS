@@ -137,8 +137,8 @@
 				<version>1.15.0</version>
 				<configuration>
 					<workingDirectory>src/main/webapp</workingDirectory>
-					<nodeVersion>v18.17.0</nodeVersion>
-					<npmVersion>9.6.7</npmVersion>
+					<nodeVersion>v20.11.1</nodeVersion>
+					<npmVersion>10.2.4</npmVersion>
 				</configuration>
 				<executions>
 					<!-- Install Node and npm -->

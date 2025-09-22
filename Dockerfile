@@ -2,13 +2,16 @@
 FROM maven:3.8.4-openjdk-17 AS backend-builder
 WORKDIR /app
 
+# Set Maven options for better memory management
+ENV MAVEN_OPTS="-Xmx2048m -XX:MaxMetaspaceSize=512m"
+
 # Copy pom.xml and download dependencies first (for caching)
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
-# Copy source and build
+# Copy source and build with increased memory
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true
 
 # Runtime image optimized for Render
 FROM openjdk:17-jdk-alpine
