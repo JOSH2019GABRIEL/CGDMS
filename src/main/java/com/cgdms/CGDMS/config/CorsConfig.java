@@ -14,8 +14,15 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:3000")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                        .allowedOriginPatterns(
+                                "http://localhost:3000",
+                                "http://localhost:9191",
+                                "https://*.ngrok.io",           // Allow ngrok tunnels
+                                "https://*.ngrok-free.app",     // New ngrok free domain
+                                "https://*.onrender.com",       // Your Render deployment
+                                "*"                             // Temporary - remove in production
+                        )
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }

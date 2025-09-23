@@ -39,9 +39,33 @@ public class SecurityConfig {
                 .cors(withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req->
-                        req.requestMatchers("/**").permitAll()
-                                .anyRequest()
-                                .authenticated()
+                                req.requestMatchers(
+                                                "/api/v1/**",
+                                                "/api/v1/index.html",
+                                                "/api/v1/static/**",
+                                                "/api/v1/favicon.ico",
+                                                "/",                        // Root path
+                                                "/index.html",              // Frontend entry point
+                                                "/static/**",               // Static assets
+                                                "/favicon.ico",             // Favicon
+                                                "/api/v1/**",               // All API endpoints
+
+                                                "/auth/**",
+//                                        "/staff/register",
+                                                "/staff/activate-account",
+                                                "/v2/api-docs",
+                                                "/v3/api-docs",
+                                                "/v3/api-docs/**",
+                                                "/swagger-resources",
+                                                "/swagger-resources/**",
+                                                "/configuration/ui",
+                                                "/configuration/security",
+                                                "/swagger-ui/**",
+                                                "/webjars/**",
+                                                "/swagger-ui.html"
+                                        ).permitAll()
+                                        .anyRequest()
+                                        .authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
@@ -52,7 +76,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:9191"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:3000", "http://localhost:9191", "https://*.ngrok-free.app"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
