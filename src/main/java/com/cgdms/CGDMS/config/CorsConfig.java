@@ -16,7 +16,7 @@ public class CorsConfig {
                 registry.addMapping("/**")
                         .allowedOriginPatterns(
                                 "http://localhost:3000",
-                                "http://localhost:9191",
+                                "http://localhost:9090",
                                 "https://*.ngrok.io",           // Allow ngrok tunnels
                                 "https://*.ngrok-free.app",     // New ngrok free domain
                                 "https://*.onrender.com",       // Your Render deployment

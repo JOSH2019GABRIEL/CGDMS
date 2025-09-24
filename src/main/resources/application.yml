@@ -1,11 +1,13 @@
 #spring.application.name=CGDMS
 server:
-  port: 9191
+  port: 9090
   servlet:
     context-path: /api/v1
 
 spring:
-#  profiles:
+  application:
+    name: CGDMS
+  #  profiles:
 #    active: prod   # ✅ Correct placement
   web:
     resources:

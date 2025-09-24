@@ -9,6 +9,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -35,10 +36,14 @@ public class AuthenticationService {
         var claims = new HashMap<String, Object>();
         var user = ((User)auth.getPrincipal());
         claims.put("fullName", user.fullName());
-        claims.put("role", user.getRoles().stream().map(Role::getName).toList());
+        claims.put("farm", user.getFarm() != null ? user.getFarm().getFarmName() : "No Farm");
+        claims.put("role", user.getRoles() != null ?
+                user.getRoles().stream().map(Role::getName).toList() :
+                Collections.emptyList());
         var jwtToken = jwtService.generateToken(claims, user);
         return AuthenticationResponse.builder()
                 .token(jwtToken)
+                .farmName(user.getFarm() != null ? user.getFarm().getFarmName() : "No Farm")
                 .roles(user.getRoles().stream()
                         .map(Role::getName)
                         .toList())
@@ -46,8 +51,6 @@ public class AuthenticationService {
 
 
     }
-
-
 
     public List<User> fetchUsers() {
         return userRepository.findAll();
