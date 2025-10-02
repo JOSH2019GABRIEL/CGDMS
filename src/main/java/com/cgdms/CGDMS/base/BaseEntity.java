@@ -1,5 +1,6 @@
 package com.cgdms.CGDMS.base;
 
+import com.cgdms.CGDMS.farm.Farm;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,4 +41,13 @@ public class BaseEntity {
     @Column(insertable = false)
     private Integer lastModifiedBy;
     private Integer archived = 0;
+
+    @CreatedBy
+    @Column(nullable = false)
+    private Integer operatorId;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "farm_id", nullable = false)
+    private Farm farm;
+
 }
