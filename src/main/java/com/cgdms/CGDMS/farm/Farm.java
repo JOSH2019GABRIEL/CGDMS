@@ -3,9 +3,8 @@ package com.cgdms.CGDMS.farm;
 
 import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.organization.Organization;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,5 +24,15 @@ public class Farm extends BaseEntity {
     @ManyToOne
     @JoinColumn(name = "organization_id")
     private Organization organization;
+
+
+//    @PrePersist
+//    @PreUpdate
+//    public void setFarm(BaseEntity entity) {
+//        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+//        if (auth != null && auth.isAuthenticated() && auth.getPrincipal() instanceof User user) {
+//            entity.setFarm(user.getFarm()); // ✅ Assign logged-in user's farm
+//        }
+//    }
 }
 

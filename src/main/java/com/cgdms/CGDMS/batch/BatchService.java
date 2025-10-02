@@ -72,8 +72,6 @@ public class BatchService {
 
             pond.setAvailableFingerlin(newAvailable);
             pondRepository.save(pond);
-
-//            batch.setPond(pond);
         }
 
         batchRepository.save(batch);
@@ -84,13 +82,10 @@ public class BatchService {
 
     public PageResponse<BatchResponse> findAllBatch(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-
         Page<Batch> batches = batchRepository.findAllNotArchived(pageable); // or findAllUsers if you need custom filtering
-
         List<BatchResponse> batchResponses = batches.stream()
                 .map(batchMapper::toBatchResponse)
                 .toList();
-
         return new PageResponse<>(
                 batchResponses,
                 batches.getNumber(),
