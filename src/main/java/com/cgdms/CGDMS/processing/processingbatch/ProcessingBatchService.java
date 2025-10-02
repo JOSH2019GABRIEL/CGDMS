@@ -32,7 +32,7 @@ public class ProcessingBatchService {
 
         if (request.getHarvestEventId() != null) {
             harvestEvent = harvestEventRepository.findById(request.getHarvestEventId())
-                    .orElseThrow(() -> new EntityNotFoundException("Harvest Event not found with id: " + request.getProcessId()));
+                    .orElseThrow(() -> new EntityNotFoundException("Harvest Event not found with id: " + request.getHarvestEventId()));
         }
 
         if (request.getId() != null) {

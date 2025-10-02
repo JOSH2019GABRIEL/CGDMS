@@ -31,8 +31,8 @@ public class CutupYieldService {
         ProcessingBatch batch = null;
 
         if (request.getProcessingBatchId() != null) {
-            batch = processingBatchRepository.findById(request.getProcessId())
-                    .orElseThrow(() -> new EntityNotFoundException("ProcessingBatch not found with id: " + request.getProcessId()));
+            batch = processingBatchRepository.findById(request.getProcessingBatchId())
+                    .orElseThrow(() -> new EntityNotFoundException("ProcessingBatch not found with id: " + request.getProcessingBatchId()));
         }
 
         if (request.getId() != null) {
