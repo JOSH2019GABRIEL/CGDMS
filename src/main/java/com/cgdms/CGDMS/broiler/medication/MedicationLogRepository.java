@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.broiler.medication;
 
-import com.cgdms.CGDMS.broiler.vaccination.VaccinationLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
