@@ -15,10 +15,9 @@ public class DailyBroilerLogRequest {
     private Long flockId;
     private String feedType;
     private Double feedQtyKg;
-    private Boolean waterCheck;
+    private String waterCheck;
     private Double temp;
     private Integer mortalityCount;
     private String notes;
-    private Integer staffId;
 }
 

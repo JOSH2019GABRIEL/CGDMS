@@ -31,6 +31,7 @@ public class PondService {
             pond.setCapacity(pondRequest.getCapacity());
             pond.setLocation(pondRequest.getLocation());
             pond.setStatus(pondRequest.getStatus());
+//            pond.setFarm();
 
         } else {
             pond = pondMapperService.toPond(pondRequest);
@@ -49,6 +50,8 @@ public class PondService {
         List<PondResponse> pondResponses = ponds.stream()
                 .map(pondMapperService::toPondResponse)
                 .toList();
+
+        System.out.println("Here ooooooooo");
 
         return new PageResponse<>(
                 pondResponses,

@@ -1,6 +1,8 @@
 package com.cgdms.CGDMS.broiler.flock;
 
+import com.cgdms.CGDMS.farm.Farm;
 import org.springframework.stereotype.Service;
+
 
 @Service
 public class FlockMapperService {
@@ -8,7 +10,7 @@ public class FlockMapperService {
     public Flock toEntity(FlockRequest request) {
         if (request == null) return null;
 
-        return Flock.builder()
+        Flock flock = Flock.builder()
                 .source(request.getSource())
                 .hatchDate(request.getHatchDate())
                 .stockingCount(request.getStockingCount())
@@ -17,6 +19,9 @@ public class FlockMapperService {
                 .targetWeight(request.getTargetWeight())
                 .vaccineProfile(request.getVaccineProfile())
                 .build();
+
+
+        return flock;
     }
 
     public FlockResponse toResponse(Flock flock) {
@@ -24,7 +29,6 @@ public class FlockMapperService {
 
         return FlockResponse.builder()
                 .id(flock.getId())
-//                .houseId(flock.getHouse() != null ? flock.getHouse().getId() : null)
                 .source(flock.getSource())
                 .hatchDate(flock.getHatchDate())
                 .stockingCount(flock.getStockingCount())
@@ -32,6 +36,9 @@ public class FlockMapperService {
                 .expectedCycleDays(flock.getExpectedCycleDays())
                 .targetWeight(flock.getTargetWeight())
                 .vaccineProfile(flock.getVaccineProfile())
+                // Prevent recursion: only map simple farm fields, not full entity
+                .farmId(flock.getFarm() != null ? flock.getFarm().getId() : null)
+                .farmName(flock.getFarm() != null ? flock.getFarm().getFarmName() : null)
                 .build();
     }
 }

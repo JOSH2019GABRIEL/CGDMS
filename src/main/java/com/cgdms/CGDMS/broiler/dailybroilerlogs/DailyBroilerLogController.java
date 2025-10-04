@@ -31,7 +31,7 @@ public class DailyBroilerLogController {
     }
 
     //    @PreAuthorize("hasAnyRole('ADMIN','USER')")
-    @GetMapping("/{flock-id}")
+    @GetMapping("/{log-id}")
     public ResponseEntity<DailyBroilerLogResponse> getLog(@PathVariable("log-id") Long logId) {
         return ResponseEntity.ok(dailyBroilerLogService.findById(logId));
     }

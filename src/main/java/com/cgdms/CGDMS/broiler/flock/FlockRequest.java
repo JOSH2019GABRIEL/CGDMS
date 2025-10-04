@@ -19,4 +19,5 @@ public class FlockRequest {
     private Integer expectedCycleDays;
     private Double targetWeight;
     private String vaccineProfile;
+    private Long farmId;
 }

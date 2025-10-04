@@ -1,4 +1,4 @@
-import "../../style/new.scss"; 
+import "../../../style/new.scss";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import { useState, useEffect } from "react";

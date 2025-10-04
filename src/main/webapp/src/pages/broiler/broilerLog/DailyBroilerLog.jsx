@@ -1,4 +1,4 @@
-import "../../style/organization.scss";
+import "../../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
@@ -17,7 +17,7 @@ const DailyBroilerLog = () => {
     async (page, pageSize) => {
       try {
         const response = await axios.get(
-          `${baseUrl}dailyBroilerLog?page=${page}&size=${pageSize}`,
+          `${baseUrl}daily-flock-log?page=${page}&size=${pageSize}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -45,7 +45,7 @@ const DailyBroilerLog = () => {
   const handleDelete = async (id) => {
     try {
       await axios.put(
-        `${baseUrl}dailyBroilerLog/archive/${id}`,
+        `${baseUrl}daily-flock-log/archive/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -61,14 +61,12 @@ const DailyBroilerLog = () => {
   // DataGrid columns
   const columns = [
     { field: "date", headerName: "Date", width: 150 },
-    { field: "flockId", headerName: "Flock ID", width: 150 },
+    { field: "fullFlock", headerName: "Flock Tracker", width: 150 },
     { field: "feedType", headerName: "Feed Type", width: 150 },
     { field: "feedQtyKg", headerName: "Feed Qty (kg)", width: 150 },
     { field: "waterCheck", headerName: "Water Check", width: 180 },
     { field: "temp", headerName: "Temperature (°C)", width: 180 },
     { field: "mortalityCount", headerName: "Mortality Count", width: 180 },
-    { field: "notes", headerName: "Notes", width: 250 },
-    { field: "staffId", headerName: "Staff ID", width: 150 },
 
     {
       field: "action",
@@ -77,7 +75,7 @@ const DailyBroilerLog = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/daily-broiler-log/${params.row.id}`}
+            to={`/dashboard/broiler-log/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
@@ -97,7 +95,7 @@ const DailyBroilerLog = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Daily Broiler Logs
-        <Link to="/dashboard/daily-broiler-log/new" className="link">
+        <Link to="/dashboard/broiler-log/new" className="link">
           Add New
         </Link>
       </div>

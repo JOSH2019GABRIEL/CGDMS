@@ -42,6 +42,7 @@ public class DailyBroilerLogService {
             log.setTemp(request.getTemp());
             log.setMortalityCount(request.getMortalityCount());
             log.setNotes(request.getNotes());
+            log.setArchived(0);
 
             if (request.getFlockId() != null) {
                 Flock flock = flockRepository.findById(request.getFlockId())
@@ -49,11 +50,11 @@ public class DailyBroilerLogService {
                 log.setFlock(flock);
             }
 
-            if (request.getStaffId() != null) {
-                User staff = userRepository.findById(request.getStaffId())
-                        .orElseThrow(() -> new EntityNotFoundException("Staff not found with id: " + request.getStaffId()));
-                log.setStaff(staff);
-            }
+//            if (request.getStaffId() != null) {
+//                User staff = userRepository.findById(request.getStaffId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Staff not found with id: " + request.getStaffId()));
+//                log.setStaff(staff);
+//            }
 
         } else {
             // create new log
@@ -64,12 +65,13 @@ public class DailyBroilerLogService {
                         .orElseThrow(() -> new EntityNotFoundException("Flock not found with id: " + request.getFlockId()));
                 log.setFlock(flock);
             }
+            log.setArchived(0);
 
-            if (request.getStaffId() != null) {
-                User staff = userRepository.findById(request.getStaffId())
-                        .orElseThrow(() -> new EntityNotFoundException("Staff not found with id: " + request.getStaffId()));
-                log.setStaff(staff);
-            }
+//            if (request.getStaffId() != null) {
+//                User staff = userRepository.findById(request.getStaffId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Staff not found with id: " + request.getStaffId()));
+//                log.setStaff(staff);
+//            }
         }
 
         logRepository.save(log);

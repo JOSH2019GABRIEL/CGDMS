@@ -1,4 +1,4 @@
-import "../../style/new.scss"; 
+import "../../../style/new.scss";
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import { useState, useEffect } from "react";
@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddDailyBroilerLog = () => {
   const { id } = useParams();
   const [log, setLog] = useState({
+    id: "",
     date: "",
     flockId: "",
     feedType: "",
@@ -19,7 +20,7 @@ const AddDailyBroilerLog = () => {
     temp: "",
     mortalityCount: "",
     notes: "",
-    staffId: "",
+    // staffId: "",
   });
 
   const [flocks, setFlocks] = useState([]);
@@ -61,21 +62,24 @@ const AddDailyBroilerLog = () => {
 
   // Fetch log if editing
   useEffect(() => {
-    if (id) {
-      const fetchLog = async () => {
-        try {
-          const response = await axios.get(`${baseUrl}dailyBroilerLog/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setLog(response.data); // prefill form
-        } catch (error) {
-          console.error("Error fetching log:", error);
-          toast.error("Could not load log details.");
-        }
-      };
-      fetchLog();
-    }
-  }, [id, token]);
+  if (id) {
+    const fetchLog = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}daily-flock-log/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        console.log("Fetched log data:", response.data);
+
+        const logData = response.data.data || response.data;
+        setLog(logData);
+      } catch (error) {
+        console.error("Error fetching log:", error);
+        toast.error("Could not load log details.");
+      }
+    };
+    fetchLog();
+  }
+}, [id, token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -89,18 +93,15 @@ const AddDailyBroilerLog = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}dailyBroilerLog/${id}`, log, {
+      
+        await axios.post(`${baseUrl}daily-flock-log`, log, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}dailyBroilerLog`, log, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
 
-      toast.success(id ? "Log updated successfully!" : "Log created successfully!");
-      navigate("/dashboard/daily-logs");
+      toast.success(
+        id ? "Log updated successfully!" : "Log created successfully!"
+      );
+      navigate("/dashboard/broiler-log");
     } catch (error) {
       console.error("Error saving log:", error);
       toast.error(error.response?.data?.message || "Error saving log.");
@@ -118,7 +119,6 @@ const AddDailyBroilerLog = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-
               <div className="formInput">
                 <label>Date:</label>
                 <input
@@ -140,8 +140,8 @@ const AddDailyBroilerLog = () => {
                 >
                   <option value="">-- Select Flock --</option>
                   {flocks.map((flock) => (
-                    <option key={flock.flock_id} value={flock.flock_id}>
-                      {flock.flock_id} - {flock.source}
+                    <option key={flock.id} value={flock.id}>
+                      {flock.id} - {flock.source}
                     </option>
                   ))}
                 </select>
@@ -149,14 +149,21 @@ const AddDailyBroilerLog = () => {
 
               <div className="formInput">
                 <label>Feed Type:</label>
-                <input
-                  type="text"
+                <select
                   name="feedType"
                   value={log.feedType || ""}
                   onChange={handleChange}
-                  placeholder="e.g. Starter, Grower"
                   required
-                />
+                >
+                  <option value="">-- Select Feed Type --</option>
+                  <option value="Starter">Starter</option>
+                  <option value="Grower">Grower</option>
+                  <option value="Finisher">Finisher</option>
+                  <option value="Layer Mash">Layer Mash</option>
+                  <option value="Broiler Concentrate">
+                    Broiler Concentrate
+                  </option>
+                </select>
               </div>
 
               <div className="formInput">
@@ -173,14 +180,17 @@ const AddDailyBroilerLog = () => {
 
               <div className="formInput">
                 <label>Water Check:</label>
-                <input
-                  type="text"
+                <select
                   name="waterCheck"
                   value={log.waterCheck || ""}
                   onChange={handleChange}
-                  placeholder="OK / Needs refill / Issue"
                   required
-                />
+                >
+                  <option value="">-- Select Water Status --</option>
+                  <option value="OK">OK</option>
+                  <option value="Needs Refill">Needs Refill</option>
+                  <option value="Issue">Issue</option>
+                </select>
               </div>
 
               <div className="formInput">
@@ -217,7 +227,7 @@ const AddDailyBroilerLog = () => {
                 />
               </div>
 
-              <div className="formInput">
+              {/* <div className="formInput">
                 <label>Staff:</label>
                 <select
                   name="staffId"
@@ -232,7 +242,7 @@ const AddDailyBroilerLog = () => {
                     </option>
                   ))}
                 </select>
-              </div>
+              </div> */}
 
               <button type="submit">{id ? "Update" : "Save"}</button>
             </form>

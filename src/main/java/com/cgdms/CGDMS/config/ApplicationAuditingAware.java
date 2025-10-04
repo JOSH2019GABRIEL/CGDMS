@@ -1,5 +1,6 @@
 package com.cgdms.CGDMS.config;
 
+import com.cgdms.CGDMS.farm.Farm;
 import com.cgdms.CGDMS.user.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;

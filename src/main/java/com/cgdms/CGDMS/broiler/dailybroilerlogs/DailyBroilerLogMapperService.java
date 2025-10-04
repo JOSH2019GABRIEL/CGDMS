@@ -17,7 +17,6 @@ public class DailyBroilerLogMapperService {
                 .mortalityCount(request.getMortalityCount())
                 .notes(request.getNotes())
                 .build();
-        // flockId & staffId should be resolved in Service
     }
 
     public DailyBroilerLogResponse toResponse(DailyBroilerLog log) {
@@ -27,13 +26,14 @@ public class DailyBroilerLogMapperService {
                 .id(log.getId())
                 .date(log.getDate())
                 .flockId(log.getFlock() != null ? log.getFlock().getId() : null)
+                .flockSource(log.getFlock() != null ? log.getFlock().getSource() : null)
+                .fullFlock((log.getFlock() != null ? log.getFlock().getId() : "") + " " + (log.getFlock() != null ? log.getFlock().getSource() : ""))
                 .feedType(log.getFeedType())
                 .feedQtyKg(log.getFeedQtyKg())
                 .waterCheck(log.getWaterCheck())
                 .temp(log.getTemp())
                 .mortalityCount(log.getMortalityCount())
                 .notes(log.getNotes())
-//                .staffId(log.getStaff() != null ? log.getStaff().getId() : null)
                 .build();
     }
 }

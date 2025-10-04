@@ -8,11 +8,17 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface FlockRepository extends JpaRepository<Flock, Long> {
 
-    @Query(value = """
-                SELECT flock 
-                FROM Flock flock
-                WHERE flock.archived = 0
-                """)
+//    @Query(value = """
+//                SELECT flock
+//                FROM Flock flock
+//                WHERE flock.archived = 0
+//                """)
+//    Page<Flock> findAllNotArchived(Pageable pageable);
+
+    @Query("SELECT f FROM Flock f LEFT JOIN FETCH f.farm WHERE f.archived = 0")
     Page<Flock> findAllNotArchived(Pageable pageable);
+
+//    @Query("SELECT f FROM Flock f JOIN FETCH f.farm WHERE f.archived = 0")
+//    Page<Flock> findAllNotArchived(Pageable pageable);
 
 }
