@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.processing.byproduct;
 
-import com.cgdms.CGDMS.broiler.medication.MedicationLog;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

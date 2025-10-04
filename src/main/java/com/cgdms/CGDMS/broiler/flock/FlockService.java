@@ -7,6 +7,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 
 @Service
@@ -37,47 +39,67 @@ public class FlockService {
             flock.setExpectedCycleDays(flockRequest.getExpectedCycleDays());
             flock.setTargetWeight(flockRequest.getTargetWeight());
             flock.setVaccineProfile(flockRequest.getVaccineProfile());
+            flock.setArchived(0);
 
-            if (flockRequest.getHouseId() != null) {
-                Farm house = farmRepository.findById(flockRequest.getHouseId())
-                        .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + flockRequest.getHouseId()));
-                flock.setHouseId(String.valueOf(house));
-            }
 
         } else {
             // create new
             flock = mapper.toEntity(flockRequest);
 
-            if (flockRequest.getHouseId() != null) {
-                Farm house = farmRepository.findById(flockRequest.getHouseId())
-                        .orElseThrow(() -> new EntityNotFoundException("House not found with id: " + flockRequest.getHouseId()));
-                flock.setHouseId(String.valueOf(house));
-            }
         }
 
+        flock.setArchived(0);
         flockRepository.save(flock);
         return flockRequest;
     }
 
+
+    @Transactional(readOnly = true)
     public PageResponse<FlockResponse> findAllFlocks(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-
         Page<Flock> flocks = flockRepository.findAllNotArchived(pageable);
 
         List<FlockResponse> responses = flocks.stream()
                 .map(mapper::toResponse)
                 .toList();
 
+        System.out.println("responses: " + responses);
         return new PageResponse<>(
                 responses,
                 flocks.getNumber(),
-                flocks.getSize(),
+                flocks.getNumberOfElements(),
                 flocks.getTotalElements(),
                 flocks.getTotalPages(),
                 flocks.isFirst(),
                 flocks.isLast()
+
+
         );
     }
+
+
+//    @Transactional(readOnly = true)
+//    public PageResponse<FlockResponse> findAllFlocks(int page, int size) {
+//        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+//
+//        Page<Flock> flocks = flockRepository.findAllNotArchived(pageable);
+//
+//        List<FlockResponse> responses = flocks.stream()
+//                .map(mapper::toResponse)
+//                .toList();
+//
+//        System.out.println("flocks count: " + flocks.getSize());
+//
+//        return new PageResponse<>(
+//                responses,
+//                flocks.getNumber(),
+//                flocks.getSize(),
+//                flocks.getTotalElements(),
+//                flocks.getTotalPages(),
+//                flocks.isFirst(),
+//                flocks.isLast()
+//        );
+//    }
 
     public FlockResponse findById(Long flockId) {
         return flockRepository.findById(flockId)

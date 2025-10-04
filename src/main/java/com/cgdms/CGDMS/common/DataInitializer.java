@@ -29,24 +29,6 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // ✅ Create default roles if not exist
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_ADMIN")
-                        .createdBy(0)
-                        .createdDate(LocalDateTime.now())
-                        .lastModifiedBy(0)
-                        .lastModifiedDate(LocalDateTime.now())
-                        .archived(0)
-                        .build()));
-
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_USER")
-                                .createdBy(0)
-                                .createdDate(LocalDateTime.now())
-                                .lastModifiedBy(0)
-                                .lastModifiedDate(LocalDateTime.now())
-                                .archived(0)
-                        .build()));
 
         Farm defaultFarm = farmRepository.findByFarmName("Demo Farm")
                 .orElseGet(() -> farmRepository.save(Farm.builder()
@@ -57,7 +39,31 @@ public class DataInitializer implements CommandLineRunner {
                         .createdDate(LocalDateTime.now())
                         .lastModifiedBy(0)
                         .lastModifiedDate(LocalDateTime.now())
+                        .operatorUserId(1)
                         .archived(0)
+                        .build()));
+
+        // ✅ Create default roles if not exist
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_ADMIN")
+                        .createdBy(0)
+                        .createdDate(LocalDateTime.now())
+                        .lastModifiedBy(0)
+                        .lastModifiedDate(LocalDateTime.now())
+                                .operatorUserId(1)
+                        .farm(defaultFarm)
+                        .archived(0)
+                        .build()));
+
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_USER")
+                                .createdBy(0)
+                                .createdDate(LocalDateTime.now())
+                                .lastModifiedBy(0)
+                                .lastModifiedDate(LocalDateTime.now())
+                                .operatorUserId(1)
+                                .farm(defaultFarm)
+                                .archived(0)
                         .build()));
 
         if (userRepository.findByEmail("admin@system.com").isEmpty()) {
@@ -75,7 +81,7 @@ public class DataInitializer implements CommandLineRunner {
                     .build();
 
             userRepository.save(admin);
-            userService.sendValidationEmail(admin);
+//            userService.sendValidationEmail(admin);
             System.out.println("Default ADMIN user created: admin@system.com / Admin123");
         }
     }

@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class MedicationLogResponse {
+public class BroilerMedicationLogRequest {
     private Long id;
     private LocalDate date;
     private Long flockId;

@@ -1,4 +1,5 @@
-import "../../style/new.scss";
+import "../../../style/new.scss";
+
 import Sidebar from "../../../components/Sidebar/Sidebar";
 import Navbar from "../../../components/Navbar/Navbar";
 import { useState, useEffect } from "react";
@@ -10,9 +11,12 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const AddNewFlock = () => {
   const { id } = useParams();
+  const [farms, setFarms] = useState([]);
   const [newFlock, setNewFlock] = useState({
-    flockId: "",
+    id: "",
     houseId: "",
+    farmId: "",
+    farmName: "",
     source: "",
     hatchDate: "",
     stockingCount: "",
@@ -26,11 +30,27 @@ const AddNewFlock = () => {
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+
+   useEffect(() => {
+    const fetchFarms = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}farms`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFarms(response.data);
+      } catch (error) {
+        console.error("Error fetching farms:", error);
+      }
+    };
+    fetchFarms();
+  }, [id, token]);
+
+  
   // Fetch houses
   useEffect(() => {
     const fetchHouses = async () => {
       try {
-        const response = await axios.get(`${baseUrl}houses`, {
+        const response = await axios.get(`${baseUrl}farm`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setHouses(response.data.content);
@@ -47,7 +67,7 @@ const AddNewFlock = () => {
     if (id) {
       const fetchFlock = async () => {
         try {
-          const response = await axios.get(`${baseUrl}flock/${id}`, {
+          const response = await axios.get(`${baseUrl}flocks/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setNewFlock(response.data); // prefill form
@@ -72,12 +92,12 @@ const AddNewFlock = () => {
     e.preventDefault();
 
     try {
-      await axios.post(`${baseUrl}flock`, newFlock, {
+      await axios.post(`${baseUrl}flocks`, newFlock, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       toast.success(id ? "Flock updated successfully!" : "Flock created successfully!");
-      navigate("/dashboard/flocks");
+      navigate("/dashboard/flock");
     } catch (error) {
       console.error("Error saving flock:", error);
       toast.error(error.response?.data?.message || "Error saving flock.");
@@ -95,30 +115,17 @@ const AddNewFlock = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-              <div className="formInput">
-                <label>Flock ID:</label>
-                <input
-                  type="text"
-                  name="flockId"
-                  value={newFlock.flockId || ""}
-                  onChange={handleChange}
-                  placeholder="Enter flock ID"
-                  required
-                />
-              </div>
-
-              <div className="formInput">
+             <div className="formInput">
                 <label>House:</label>
                 <select
-                  name="houseId"
-                  value={newFlock.houseId}
+                  name="farmId"
+                  value={newFlock.farmId || ""}
                   onChange={handleChange}
-                  required
                 >
-                  <option value="">-- Select House --</option>
-                  {houses.map((house) => (
-                    <option key={house.id} value={house.id}>
-                      {house.name}
+                  <option value="">-- Select Farm --</option>
+                  {farms.map((farm) => (
+                    <option key={farm.id} value={farm.id}>
+                      {farm.farmName}
                     </option>
                   ))}
                 </select>

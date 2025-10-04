@@ -1,6 +1,8 @@
 package com.cgdms.CGDMS.base;
 
+import com.cgdms.CGDMS.config.FarmAwareEntityListener;
 import com.cgdms.CGDMS.farm.Farm;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,7 +23,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @MappedSuperclass
-@EntityListeners(AuditingEntityListener.class)
+@EntityListeners({AuditingEntityListener.class, FarmAwareEntityListener.class})
 public class BaseEntity {
 
     @Id
@@ -44,10 +46,11 @@ public class BaseEntity {
 
     @CreatedBy
     @Column(nullable = false)
-    private Integer operatorId;
+    private Integer operatorUserId;
+
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "farm_id", nullable = false)
+    @JoinColumn(name = "farm_id", nullable = true)
     private Farm farm;
 
 }

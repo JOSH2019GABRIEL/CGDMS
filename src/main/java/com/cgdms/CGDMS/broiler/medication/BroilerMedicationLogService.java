@@ -3,7 +3,6 @@ package com.cgdms.CGDMS.broiler.medication;
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
 import com.cgdms.CGDMS.common.PageResponse;
-import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +12,13 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class MedicationLogService {
+public class BroilerMedicationLogService {
 
     @Autowired
-    private MedicationLogMapperService mapper;
+    private BroilerMedicationLogMapperService mapper;
 
     @Autowired
-    private MedicationLogRepository medicationLogRepository;
+    private BroilerMedicationLogRepository broilerMedicationLogRepository;
 
     @Autowired
     private FlockRepository flockRepository;
@@ -27,12 +26,12 @@ public class MedicationLogService {
     @Autowired
     private UserRepository userRepository;
 
-    public MedicationLogRequest saveMedication(MedicationLogRequest request) {
-        MedicationLog medication;
+    public BroilerMedicationLogRequest saveMedication(BroilerMedicationLogRequest request) {
+        BroilerMedicationLog medication;
 
         if (request.getId() != null) {
             // update existing medication log
-            medication = medicationLogRepository.findById(request.getId())
+            medication = broilerMedicationLogRepository.findById(request.getId())
                     .orElseThrow(() -> new EntityNotFoundException("MedicationLog not found with id: " + request.getId()));
 
             medication.setDate(request.getDate());
@@ -70,16 +69,16 @@ public class MedicationLogService {
 //            }
         }
 
-        medicationLogRepository.save(medication);
+        broilerMedicationLogRepository.save(medication);
         return request;
     }
 
-    public PageResponse<MedicationLogResponse> findAllMedications(int page, int size) {
+    public PageResponse<BroilerMedicationLogResponse> findAllMedications(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<MedicationLog> medications = medicationLogRepository.findAllNotArchived(pageable);
+        Page<BroilerMedicationLog> medications = broilerMedicationLogRepository.findAllNotArchived(pageable);
 
-        List<MedicationLogResponse> responses = medications.stream()
+        List<BroilerMedicationLogResponse> responses = medications.stream()
                 .map(mapper::toResponse)
                 .toList();
 
@@ -94,17 +93,17 @@ public class MedicationLogService {
         );
     }
 
-    public MedicationLogResponse findById(Long medicationId) {
-        return medicationLogRepository.findById(medicationId)
+    public BroilerMedicationLogResponse findById(Long medicationId) {
+        return broilerMedicationLogRepository.findById(medicationId)
                 .map(mapper::toResponse)
                 .orElseThrow(() -> new EntityNotFoundException("MedicationLog not found with id: " + medicationId));
     }
 
     public void deleteMedication(Long medicationId) {
-        MedicationLog medication = medicationLogRepository.findById(medicationId)
+        BroilerMedicationLog medication = broilerMedicationLogRepository.findById(medicationId)
                 .orElseThrow(() -> new EntityNotFoundException("MedicationLog not found with id: " + medicationId));
 
         medication.setArchived(1);
-        medicationLogRepository.save(medication);
+        broilerMedicationLogRepository.save(medication);
     }
 }

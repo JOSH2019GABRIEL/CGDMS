@@ -3,12 +3,12 @@ package com.cgdms.CGDMS.broiler.medication;
 import org.springframework.stereotype.Service;
 
 @Service
-public class MedicationLogMapperService {
+public class BroilerMedicationLogMapperService {
 
-    public MedicationLog toEntity(MedicationLogRequest request) {
+    public BroilerMedicationLog toEntity(BroilerMedicationLogRequest request) {
         if (request == null) return null;
 
-        return MedicationLog.builder()
+        return BroilerMedicationLog.builder()
                 .date(request.getDate())
                 .drug(request.getDrug())
                 .dose(request.getDose())
@@ -18,10 +18,10 @@ public class MedicationLogMapperService {
         // flockId resolved in Service
     }
 
-    public MedicationLogResponse toResponse(MedicationLog m) {
+    public BroilerMedicationLogResponse toResponse(BroilerMedicationLog m) {
         if (m == null) return null;
 
-        return MedicationLogResponse.builder()
+        return BroilerMedicationLogResponse.builder()
                 .id(m.getId())
                 .date(m.getDate())
                 .flockId(m.getFlock() != null ? m.getFlock().getId() : null)

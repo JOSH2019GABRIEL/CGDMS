@@ -1,9 +1,9 @@
 package com.cgdms.CGDMS.broiler.flock;
 
 import com.cgdms.CGDMS.base.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
+import com.cgdms.CGDMS.farm.Farm;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,8 +18,8 @@ import java.time.LocalDate;
 @SuperBuilder
 public class Flock extends BaseEntity {
 
-    @Column(nullable = false)
-    private String houseId;
+//    @Column(nullable = false)
+//    private String houseId;
 
     @Column(nullable = false)
     private String source;
@@ -44,7 +44,12 @@ public class Flock extends BaseEntity {
      * JSON field or string representing vaccination schedule/profile
      * e.g., "Marek's (Day 1), NDV (Day 7), IBD (Day 14)"
      */
-    @Lob
+//    @Lob
     private String vaccineProfile;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "farm_id", nullable = false)
+    @JsonBackReference // 👈 prevents recursion back to Farm
+    private Farm farm;
 
 }

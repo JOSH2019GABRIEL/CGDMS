@@ -1,7 +1,8 @@
-import "../../style/organization.scss";
+import "../../../style/organization.scss";
+
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { url as baseUrl } from "../../../api";
 
@@ -12,30 +13,43 @@ const Flock = () => {
   const [rowCount, setRowCount] = useState(0);
   const token = localStorage.getItem("token");
 
-  const fetchFlocks = useCallback(async (page, pageSize) => {
-    try {
-      const response = await axios.get(
-        `${baseUrl}flocks?page=${page}&size=${pageSize}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+ const fetchFlocks = async (page, pageSize) => {
+  try {
+    const response = await axios.get(
+      `${baseUrl}flocks?page=${page}&size=${pageSize}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      const { content, totalElements } = response.data;
+    const { content, totalElements } = response.data;
+
+    console.log("Fetched flocks:", content);
+
+    // const rows = Array.isArray(content)
+    //   ? content.map((flock, index) => ({
+    //       id: flock.flock_id || index, // ensure unique ID
+    //       ...flock,
+    //     }))
+    //   : [];
 
       const rows = content.map((flock, index) => ({
-        id: flock.flock_id || index, // ensure unique ID
+        id: flock.id || index,
         ...flock,
       }));
+      console.log(content)
 
-      setFlockList(rows);
-      setRowCount(totalElements);
-    } catch (error) {
-      console.error("Error fetching flocks:", error);
-    }
-  }, [token]);
+      
+
+    setFlockList(rows);
+    setRowCount(totalElements);
+  } catch (error) {
+    console.error("Error fetching flocks:", error);
+  }
+};
+
 
   useEffect(() => {
     fetchFlocks(page, pageSize);
-  }, [page, pageSize, fetchFlocks]);
+  }, [page, pageSize]);
 
   const handleDelete = async (id) => {
     try {
@@ -51,15 +65,13 @@ const Flock = () => {
 
   // Define DataGrid columns
   const columns = [
-    { field: "flock_id", headerName: "Flock ID", width: 120 },
-    { field: "house_id", headerName: "House ID", width: 150 },
+    { field: "id", headerName: "Flock ID", width: 120 },
+    { field: "farmName", headerName: "House ID", width: 150 },
     { field: "source", headerName: "Source", width: 150 },
-    { field: "hatch_date", headerName: "Hatch Date", width: 180 },
-    { field: "stocking_count", headerName: "Stocking Count", width: 180 },
-    { field: "sex_ratio", headerName: "Sex Ratio", width: 150 },
-    { field: "expected_cycle_days", headerName: "Cycle Days", width: 150 },
-    { field: "target_weight", headerName: "Target Weight (kg)", width: 180 },
-    { field: "vaccine_profile", headerName: "Vaccine Profile", width: 200 },
+    { field: "hatchDate", headerName: "Hatch Date", width: 180 },
+    { field: "stockingCount", headerName: "Stocking Count", width: 180 },
+    { field: "sexRatio", headerName: "Sex Ratio", width: 150 },
+    { field: "expectedCycleDays", headerName: "Cycle Days", width: 150 },
 
     {
       field: "action",
@@ -68,14 +80,14 @@ const Flock = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/flocks/${params.row.flock_id}`}
+            to={`/dashboard/flock/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"
-            onClick={() => handleDelete(params.row.flock_id)}
+            onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </div>
@@ -88,7 +100,7 @@ const Flock = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Flocks
-        <Link to="/dashboard/flocks/new" className="link">
+        <Link to="/dashboard/flock/new" className="link">
           Add New
         </Link>
       </div>

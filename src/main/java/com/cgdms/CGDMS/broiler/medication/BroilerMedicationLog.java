@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @SuperBuilder
-public class MedicationLog extends BaseEntity {
+public class BroilerMedicationLog extends BaseEntity {
 
     @Column(nullable = false)
     private LocalDate date;

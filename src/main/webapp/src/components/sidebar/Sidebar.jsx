@@ -1,10 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Link, useLocation } from "react-router-dom";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddTaskIcon from "@mui/icons-material/AddTask";
@@ -76,8 +72,18 @@ const Sidebar = () => {
               "&:before": { display: "none" },
             }}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon className="icon" />}>
-              <span >CAT-FISH MANAGEMENT</span>
+            <AccordionSummary expandIcon={<ExpandMoreIcon className="icon" />}
+            sx={{
+      display: "flex",
+      justifyContent: "flex-start",   // keep text + arrow aligned to the left
+      alignItems: "center",           // vertical centering
+      gap: 1,                         // small spacing between text and arrow
+      "& .MuiAccordionSummary-content": {
+        margin: 0,                    // remove default margin
+      },
+    }}
+            >
+              <span className="title">CAT-FISH MANAGEMENT</span>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
               <Link to="/dashboard/pond" style={{ textDecoration: "none" }}>
@@ -92,7 +98,10 @@ const Sidebar = () => {
                   <span>Batch</span>
                 </li>
               </Link>
-              <Link to="/dashboard/batch-movement" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/batch-movement"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <TimelineIcon className="icon" />
                   <span>Batch Movement</span>
@@ -104,19 +113,28 @@ const Sidebar = () => {
                   <span>Feed Logs</span>
                 </li>
               </Link>
-              <Link to="/dashboard/medication-logs" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/medication-logs"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <MediationIcon className="icon" />
                   <span>Medication Logs</span>
                 </li>
               </Link>
-              <Link to="/dashboard/environment-logs" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/environment-logs"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <SensorsIcon className="icon" />
                   <span>Environment Logs</span>
                 </li>
               </Link>
-              <Link to="/dashboard/fish-performances" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/fish-performances"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <PersonOutlineIcon className="icon" />
                   <span>Fish Performance</span>
@@ -137,56 +155,67 @@ const Sidebar = () => {
               "&:before": { display: "none" },
             }}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon className="icon" />}>
+            <AccordionSummary expandIcon={<ExpandMoreIcon className="submenu" />}>
               <p className="title">BROILER MANAGEMENT</p>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
-              <Link to="/dashboard/pond" style={{ textDecoration: "none" }}>
+              <Link to="/dashboard/flock" style={{ textDecoration: "none" }}>
                 <li>
                   <StoreIcon className="icon" />
-                  <span>Pond</span>
+                  <span>Flock</span>
                 </li>
               </Link>
-              <Link to="/dashboard/batches" style={{ textDecoration: "none" }}>
+              <Link to="/dashboard/broiler-log" style={{ textDecoration: "none" }}>
                 <li>
                   <WorkspacesIcon className="icon" />
-                  <span>Batch</span>
+                  <span>Daily Broiler Log</span>
                 </li>
               </Link>
-              <Link to="/dashboard/batch-movement" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/batch-movement"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <TimelineIcon className="icon" />
-                  <span>Batch Movement</span>
+                  <span>Weight Sample</span>
                 </li>
               </Link>
               <Link to="/dashboard/feed-log" style={{ textDecoration: "none" }}>
                 <li>
                   <PsychologyOutlinedIcon className="icon" />
-                  <span>Feed Logs</span>
+                  <span>Vaccination Logs</span>
                 </li>
               </Link>
-              <Link to="/dashboard/medication-logs" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/medication-logs"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <MediationIcon className="icon" />
                   <span>Medication Logs</span>
                 </li>
               </Link>
-              <Link to="/dashboard/environment-logs" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/environment-logs"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <SensorsIcon className="icon" />
-                  <span>Environment Logs</span>
+                  <span>Thinning Event</span>
                 </li>
               </Link>
-              <Link to="/dashboard/fish-performances" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/fish-performances"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <PersonOutlineIcon className="icon" />
-                  <span>Fish Performance</span>
+                  <span>Harvest Event</span>
                 </li>
               </Link>
             </AccordionDetails>
           </Accordion>
 
-          {/* Other static links below */}
           <p className="title">USEFUL</p>
           <li>
             <InsertChartIcon className="icon" />
@@ -196,9 +225,61 @@ const Sidebar = () => {
             <NotificationsNoneIcon className="icon" />
             <span>Notifications</span>
           </li>
+          <p className="title">SERVICE</p>
+          <li>
+            <SettingsSystemDaydreamOutlinedIcon className="icon" />
+            <span>System Health</span>
+          </li>
+          <li>
+            <PsychologyOutlinedIcon className="icon" />
+            <span>Logs</span>
+          </li>
+
+          <ul>
+            <li
+              onClick={() => setOpenSettings(!openSettings)}
+              className="menu-item"
+            >
+              <SettingsApplicationsIcon className="icon" />
+              <span>Settings</span>
+              {openSettings ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
+            </li>
+
+            {openSettings && (
+              <ul className="submenu">
+                <Link
+                  to="/dashboard/organizations"
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <InventoryIcon className="icon" />
+                    <span>Organization</span>
+                  </li>
+                </Link>
+                <Link to="/dashboard/farms" style={{ textDecoration: "none" }}>
+                  <li>
+                    <AgricultureIcon className="icon" />
+                    <span>Farm</span>
+                  </li>
+                </Link>
+              </ul>
+            )}
+          </ul>
+          <Link to="/dashboard/staff-user" style={{ textDecoration: "none" }}>
+            <p className="title">USER</p>
+            <li>
+              <AccountCircleOutlinedIcon className="icon" />
+              <span>Profile</span>
+            </li>
+          </Link>
+          <Link to="/dashboard/logout" style={{ textDecoration: "none" }}>
+            <li>
+              <ExitToAppIcon className="icon" />
+              <span>Logout</span>
+            </li>
+          </Link>
         </ul>
       </div>
-
       <div className="bottom">
         <div
           className="colorOption"
