@@ -2,6 +2,7 @@ package com.cgdms.CGDMS.user;
 
 
 import com.cgdms.CGDMS.base.BaseEntity;
+import com.cgdms.CGDMS.cadre.Cadre;
 import com.cgdms.CGDMS.farm.Farm;
 import com.cgdms.CGDMS.role.Role;
 import jakarta.persistence.*;
@@ -39,7 +40,6 @@ public class User implements UserDetails, Principal {
     private Integer id;
     private String firstname;
     private String lastname;
-    private String cadre; // Technician, Supervisor, Manager
     private String phone;
     private LocalDate dateOfBirth;
     @Column(unique = true)
@@ -63,6 +63,9 @@ public class User implements UserDetails, Principal {
     @Column(insertable = false)
     private LocalDateTime lastModifiedDate;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cadre_id")
+    private Cadre cadre;
 
 
     @Override

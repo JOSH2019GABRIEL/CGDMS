@@ -15,6 +15,7 @@ public class UserResponse {
     private Integer id;
     private String firstname;
     private String lastname;
+    private Long cadreId;
     private String cadre; // Technician, Supervisor, Manager
     private String phone;
     private LocalDate dateOfBirth;

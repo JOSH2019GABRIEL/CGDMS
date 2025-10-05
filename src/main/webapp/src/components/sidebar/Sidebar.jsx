@@ -172,7 +172,7 @@ const Sidebar = () => {
                 </li>
               </Link>
               <Link
-                to="/dashboard/batch-movement"
+                to="/dashboard/weight-sample"
                 style={{ textDecoration: "none" }}
               >
                 <li>
@@ -180,14 +180,14 @@ const Sidebar = () => {
                   <span>Weight Sample</span>
                 </li>
               </Link>
-              <Link to="/dashboard/feed-log" style={{ textDecoration: "none" }}>
+              <Link to="/dashboard/broiler-vaccination-log" style={{ textDecoration: "none" }}>
                 <li>
                   <PsychologyOutlinedIcon className="icon" />
                   <span>Vaccination Logs</span>
                 </li>
               </Link>
               <Link
-                to="/dashboard/medication-logs"
+                to="/dashboard/broiler-medication-log"
                 style={{ textDecoration: "none" }}
               >
                 <li>
@@ -196,7 +196,7 @@ const Sidebar = () => {
                 </li>
               </Link>
               <Link
-                to="/dashboard/environment-logs"
+                to="/dashboard/thinning-event"
                 style={{ textDecoration: "none" }}
               >
                 <li>
@@ -205,7 +205,7 @@ const Sidebar = () => {
                 </li>
               </Link>
               <Link
-                to="/dashboard/fish-performances"
+                to="/dashboard/harvest-event"
                 style={{ textDecoration: "none" }}
               >
                 <li>
@@ -262,6 +262,12 @@ const Sidebar = () => {
                     <span>Farm</span>
                   </li>
                 </Link>
+                <Link to="/dashboard/cadre" style={{ textDecoration: "none" }}>
+                  <li>
+                    <AgricultureIcon className="icon" />
+                    <span>Cadre</span>
+                  </li>
+                </Link>
               </ul>
             )}
           </ul>
@@ -269,7 +275,7 @@ const Sidebar = () => {
             <p className="title">USER</p>
             <li>
               <AccountCircleOutlinedIcon className="icon" />
-              <span>Profile</span>
+              <span>Admin Panel</span>
             </li>
           </Link>
           <Link to="/dashboard/logout" style={{ textDecoration: "none" }}>

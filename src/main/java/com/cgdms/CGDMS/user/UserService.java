@@ -1,5 +1,7 @@
 package com.cgdms.CGDMS.user;
 
+import com.cgdms.CGDMS.cadre.Cadre;
+import com.cgdms.CGDMS.cadre.CadreRepository;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.email.EmailService;
 import com.cgdms.CGDMS.email.EmailTemplateName;
@@ -32,6 +34,8 @@ public class UserService {
     @Autowired
     private RoleRepository roleRepository;
     @Autowired
+    private CadreRepository cadreRepository;
+    @Autowired
     private FarmRepository farmRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -60,10 +64,13 @@ public class UserService {
         var userFarm = farmRepository.findById(request.getFarmId())
                 .orElseThrow(() -> new IllegalStateException("FARM was not initialized"));
 
+        Cadre cadre = cadreRepository.findById(request.getCadre())
+                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + request.getCadre()));
+
         var user = User.builder()
                 .firstname(request.getFirstname())
                 .lastname(request.getLastname())
-                .cadre(request.getCadre())
+                .cadre(cadre)
                 .phone(request.getPhone())
                 .email(request.getEmail())
                 .dateOfBirth(request.getDateOfBirth())
@@ -188,6 +195,9 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + id));
 
+        Cadre cadre = cadreRepository.findById(request.getCadre())
+                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + request.getCadre()));
+
         // If USER is not ADMIN and trying to update someone else
         boolean isAdmin = loggedInUser.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
@@ -198,7 +208,7 @@ public class UserService {
         // Fields USER can update
         if (request.getFirstname() != null) user.setFirstname(request.getFirstname());
         if (request.getLastname() != null) user.setLastname(request.getLastname());
-        if (request.getCadre() != null) user.setCadre(request.getCadre());
+        if (request.getCadre() != null) user.setCadre(cadre);
         if (request.getPhone() != null) user.setPhone(request.getPhone());
         if (request.getDateOfBirth() != null) user.setDateOfBirth(request.getDateOfBirth());
 
@@ -214,7 +224,8 @@ public class UserService {
                 .firstname(savedUser.getFirstname())
                 .lastname(savedUser.getLastname())
                 .email(savedUser.getEmail())
-                .cadre(savedUser.getCadre())
+                .cadreId(savedUser.getCadre() != null ? savedUser.getCadre().getId() : null)
+                .cadre(savedUser.getCadre() != null ? savedUser.getCadre().getCadreName() : null)
                 .phone(savedUser.getPhone())
                 .dateOfBirth(savedUser.getDateOfBirth())
 //                .enabled(savedUser.isEnabled())

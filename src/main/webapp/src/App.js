@@ -38,6 +38,15 @@ import DailyBroilerLog from "pages/broiler/broilerLog/DailyBroilerLog";
 import AddDailyBroilerLog from "pages/broiler/broilerLog/AddDailyBroilerLog";
 import WeightSamples from "pages/broiler/sampleWeight/WeightSamples";
 import AddWeightSample from "pages/broiler/sampleWeight/AddWeightSample";
+import VaccinationLog from "pages/broiler/vaccineLog/VaccinationLog";
+import AddVaccinationLog from "pages/broiler/vaccineLog/AddVaccinationLog";
+import MedicationLogs from "pages/broiler/medicationLog/MedicationLogs";
+import ThinningEvents from "pages/broiler/thiningEvent/ThinningEvents";
+import AddThinningEvent from "pages/broiler/thiningEvent/AddThinningEvent";
+import HarvestEvents from "pages/broiler/harvestEvent/HarvestEvents";
+import AddHarvestEvent from "pages/broiler/harvestEvent/AddHarvestEvent";
+import Cadre from "pages/cadre/Cadre";
+import AddNewCadre from "pages/cadre/AddNewCadre";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -220,41 +229,62 @@ function App() {
         />
 {/* begin from here */}
         <Route
-          path="/dashboard/broiler-log"
-          element={<List Component={WeightSamples} path="/dashboard/broiler-log/new" />}
+          path="/dashboard/weight-sample"
+          element={<List Component={WeightSamples} path="/dashboard/weight-sample/new" />}
         />
-        <Route path="/dashboard/broiler-log/:id" element={<AddWeightSample />} />
+        <Route path="/dashboard/weight-sample/:id" element={<AddWeightSample />} />
         <Route
-          path="/dashboard/broiler-log/new"
+          path="/dashboard/weight-sample/new"
           element={<AddWeightSample />}
         />
 
 <Route
-          path="/dashboard/broiler-log"
-          element={<List Component={DailyBroilerLog} path="/dashboard/broiler-log/new" />}
+          path="/dashboard/broiler-vaccination-log"
+          element={<List Component={VaccinationLog} path="/dashboard/broiler-vaccination-log/new" />}
         />
-        <Route path="/dashboard/broiler-log/:id" element={<AddDailyBroilerLog />} />
+        <Route path="/dashboard/broiler-vaccination-log/:id" element={<AddVaccinationLog />} />
         <Route
-          path="/dashboard/broiler-log/new"
-          element={<AddDailyBroilerLog />}
-        />
-        <Route
-          path="/dashboard/broiler-log"
-          element={<List Component={DailyBroilerLog} path="/dashboard/broiler-log/new" />}
-        />
-        <Route path="/dashboard/broiler-log/:id" element={<AddDailyBroilerLog />} />
-        <Route
-          path="/dashboard/broiler-log/new"
-          element={<AddDailyBroilerLog />}
+          path="/dashboard/broiler-vaccination-log/new"
+          element={<AddVaccinationLog />}
         />
         <Route
-          path="/dashboard/broiler-log"
-          element={<List Component={DailyBroilerLog} path="/dashboard/broiler-log/new" />}
+          path="/dashboard/broiler-medication-log"
+          element={<List Component={MedicationLogs} path="/dashboard/broiler-medication-log/new" />}
         />
-        <Route path="/dashboard/broiler-log/:id" element={<AddDailyBroilerLog />} />
+        <Route path="/dashboard/broiler-medication-log/:id" element={<AddMedicationLog />} />
         <Route
-          path="/dashboard/broiler-log/new"
-          element={<AddDailyBroilerLog />}
+          path="/dashboard/broiler-medication-log/new"
+          element={<AddMedicationLog />}
+        />
+        <Route
+          path="/dashboard/thinning-event"
+          element={<List Component={ThinningEvents} path="/dashboard/thinning-event/new" />}
+        />
+        <Route path="/dashboard/thinning-event/:id" element={<AddThinningEvent />} />
+        <Route
+          path="/dashboard/thinning-event/new"
+          element={<AddThinningEvent />}
+        />
+
+         <Route
+          path="/dashboard/harvest-event"
+          element={<List Component={HarvestEvents} path="/dashboard/harvest-event/new" />}
+        />
+        <Route path="/dashboard/harvest-event/:id" element={<AddHarvestEvent />} />
+        <Route
+          path="/dashboard/harvest-event/new"
+          element={<AddHarvestEvent />}
+        />
+
+
+        <Route
+          path="/dashboard/cadre"
+          element={<List Component={Cadre} path="/dashboard/harvest-event/new" />}
+        />
+        <Route path="/dashboard/cadre/:id" element={<AddNewCadre />} />
+        <Route
+          path="/dashboard/cadre/new"
+          element={<AddNewCadre />}
         />
 
 
