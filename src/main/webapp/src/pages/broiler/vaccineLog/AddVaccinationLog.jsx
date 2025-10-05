@@ -11,12 +11,12 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddVaccinationLog = () => {
   const { id } = useParams();
   const [log, setLog] = useState({
+    id: "",
     date: "",
     flockId: "",
     vaccineName: "",
     dose: "",
     route: "",
-    operator: "",
   });
 
   const [flocks, setFlocks] = useState([]);
@@ -44,7 +44,7 @@ const AddVaccinationLog = () => {
     if (id) {
       const fetchLog = async () => {
         try {
-          const response = await axios.get(`${baseUrl}vaccinationLog/${id}`, {
+          const response = await axios.get(`${baseUrl}vaccination-logs/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setLog(response.data); // prefill form
@@ -55,7 +55,7 @@ const AddVaccinationLog = () => {
       };
       fetchLog();
     }
-  }, [id, token]);
+  }, [token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,18 +69,16 @@ const AddVaccinationLog = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}vaccinationLog/${id}`, log, {
+        await axios.post(`${baseUrl}vaccination-logs`, log, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}vaccinationLog`, log, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
 
-      toast.success(id ? "Vaccination log updated successfully!" : "Vaccination log created successfully!");
-      navigate("/dashboard/vaccination-logs");
+      toast.success(
+        id
+          ? "Vaccination log updated successfully!"
+          : "Vaccination log created successfully!"
+      );
+      navigate("/dashboard/broiler-vaccination-log");
     } catch (error) {
       console.error("Error saving log:", error);
       toast.error(error.response?.data?.message || "Error saving log.");
@@ -98,7 +96,6 @@ const AddVaccinationLog = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-
               <div className="formInput">
                 <label>Date:</label>
                 <input
@@ -120,8 +117,8 @@ const AddVaccinationLog = () => {
                 >
                   <option value="">-- Select Flock --</option>
                   {flocks.map((flock) => (
-                    <option key={flock.flock_id} value={flock.flock_id}>
-                      {flock.flock_id} - {flock.source}
+                    <option key={flock.id} value={flock.id}>
+                      {flock.id} - {flock.source}
                     </option>
                   ))}
                 </select>
@@ -153,24 +150,33 @@ const AddVaccinationLog = () => {
 
               <div className="formInput">
                 <label>Route:</label>
-                <input
-                  type="text"
+                <select
                   name="route"
                   value={log.route || ""}
                   onChange={handleChange}
-                  placeholder="e.g. Oral, Subcutaneous, Eye drop"
                   required
-                />
+                >
+                  <option value="">-- Select Vaccination Route --</option>
+                  <option value="Oral (Drinking Water)">
+                    Oral (Drinking Water)
+                  </option>
+                  <option value="Spray">Spray</option>
+                  <option value="Eye Drop">Eye Drop</option>
+                  <option value="Nasal Drop">Nasal Drop</option>
+                  <option value="Subcutaneous (Under Skin)">
+                    Subcutaneous (Under Skin)
+                  </option>
+                  <option value="Intramuscular (In the Muscle)">
+                    Intramuscular (In the Muscle)
+                  </option>
+                  <option value="Wing Web">Wing Web</option>
+                </select>
               </div>
 
               <div className="formInput">
-                <label>Operator:</label>
+               
                 <input
-                  type="text"
-                  name="operator"
-                  value={log.operator || ""}
-                  onChange={handleChange}
-                  required
+                  hidden
                 />
               </div>
 

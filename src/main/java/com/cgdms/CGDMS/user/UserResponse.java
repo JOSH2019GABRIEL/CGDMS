@@ -17,6 +17,7 @@ public class UserResponse {
     private String lastname;
     private Long cadreId;
     private String cadre; // Technician, Supervisor, Manager
+    private Double rate;
     private String phone;
     private LocalDate dateOfBirth;
     @Column(unique = true)

@@ -10,8 +10,12 @@ import java.util.List;
 public class RoleService {
 
     private final RoleRepository roleRepository;
+    private final RoleMapperService roleMapperService;
 
-    public List<Role> getAllRoles() {
-        return roleRepository.findAll();
+    public List<RoleResponse> getAllRoles() {
+        return roleRepository.findActiveRoleNames()  // custom query (see below)
+                .stream()
+                .map(roleMapperService::toRoleResponse)
+                .toList();
     }
 }

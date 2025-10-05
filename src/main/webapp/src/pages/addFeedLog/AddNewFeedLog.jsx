@@ -165,14 +165,19 @@ const FeedLog = () => {
 
               <div className="formInput">
                 <label>Feed Type:</label>
-                <input
-                  type="text"
+                <select
                   name="feedType"
                   value={feedLog.feedType || ""}
                   onChange={handleChange}
-                  placeholder="e.g., Floating, Sinking"
                   required
-                />
+                >
+                  <option value="">-- Select Feed Type --</option>
+                  <option value="Floating">Floating</option>
+                  <option value="Sinking">Sinking</option>
+                  <option value="Crumble">Crumble</option>
+                  <option value="Pellet">Pellet</option>
+                  <option value="Mash">Mash</option>
+                </select>
               </div>
 
               <div className="formInput">
@@ -200,13 +205,18 @@ const FeedLog = () => {
 
               <div className="formInput">
                 <label>Feeding Method:</label>
-                <input
-                  type="text"
+                <select
                   name="method"
                   value={feedLog.method || ""}
                   onChange={handleChange}
-                  placeholder="e.g., Broadcast, Spot Feeding"
-                />
+                >
+                  <option value="">-- Select Feeding Method --</option>
+                  <option value="Broadcast">Broadcast</option>
+                  <option value="Spot Feeding">Spot Feeding</option>
+                  <option value="Tray Feeding">Tray Feeding</option>
+                  <option value="Hand Feeding">Hand Feeding</option>
+                  <option value="Automatic Feeder">Automatic Feeder</option>
+                </select>
               </div>
 
               <div className="formInput">

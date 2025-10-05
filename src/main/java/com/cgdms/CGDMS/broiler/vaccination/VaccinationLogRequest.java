@@ -16,5 +16,4 @@ public class VaccinationLogRequest {
     private String vaccineName;
     private String dose;
     private String route;
-    private Integer operatorId;
 }

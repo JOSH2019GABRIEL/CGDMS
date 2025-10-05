@@ -24,6 +24,7 @@ public class VaccinationLogMapperService {
                 .id(v.getId())
                 .date(v.getDate())
                 .flockId(v.getFlock() != null ? v.getFlock().getId() : null)
+                .fullFlock((v.getFlock() != null ? v.getFlock().getId() : "") + "-" + (v.getFlock() != null ? v.getFlock().getSource() : ""))
                 .vaccineName(v.getVaccineName())
                 .dose(v.getDose())
                 .route(v.getRoute())

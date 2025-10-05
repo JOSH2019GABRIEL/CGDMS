@@ -38,6 +38,7 @@ public class WeightSampleService {
             sample.setSampleCount(request.getSampleCount());
             sample.setAvgWeightG(request.getAvgWeightG());
             sample.setSd(request.getSd());
+            sample.setArchived(0);
 
             if (request.getFlockId() != null) {
                 Flock flock = flockRepository.findById(request.getFlockId())
@@ -45,11 +46,11 @@ public class WeightSampleService {
                 sample.setFlock(flock);
             }
 
-            if (request.getOperatorId() != null) {
-                User operator = userRepository.findById(request.getOperatorId())
-                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
-                sample.setOperator(operator);
-            }
+//            if (request.getOperatorId() != null) {
+//                User operator = userRepository.findById(request.getOperatorId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
+//                sample.setOperator(operator);
+//            }
 
         } else {
             // create new weight sample
@@ -60,12 +61,13 @@ public class WeightSampleService {
                         .orElseThrow(() -> new EntityNotFoundException("Flock not found with id: " + request.getFlockId()));
                 sample.setFlock(flock);
             }
+            sample.setArchived(0);
 
-            if (request.getOperatorId() != null) {
-                User operator = userRepository.findById(request.getOperatorId())
-                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
-                sample.setOperator(operator);
-            }
+//            if (request.getOperatorId() != null) {
+//                User operator = userRepository.findById(request.getOperatorId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
+//                sample.setOperator(operator);
+//            }
         }
 
         weightSampleRepository.save(sample);

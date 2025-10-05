@@ -16,5 +16,5 @@ public class WeightSampleResponse {
     private Integer sampleCount;
     private Double avgWeightG;
     private Double sd;
-    private Long operatorId;
+    private String fullFlock;
 }

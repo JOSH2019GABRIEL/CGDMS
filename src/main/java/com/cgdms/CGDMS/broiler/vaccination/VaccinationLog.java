@@ -35,8 +35,4 @@ public class VaccinationLog extends BaseEntity {
     private String dose;  // e.g., "0.5 ml/bird"
 
     private String route; // e.g., oral, injection
-
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "operator_id")
-    private User operator;
 }

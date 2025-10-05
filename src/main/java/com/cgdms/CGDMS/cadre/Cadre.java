@@ -2,6 +2,7 @@ package com.cgdms.CGDMS.cadre;
 
 import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.farm.Farm;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
@@ -34,5 +35,9 @@ public class Cadre extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "farm_id")
     private Farm farm;
+
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "user_id")
+//    private User user;
 }
 

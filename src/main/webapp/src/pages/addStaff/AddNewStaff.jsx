@@ -13,7 +13,8 @@ const AddNewStaff = () => {
   const [newStaff, setNewStaff] = useState({
     firstname: "",
     lastname: "",
-    cadre: "",
+    // cadre: "",
+    cadreId: "",
     phone: "",
     dateOfBirth: "",
     email: "",
@@ -27,6 +28,7 @@ const AddNewStaff = () => {
   const { id } = useParams(); // <-- get staffId from route (for edit)
   const [roles, setRoles] = useState([]);
   const [farms, setFarms] = useState([]);
+  const [cadres, setCadres] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword((prev) => !prev);
 
@@ -53,12 +55,28 @@ const AddNewStaff = () => {
     fetchRoles();
   }, [token]);
 
+  // fetch cadres
+  useEffect(() => {
+    const fetchCadres = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}cadres`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCadres(response.data.content);
+      } catch (error) {
+        console.error("Error fetching cadres:", error);
+      }
+    };
+    fetchCadres();
+  }, [token]);
+
   useEffect(() => {
     const fetchFarms = async () => {
       try {
         const response = await axios.get(`${baseUrl}farms`, {
           headers: { Authorization: `Bearer ${token}` },
         });
+        console.log("Herer ", response.data);
         setFarms(response.data);
       } catch (error) {
         console.error("Error fetching farms:", error);
@@ -75,6 +93,7 @@ const AddNewStaff = () => {
             headers: { Authorization: `Bearer ${token}` },
           });
           setNewStaff(response.data);
+          console.log("Herer ", response.data);
         } catch (error) {
           console.error("Error fetching staff:", error);
         }
@@ -148,15 +167,22 @@ const AddNewStaff = () => {
                   placeholder="Enter last name"
                 />
               </div>
+
               <div className="formInput">
                 <label>Cadre:</label>
-                <input
-                  type="text"
-                  name="cadre"
-                  value={newStaff.cadre}
+                <select
+                  name="cadreId"
+                  value={newStaff.cadreId || ""}
                   onChange={handleChange}
-                  placeholder="Enter cadre"
-                />
+                  required
+                >
+                  <option value="">-- Select Cadre Name --</option>
+                  {cadres.map((cadre) => (
+                    <option key={cadre.id} value={cadre.id}>
+                      {cadre.cadreName}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="formInput">
                 <label>Telephone:</label>
@@ -209,7 +235,7 @@ const AddNewStaff = () => {
                 <label>Farm:</label>
                 <select
                   name="farmId"
-                  value={newStaff.farmId || ""}
+                  value={newStaff.farmId}
                   onChange={handleChange}
                 >
                   <option value="">-- Select Farm --</option>

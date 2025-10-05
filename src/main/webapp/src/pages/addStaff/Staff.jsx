@@ -60,15 +60,16 @@ const Staff = () => {
     { field: "id", headerName: "ID", width: 90 },
     { field: "firstname", headerName: "First Name", width: 200 },
     { field: "lastname", headerName: "Last Name", width: 200 },
-    { field: "cadre", headerName: "Staff Cadre", width: 200 },
+    { field: "cadre", headerName: "Staff Cadre", width: 150 },
+    { field: "rate", headerName: "Staff Rate (₦)", width: 150 },
     { field: "phone", headerName: "Phone Number", width: 200 },
     { field: "email", headerName: "Email Address", width: 200 },
-    { field: "enabled", headerName: "Account Status", width: 200 },
+    { field: "enabled", headerName: "Account Status", width: 150 },
 
     {
       field: "action",
       headerName: "Action",
-      width: 250,
+      width: 130,
       renderCell: (params) => (
         <div className="cellAction">
           <Link

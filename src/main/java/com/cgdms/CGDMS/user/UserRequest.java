@@ -24,7 +24,7 @@ public class UserRequest {
     private String lastname;
     @NotBlank(message = "Cadre cannot be blank")
     @NotEmpty(message = "Cadre cannot be empty")
-    private Long cadre; // Technician, Supervisor, Manager
+    private Long cadreId; // Technician, Supervisor, Manager
     @NotBlank(message = "Phone number cannot be blank")
     @NotEmpty(message = "Phone number cannot be empty")
     private String phone;

@@ -19,9 +19,7 @@ public class RegistrationRequest {
     @NotEmpty(message = "Lastname is mandatory")
     @NotBlank(message = "Lastname is mandatory")
     private String lastname;
-    @NotEmpty(message = "cadre is mandatory")
-    @NotBlank(message = "cadre is mandatory")
-    private Long cadre; // Technician, Supervisor, Manager
+    private Long cadreId; // Technician, Supervisor, Manager
     @NotEmpty(message = "phone number is mandatory")
     @NotBlank(message = "phone number is mandatory")
     private String phone;

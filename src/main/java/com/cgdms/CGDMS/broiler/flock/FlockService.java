@@ -63,7 +63,6 @@ public class FlockService {
                 .map(mapper::toResponse)
                 .toList();
 
-        System.out.println("responses: " + responses);
         return new PageResponse<>(
                 responses,
                 flocks.getNumber(),

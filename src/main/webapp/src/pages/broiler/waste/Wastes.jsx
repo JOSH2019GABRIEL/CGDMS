@@ -51,7 +51,7 @@ const Wastes = () => {
 
   // DataGrid Columns
   const columns = [
-    { field: "process_id", headerName: "Process ID", width: 150 },
+    { field: "id", headerName: "ID", width: 70 },
     { field: "waste_inedible_kg", headerName: "Inedible Waste (kg)", width: 180 },
     { field: "waste_packaging_kg", headerName: "Packaging Waste (kg)", width: 180 },
     { field: "waste_effluent_kg", headerName: "Effluent (kg)", width: 180 },
@@ -63,14 +63,14 @@ const Wastes = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/wastes/${params.row.process_id}`}
+            to={`/dashboard/waste/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"
-            onClick={() => handleDelete(params.row.process_id)}
+            onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </div>

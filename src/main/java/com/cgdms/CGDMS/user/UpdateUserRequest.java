@@ -13,7 +13,7 @@ public class UpdateUserRequest {
 
     private String firstname;
     private String lastname;
-    private Long cadre;
+    private Long cadreId;
     private String phone;
     private LocalDate dateOfBirth;
 //    private Boolean enabled;

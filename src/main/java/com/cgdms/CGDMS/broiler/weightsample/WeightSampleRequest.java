@@ -16,5 +16,4 @@ public class WeightSampleRequest {
     private Integer sampleCount;
     private Double avgWeightG;
     private Double sd;
-    private Integer operatorId;
 }

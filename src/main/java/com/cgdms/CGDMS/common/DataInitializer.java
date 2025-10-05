@@ -96,6 +96,7 @@ public class DataInitializer implements CommandLineRunner {
                     .phone("08012345678")
                     .dateOfBirth(LocalDate.of(1990, 1, 1))
                     .email("admin@system.com")
+                    .archived(0)
                     .password(passwordEncoder.encode("Admin123"))
                     .roles(List.of(adminRole))
                     .farm(defaultFarm)

@@ -13,8 +13,8 @@ public class UserMapperService {
 
     public User toUser(UserRequest userRequest){
 
-        Cadre cadre = cadreRepository.findById(userRequest.getCadre())
-                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + userRequest.getCadre()));
+        Cadre cadre = cadreRepository.findById(userRequest.getCadreId())
+                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + userRequest.getCadreId()));
 
 
         return User.builder()
@@ -39,6 +39,7 @@ public class UserMapperService {
 
                 .cadreId(user.getCadre() != null ? user.getCadre().getId() : null)
                 .cadre(user.getCadre() != null ? user.getCadre().getCadreName() : null)
+                .rate(user.getCadre() != null ? user.getCadre().getRate() : null)
 
                 .phone(user.getPhone())
                 .dateOfBirth(user.getDateOfBirth())

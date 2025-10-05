@@ -15,7 +15,7 @@ const VaccinationLog = () => {
   const fetchVaccinations = useCallback(async (page, pageSize) => {
     try {
       const response = await axios.get(
-        `${baseUrl}vaccination-log?page=${page}&size=${pageSize}`,
+        `${baseUrl}vaccination-logs?page=${page}&size=${pageSize}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -39,7 +39,7 @@ const VaccinationLog = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${baseUrl}vaccination-log/${id}`, {
+      await axios.delete(`${baseUrl}vaccination-logs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -51,20 +51,20 @@ const VaccinationLog = () => {
 
   // Define DataGrid columns
   const columns = [
+    { field: "id", headerName: "ID", width: 70 },
     { field: "date", headerName: "Date", width: 150 },
-    { field: "flock_id", headerName: "Flock ID", width: 150 },
-    { field: "vaccine_name", headerName: "Vaccine Name", width: 200 },
-    { field: "dose", headerName: "Dose", width: 150 },
-    { field: "route", headerName: "Route", width: 150 },
-    { field: "operator", headerName: "Operator", width: 200 },
+    { field: "fullFlock", headerName: "Flock ID", width: 150 },
+    { field: "vaccineName", headerName: "Vaccine Name", width: 200 },
+    { field: "dose", headerName: "Dose (ml/bird)", width: 150 },
+    { field: "route", headerName: "Route", width: 250 },
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 130,
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/vaccination-log/${params.row.id}`}
+            to={`/dashboard/broiler-vaccination-log/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
@@ -84,7 +84,7 @@ const VaccinationLog = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Vaccination Log
-        <Link to="/dashboard/vaccination-log/new" className="link">
+        <Link to="/dashboard/broiler-vaccination-log/new" className="link">
           Add New
         </Link>
       </div>

@@ -36,7 +36,7 @@ public class WeightSample extends BaseEntity {
 
     private Double sd;             // standard deviation of sample weights
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "operator_id")
-    private User operator;         // staff who took the sample
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "operator_id")
+//    private User operator;         // staff who took the sample
 }

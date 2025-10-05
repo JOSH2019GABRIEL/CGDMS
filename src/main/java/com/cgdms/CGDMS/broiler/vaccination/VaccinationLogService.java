@@ -46,11 +46,11 @@ public class VaccinationLogService {
                 log.setFlock(flock);
             }
 
-            if (request.getOperatorId() != null) {
-                User operator = userRepository.findById(request.getOperatorId())
-                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
-                log.setOperator(operator);
-            }
+//            if (request.getOperatorId() != null) {
+//                User operator = userRepository.findById(request.getOperatorId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
+//                log.setOperator(operator);
+//            }
 
         } else {
             // create new vaccination log
@@ -61,12 +61,13 @@ public class VaccinationLogService {
                         .orElseThrow(() -> new EntityNotFoundException("Flock not found with id: " + request.getFlockId()));
                 log.setFlock(flock);
             }
+            log.setArchived(0);
 
-            if (request.getOperatorId() != null) {
-                User operator = userRepository.findById(request.getOperatorId())
-                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
-                log.setOperator(operator);
-            }
+//            if (request.getOperatorId() != null) {
+//                User operator = userRepository.findById(request.getOperatorId())
+//                        .orElseThrow(() -> new EntityNotFoundException("Operator not found with id: " + request.getOperatorId()));
+//                log.setOperator(operator);
+//            }
         }
 
         vaccinationLogRepository.save(log);

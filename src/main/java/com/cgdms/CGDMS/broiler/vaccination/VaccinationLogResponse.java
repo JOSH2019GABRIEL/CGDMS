@@ -16,5 +16,5 @@ public class VaccinationLogResponse {
     private String vaccineName;
     private String dose;
     private String route;
-    private Long operatorId;
+    private String fullFlock;
 }

@@ -44,7 +44,7 @@ const AddWeightSample = () => {
     if (id) {
       const fetchSample = async () => {
         try {
-          const response = await axios.get(`${baseUrl}weightSamples/${id}`, {
+          const response = await axios.get(`${baseUrl}weight-samples/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setSample(response.data); // prefill form
@@ -69,18 +69,14 @@ const AddWeightSample = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}weightSamples/${id}`, sample, {
+      
+        await axios.post(`${baseUrl}weight-samples`, sample, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}weightSamples`, sample, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
+      
 
       toast.success(id ? "Weight sample updated successfully!" : "Weight sample created successfully!");
-      navigate("/dashboard/weight-samples");
+      navigate("/dashboard/weight-sample");
     } catch (error) {
       console.error("Error saving sample:", error);
       toast.error(error.response?.data?.message || "Error saving sample.");
@@ -120,8 +116,8 @@ const AddWeightSample = () => {
                 >
                   <option value="">-- Select Flock --</option>
                   {flocks.map((flock) => (
-                    <option key={flock.flock_id} value={flock.flock_id}>
-                      {flock.flock_id} - {flock.source}
+                    <option key={flock.id} value={flock.id}>
+                      {flock.id} - {flock.source}
                     </option>
                   ))}
                 </select>

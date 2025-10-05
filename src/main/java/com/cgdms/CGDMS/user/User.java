@@ -1,7 +1,6 @@
 package com.cgdms.CGDMS.user;
 
 
-import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.cadre.Cadre;
 import com.cgdms.CGDMS.farm.Farm;
 import com.cgdms.CGDMS.role.Role;
@@ -24,7 +23,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-//@SuperBuilder
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

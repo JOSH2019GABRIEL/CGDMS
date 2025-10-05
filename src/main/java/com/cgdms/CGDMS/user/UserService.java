@@ -64,8 +64,8 @@ public class UserService {
         var userFarm = farmRepository.findById(request.getFarmId())
                 .orElseThrow(() -> new IllegalStateException("FARM was not initialized"));
 
-        Cadre cadre = cadreRepository.findById(request.getCadre())
-                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + request.getCadre()));
+        Cadre cadre = cadreRepository.findById(request.getCadreId())
+                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + request.getCadreId()));
 
         var user = User.builder()
                 .firstname(request.getFirstname())
@@ -82,7 +82,7 @@ public class UserService {
                 .farm(userFarm)
                 .build();
         userRepository.save(user);
-        sendValidationEmail(user);
+//        sendValidationEmail(user);
     }
 
 
@@ -151,25 +151,6 @@ public class UserService {
                 .orElseThrow(()-> new EntityNotFoundException("No Staff with the ID: " + staffId));
     }
 
-//    public PageResponse<UserResponse> findAllStaff(int page, int size) {
-//
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("createDate").descending());
-//        Page<User> users = userRepository.findAllUsers(pageable);
-//        List<UserResponse> userResponses =
-//                users.stream()
-//                        .map(userMapperService::toUserResponse)
-//                        .toList();
-//
-//        return new PageResponse<>(
-//                userResponses,
-//                users.getNumber(),
-//                users.getSize(),
-//                users.getTotalElements(),
-//                users.isFirst(),
-//                users.isLast()
-//        );
-//    }
-
 
     public PageResponse<UserResponse> findAllStaff(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
@@ -195,12 +176,12 @@ public class UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found with id " + id));
 
-        Cadre cadre = cadreRepository.findById(request.getCadre())
-                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + request.getCadre()));
+        Cadre cadre = cadreRepository.findById(request.getCadreId())
+                .orElseThrow(() -> new IllegalStateException("Cadre not found with ID: " + request.getCadreId()));
 
         // If USER is not ADMIN and trying to update someone else
         boolean isAdmin = loggedInUser.getAuthorities().stream()
-                .anyMatch(auth -> auth.getAuthority().equals("ADMIN"));
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN") || auth.getAuthority().equals("ROLE_USER"));
         if (!isAdmin && !loggedInUser.getId().equals(user.getId())) {
             throw new SecurityException("You are not allowed to update this user");
         }
@@ -208,9 +189,10 @@ public class UserService {
         // Fields USER can update
         if (request.getFirstname() != null) user.setFirstname(request.getFirstname());
         if (request.getLastname() != null) user.setLastname(request.getLastname());
-        if (request.getCadre() != null) user.setCadre(cadre);
         if (request.getPhone() != null) user.setPhone(request.getPhone());
         if (request.getDateOfBirth() != null) user.setDateOfBirth(request.getDateOfBirth());
+        if (request.getCadreId() != null) user.setCadre(cadre);
+
 
         // Only ADMIN can enable/disable
 //        if (isAdmin && request.getEnabled() != null) {

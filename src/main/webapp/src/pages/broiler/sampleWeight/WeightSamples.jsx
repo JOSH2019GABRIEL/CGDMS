@@ -52,19 +52,18 @@ const WeightSamples = () => {
   // Define DataGrid columns
   const columns = [
     { field: "date", headerName: "Date", width: 150 },
-    { field: "flock_id", headerName: "Flock ID", width: 150 },
-    { field: "sample_count", headerName: "Sample Count", width: 150 },
-    { field: "avg_weight_g", headerName: "Avg Weight (g)", width: 180 },
+    { field: "fullFlock", headerName: "Flock ID", width: 150 },
+    { field: "sampleCount", headerName: "Sample Count", width: 150 },
+    { field: "avgWeightG", headerName: "Avg Weight (g)", width: 180 },
     { field: "sd", headerName: "Standard Deviation", width: 200 },
-    { field: "operator", headerName: "Operator", width: 200 },
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 130,
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/weight-samples/${params.row.id}`}
+            to={`/dashboard/weight-sample/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
@@ -84,7 +83,7 @@ const WeightSamples = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Weight Samples
-        <Link to="/dashboard/weight-samples/new" className="link">
+        <Link to="/dashboard/weight-sample/new" className="link">
           Add New
         </Link>
       </div>
