@@ -8,9 +8,10 @@ import axios from "axios";
 import { url as baseUrl } from "../../../api";
 import { useNavigate, useParams } from "react-router-dom";
 
-const AddMedicationLog = () => {
+const AddMedicationLogs = () => {
   const { id } = useParams();
   const [log, setLog] = useState({
+    id: "",
     date: "",
     flockId: "",
     drug: "",
@@ -44,7 +45,7 @@ const AddMedicationLog = () => {
     if (id) {
       const fetchLog = async () => {
         try {
-          const response = await axios.get(`${baseUrl}medicationLog/${id}`, {
+          const response = await axios.get(`${baseUrl}broiler-medication-logs/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setLog(response.data); // prefill form
@@ -69,18 +70,13 @@ const AddMedicationLog = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}medicationLog/${id}`, log, {
+      
+        await axios.post(`${baseUrl}broiler-medication-logs`, log, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}medicationLog`, log, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
 
       toast.success(id ? "Medication log updated successfully!" : "Medication log created successfully!");
-      navigate("/dashboard/medication-logs");
+      navigate("/dashboard/broiler-medication-log");
     } catch (error) {
       console.error("Error saving log:", error);
       toast.error(error.response?.data?.message || "Error saving log.");
@@ -120,8 +116,8 @@ const AddMedicationLog = () => {
                 >
                   <option value="">-- Select Flock --</option>
                   {flocks.map((flock) => (
-                    <option key={flock.flock_id} value={flock.flock_id}>
-                      {flock.flock_id} - {flock.source}
+                    <option key={flock.id} value={flock.id}>
+                      {flock.id} - {flock.source}
                     </option>
                   ))}
                 </select>
@@ -153,14 +149,27 @@ const AddMedicationLog = () => {
 
               <div className="formInput">
                 <label>Route:</label>
-                <input
-                  type="text"
+                <select
                   name="route"
                   value={log.route || ""}
                   onChange={handleChange}
-                  placeholder="e.g. Oral, Injection"
                   required
-                />
+                >
+                  <option value="">-- Select Vaccination Route --</option>
+                  <option value="Oral (Drinking Water)">
+                    Oral (Drinking Water)
+                  </option>
+                  <option value="Spray">Spray</option>
+                  <option value="Eye Drop">Eye Drop</option>
+                  <option value="Nasal Drop">Nasal Drop</option>
+                  <option value="Subcutaneous (Under Skin)">
+                    Subcutaneous (Under Skin)
+                  </option>
+                  <option value="Intramuscular (In the Muscle)">
+                    Intramuscular (In the Muscle)
+                  </option>
+                  <option value="Wing Web">Wing Web</option>
+                </select>
               </div>
 
               <div className="formInput">
@@ -185,4 +194,4 @@ const AddMedicationLog = () => {
   );
 };
 
-export default AddMedicationLog;
+export default AddMedicationLogs;

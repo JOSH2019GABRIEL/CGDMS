@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddThinningEvent = () => {
   const { id } = useParams();
   const [event, setEvent] = useState({
+    id: "",
     date: "",
     flockId: "",
     numberRemoved: "",
@@ -43,7 +44,7 @@ const AddThinningEvent = () => {
     if (id) {
       const fetchEvent = async () => {
         try {
-          const response = await axios.get(`${baseUrl}thinningEvents/${id}`, {
+          const response = await axios.get(`${baseUrl}thinning-events/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setEvent(response.data);
@@ -68,18 +69,13 @@ const AddThinningEvent = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}thinningEvents/${id}`, event, {
+        await axios.post(`${baseUrl}thinning-events`, event, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}thinningEvents`, event, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
+
 
       toast.success(id ? "Thinning event updated successfully!" : "Thinning event created successfully!");
-      navigate("/dashboard/thinning-events");
+      navigate("/dashboard/thinning-event");
     } catch (error) {
       console.error("Error saving event:", error);
       toast.error(error.response?.data?.message || "Error saving event.");
@@ -119,8 +115,8 @@ const AddThinningEvent = () => {
                 >
                   <option value="">-- Select Flock --</option>
                   {flocks.map((flock) => (
-                    <option key={flock.flock_id} value={flock.flock_id}>
-                      {flock.flock_id} - {flock.source}
+                    <option key={flock.id} value={flock.id}>
+                      {flock.id} - {flock.source}
                     </option>
                   ))}
                 </select>
@@ -161,6 +157,13 @@ const AddThinningEvent = () => {
                   required
                 />
               </div>
+
+              <div className="formInput">
+                <input
+                  hidden
+                />
+              </div>
+
 
               <button type="submit">{id ? "Update" : "Save"}</button>
             </form>

@@ -17,4 +17,5 @@ public class BroilerMedicationLogResponse {
     private String dose;
     private String route;
     private Integer withdrawalDays;
+    private String fullFlock;
 }

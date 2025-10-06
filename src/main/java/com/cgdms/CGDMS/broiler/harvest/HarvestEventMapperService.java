@@ -28,6 +28,8 @@ public class HarvestEventMapperService {
                 .totalHarvested(h.getTotalHarvested())
                 .averageLiveWeight(h.getAverageLiveWeight())
                 .cullCount(h.getCullCount())
+                .fullFlock((h.getFlock() != null ? h.getFlock().getId() : "") + "-" + (h.getFlock() != null ? h.getFlock().getSource() : ""))
+
 //                .operatorId(h.getOperator() != null ? h.getOperator().getId() : null)
                 .build();
     }

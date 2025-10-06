@@ -3,7 +3,6 @@ package com.cgdms.CGDMS.broiler.thinningevent;
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
 import com.cgdms.CGDMS.common.PageResponse;
-import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +38,7 @@ public class ThinningEventService {
             event.setNumberRemoved(request.getNumberRemoved());
             event.setAverageWeight(request.getAverageWeight());
             event.setDestination(request.getDestination());
+            event.setArchived(0);
 
             if (request.getFlockId() != null) {
                 Flock flock = flockRepository.findById(request.getFlockId())
@@ -61,6 +61,7 @@ public class ThinningEventService {
                         .orElseThrow(() -> new EntityNotFoundException("Flock not found with id: " + request.getFlockId()));
                 event.setFlock(flock);
             }
+            event.setArchived(0);
 
 //            if (request.getOperatorId() != null) {
 //                User operator = userRepository.findById(request.getOperatorId())

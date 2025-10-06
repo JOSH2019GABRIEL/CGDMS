@@ -4,7 +4,7 @@ import List from "./pages/list/List";
 import Single from "./pages/single/Single";
 import New from "./pages/new/New";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { productInputs, userInputs } from "./formSource";
+import { userInputs } from "./formSource";
 import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
@@ -47,6 +47,7 @@ import HarvestEvents from "pages/broiler/harvestEvent/HarvestEvents";
 import AddHarvestEvent from "pages/broiler/harvestEvent/AddHarvestEvent";
 import Cadre from "pages/cadre/Cadre";
 import AddNewCadre from "pages/cadre/AddNewCadre";
+import AddMedicationLogs from "pages/broiler/medicationLog/AddMedicationLog";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -251,10 +252,10 @@ function App() {
           path="/dashboard/broiler-medication-log"
           element={<List Component={MedicationLogs} path="/dashboard/broiler-medication-log/new" />}
         />
-        <Route path="/dashboard/broiler-medication-log/:id" element={<AddMedicationLog />} />
+        <Route path="/dashboard/broiler-medication-log/:id" element={<AddMedicationLogs />} />
         <Route
           path="/dashboard/broiler-medication-log/new"
-          element={<AddMedicationLog />}
+          element={<AddMedicationLogs />}
         />
         <Route
           path="/dashboard/thinning-event"

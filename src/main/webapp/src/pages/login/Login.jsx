@@ -174,8 +174,8 @@ const Login = () => {
 
         <div className="info-box">
           <Info className="info-icon" />
-          Use <strong>admin@gmail.com</strong> with password
-          <strong> @Admin2025 </strong>
+          Use <strong>admin@system.com</strong> with password
+          <strong>  Admin123 </strong>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>

@@ -40,6 +40,7 @@ public class HarvestEventService {
             harvest.setTotalHarvested(request.getTotalHarvested());
             harvest.setAverageLiveWeight(request.getAverageLiveWeight());
             harvest.setCullCount(request.getCullCount());
+            harvest.setArchived(0);
 
             if (request.getFlockId() != null) {
                 Flock flock = flockRepository.findById(request.getFlockId())
@@ -62,6 +63,8 @@ public class HarvestEventService {
                         .orElseThrow(() -> new EntityNotFoundException("Flock not found with id: " + request.getFlockId()));
                 harvest.setFlock(flock);
             }
+            harvest.setArchived(0);
+
 
 //            if (request.getOperatorId() != null) {
 //                User staff = userRepository.findById(request.getOperatorId())

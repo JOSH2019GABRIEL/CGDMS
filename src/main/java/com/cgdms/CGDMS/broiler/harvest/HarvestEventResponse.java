@@ -16,5 +16,5 @@ public class HarvestEventResponse {
     private Integer totalHarvested;
     private Double averageLiveWeight;
     private Integer cullCount;
-    private Long operatorId;
+    private String fullFlock;
 }

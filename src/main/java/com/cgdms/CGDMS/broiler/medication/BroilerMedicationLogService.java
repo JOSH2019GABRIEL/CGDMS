@@ -39,6 +39,7 @@ public class BroilerMedicationLogService {
             medication.setDose(request.getDose());
             medication.setRoute(request.getRoute());
             medication.setWithdrawalDays(request.getWithdrawalDays());
+            medication.setArchived(0);
 
             if (request.getFlockId() != null) {
                 Flock flock = flockRepository.findById(request.getFlockId())
@@ -61,6 +62,7 @@ public class BroilerMedicationLogService {
                         .orElseThrow(() -> new EntityNotFoundException("Flock not found with id: " + request.getFlockId()));
                 medication.setFlock(flock);
             }
+            medication.setArchived(0);
 
 //            if (request.getOperatorId() != null) {
 //                User operator = userRepository.findById(request.getOperatorId())

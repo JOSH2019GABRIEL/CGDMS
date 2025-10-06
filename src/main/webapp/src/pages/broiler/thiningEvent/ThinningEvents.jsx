@@ -51,10 +51,11 @@ const ThinningEvents = () => {
 
   // Define DataGrid columns
   const columns = [
+    { field: "id", headerName: "ID", width: 70 },
     { field: "date", headerName: "Date", width: 150 },
-    { field: "flock_id", headerName: "Flock ID", width: 150 },
-    { field: "number_removed", headerName: "Number Removed", width: 180 },
-    { field: "average_weight", headerName: "Average Weight (kg)", width: 200 },
+    { field: "flockId", headerName: "Flock ID", width: 150 },
+    { field: "numberRemoved", headerName: "Number Removed", width: 180 },
+    { field: "averageWeight", headerName: "Average Weight (kg)", width: 200 },
     { field: "destination", headerName: "Destination", width: 200 },
     {
       field: "action",
@@ -63,7 +64,7 @@ const ThinningEvents = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/thinning-events/${params.row.id}`}
+            to={`/dashboard/thinning-event/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
@@ -83,7 +84,7 @@ const ThinningEvents = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Thinning Events
-        <Link to="/dashboard/thinning-events/new" className="link">
+        <Link to="/dashboard/thinning-event/new" className="link">
           Add New
         </Link>
       </div>

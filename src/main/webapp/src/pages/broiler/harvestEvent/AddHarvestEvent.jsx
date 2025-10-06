@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddHarvestEvent = () => {
   const { id } = useParams();
   const [event, setEvent] = useState({
+    id: "",
     date: "",
     flockId: "",
     totalHarvested: "",
@@ -61,7 +62,7 @@ const AddHarvestEvent = () => {
     if (id) {
       const fetchEvent = async () => {
         try {
-          const response = await axios.get(`${baseUrl}harvestEvents/${id}`, {
+          const response = await axios.get(`${baseUrl}harvest-events/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setEvent(response.data);
@@ -72,7 +73,7 @@ const AddHarvestEvent = () => {
       };
       fetchEvent();
     }
-  }, [id, token]);
+  }, [token]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -86,18 +87,16 @@ const AddHarvestEvent = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}harvestEvents/${id}`, event, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        await axios.post(`${baseUrl}harvestEvents`, event, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
+      await axios.post(`${baseUrl}harvest-events`, event, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      toast.success(id ? "Harvest event updated successfully!" : "Harvest event created successfully!");
-      navigate("/dashboard/harvest-events");
+      toast.success(
+        id
+          ? "Harvest event updated successfully!"
+          : "Harvest event created successfully!"
+      );
+      navigate("/dashboard/harvest-event");
     } catch (error) {
       console.error("Error saving event:", error);
       toast.error(error.response?.data?.message || "Error saving event.");
@@ -115,7 +114,6 @@ const AddHarvestEvent = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-
               <div className="formInput">
                 <label>Date:</label>
                 <input
@@ -137,8 +135,8 @@ const AddHarvestEvent = () => {
                 >
                   <option value="">-- Select Flock --</option>
                   {flocks.map((flock) => (
-                    <option key={flock.flock_id} value={flock.flock_id}>
-                      {flock.flock_id} - {flock.source}
+                    <option key={flock.id} value={flock.id}>
+                      {flock.id} - {flock.source}
                     </option>
                   ))}
                 </select>
@@ -179,22 +177,8 @@ const AddHarvestEvent = () => {
                   required
                 />
               </div>
-
               <div className="formInput">
-                <label>Operator:</label>
-                <select
-                  name="operatorId"
-                  value={event.operatorId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">-- Select Operator --</option>
-                  {staff.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
+                <input hidden />
               </div>
 
               <button type="submit">{id ? "Update" : "Save"}</button>

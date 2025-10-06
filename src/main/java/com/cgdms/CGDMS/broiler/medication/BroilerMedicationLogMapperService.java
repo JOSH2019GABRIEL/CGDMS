@@ -27,6 +27,7 @@ public class BroilerMedicationLogMapperService {
                 .flockId(m.getFlock() != null ? m.getFlock().getId() : null)
                 .drug(m.getDrug())
                 .dose(m.getDose())
+                .fullFlock((m.getFlock() != null ? m.getFlock().getId() : "") + "-" + (m.getFlock() != null ? m.getFlock().getSource() : ""))
                 .route(m.getRoute())
                 .withdrawalDays(m.getWithdrawalDays())
                 .build();

@@ -15,7 +15,7 @@ const MedicationLogs = () => {
   const fetchMedications = useCallback(async (page, pageSize) => {
     try {
       const response = await axios.get(
-        `${baseUrl}medication-log?page=${page}&size=${pageSize}`,
+        `${baseUrl}broiler-medication-logs?page=${page}&size=${pageSize}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -39,7 +39,7 @@ const MedicationLogs = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${baseUrl}medication-log/${id}`, {
+      await axios.delete(`${baseUrl}broiler-medication-logs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -51,12 +51,13 @@ const MedicationLogs = () => {
 
   // Define DataGrid columns
   const columns = [
-    { field: "date", headerName: "Date", width: 150 },
-    { field: "flock_id", headerName: "Flock ID", width: 150 },
+    { field: "id", headerName: "ID", width: 70 },
+     { field: "date", headerName: "Date", width: 150 },
+    { field: "fullFlock", headerName: "Flock ID", width: 150 },
     { field: "drug", headerName: "Drug", width: 200 },
     { field: "dose", headerName: "Dose", width: 150 },
     { field: "route", headerName: "Route", width: 150 },
-    { field: "withdrawal_days", headerName: "Withdrawal Days", width: 180 },
+    { field: "withdrawalDays", headerName: "Withdrawal Days", width: 180 },
     {
       field: "action",
       headerName: "Action",
@@ -64,7 +65,7 @@ const MedicationLogs = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/medication-log/${params.row.id}`}
+            to={`/dashboard/broiler-medication-log/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
@@ -84,7 +85,7 @@ const MedicationLogs = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Medication Log
-        <Link to="/dashboard/medication-log/new" className="link">
+        <Link to="/dashboard/broiler-medication-log/new" className="link">
           Add New
         </Link>
       </div>

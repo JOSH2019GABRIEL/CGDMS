@@ -27,6 +27,7 @@ public class ThinningEventMapperService {
                 .numberRemoved(t.getNumberRemoved())
                 .averageWeight(t.getAverageWeight())
                 .destination(t.getDestination())
+                .fullFlock((t.getFlock() != null ? t.getFlock().getId() : "") + "-" + (t.getFlock() != null ? t.getFlock().getSource() : ""))
                 .build();
     }
 }

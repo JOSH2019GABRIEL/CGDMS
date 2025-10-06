@@ -51,20 +51,21 @@ const HarvestEvents = () => {
 
   // Define DataGrid columns
   const columns = [
+    { field: "id", headerName: "ID", width: 70 },
     { field: "date", headerName: "Date", width: 150 },
     { field: "flock_id", headerName: "Flock ID", width: 150 },
-    { field: "total_harvested", headerName: "Total Harvested", width: 180 },
-    { field: "average_live_weight", headerName: "Average Live Weight (kg)", width: 220 },
-    { field: "cull_count", headerName: "Cull Count", width: 150 },
-    { field: "operator", headerName: "Operator", width: 180 },
+    { field: "totalHarvested", headerName: "Total Harvested", width: 180 },
+    { field: "averageLiveWeight", headerName: "Average Live Weight (kg)", width: 220 },
+    { field: "cullCount", headerName: "Cull Count", width: 150 },
+    // { field: "operator", headerName: "Operator", width: 180 },
     {
       field: "action",
       headerName: "Action",
-      width: 200,
+      width: 130,
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/harvest-events/${params.row.id}`}
+            to={`/dashboard/harvest-event/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
@@ -84,7 +85,7 @@ const HarvestEvents = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Harvest Events
-        <Link to="/dashboard/harvest-events/new" className="link">
+        <Link to="/dashboard/harvest-event/new" className="link">
           Add New
         </Link>
       </div>

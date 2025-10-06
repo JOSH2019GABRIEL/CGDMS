@@ -36,7 +36,7 @@ public class HarvestEvent extends BaseEntity {
 
     private Integer cullCount; // rejected/unfit birds
 
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "operator_id")
-    private User operator;
+//    @ManyToOne(optional = false)
+//    @JoinColumn(name = "operator_id")
+//    private User operator;
 }

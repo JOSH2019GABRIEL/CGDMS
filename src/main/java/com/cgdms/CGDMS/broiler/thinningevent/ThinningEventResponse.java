@@ -16,4 +16,5 @@ public class ThinningEventResponse {
     private Integer numberRemoved;
     private Double averageWeight;
     private String destination;
+    private String fullFlock;
 }

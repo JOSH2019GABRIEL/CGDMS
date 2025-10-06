@@ -17,5 +17,4 @@ public class HarvestEventRequest {
     private Integer totalHarvested;
     private Double averageLiveWeight;
     private Integer cullCount;
-    private User operatorId;
 }
