@@ -11,6 +11,7 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddSlaughterLog = () => {
   const { id } = useParams();
   const [log, setLog] = useState({
+    id: "",
     processId: "",
     birdsReceived: "",
     birdsSlaughtered: "",
@@ -26,7 +27,7 @@ const AddSlaughterLog = () => {
   useEffect(() => {
     const fetchBatches = async () => {
       try {
-        const response = await axios.get(`${baseUrl}processingBatch`, {
+        const response = await axios.get(`${baseUrl}processing-batches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProcessingBatches(response.data.content);
@@ -43,7 +44,7 @@ const AddSlaughterLog = () => {
     if (id) {
       const fetchLog = async () => {
         try {
-          const response = await axios.get(`${baseUrl}slaughterLog/${id}`, {
+          const response = await axios.get(`${baseUrl}slaughter-logs/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setLog(response.data);
@@ -68,16 +69,10 @@ const AddSlaughterLog = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}slaughterLog/${id}`, log, {
+        await axios.post(`${baseUrl}slaughter-logs`, log, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}slaughterLog`, log, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-
+      
       toast.success(id ? "Slaughter log updated successfully!" : "Slaughter log created successfully!");
       navigate("/dashboard/slaughter-logs");
     } catch (error) {
@@ -108,8 +103,8 @@ const AddSlaughterLog = () => {
                 >
                   <option value="">-- Select Processing Batch --</option>
                   {processingBatches.map((batch) => (
-                    <option key={batch.id} value={batch.processId}>
-                      {batch.processId} - {batch.plantLocation} ({batch.date})
+                    <option key={batch.id} value={batch.id}>
+                     {batch.date} / {batch.plantLocation} - {batch.id}
                     </option>
                   ))}
                 </select>
@@ -157,6 +152,12 @@ const AddSlaughterLog = () => {
                   placeholder="Enter reason (e.g. sickness, injury, quality)"
                   rows={3}
                   required
+                />
+              </div>
+
+              <div className="formInput">
+                <input
+                  hidden
                 />
               </div>
 

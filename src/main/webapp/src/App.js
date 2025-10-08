@@ -48,6 +48,16 @@ import AddHarvestEvent from "pages/broiler/harvestEvent/AddHarvestEvent";
 import Cadre from "pages/cadre/Cadre";
 import AddNewCadre from "pages/cadre/AddNewCadre";
 import AddMedicationLogs from "pages/broiler/medicationLog/AddMedicationLog";
+import AddProcessingBatch from "pages/broiler/processingBatch/AddProcessingBatch";
+import ProcessingBatch from "pages/broiler/processingBatch/ProcessingBatch";
+import SlaughterLog from "pages/broiler/slaughterLog/SlaughterLog";
+import AddSlaughterLog from "pages/broiler/slaughterLog/AddSlaughterLog";
+import CutupYield from "pages/broiler/cutupYield/CutupYield";
+import AddCutupYield from "pages/broiler/cutupYield/AddCutupYield";
+import Byproducts from "pages/broiler/byProduct/Byproducts";
+import AddByproducts from "pages/broiler/byProduct/AddByproducts";
+import Wastes from "pages/broiler/waste/Wastes";
+import AddWaste from "pages/broiler/waste/AddWaste";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -276,8 +286,6 @@ function App() {
           path="/dashboard/harvest-event/new"
           element={<AddHarvestEvent />}
         />
-
-
         <Route
           path="/dashboard/cadre"
           element={<List Component={Cadre} path="/dashboard/harvest-event/new" />}
@@ -288,6 +296,55 @@ function App() {
           element={<AddNewCadre />}
         />
 
+        <Route
+          path="/dashboard/processing-batch"
+          element={<List Component={ProcessingBatch} path="/dashboard/harvest-event/new" />}
+        />
+        <Route path="/dashboard/processing-batch/:id" element={<AddProcessingBatch />} />
+        <Route
+          path="/dashboard/processing-batch/new"
+          element={<AddProcessingBatch />}
+        />
+
+        <Route
+          path="/dashboard/slaughter-logs"
+          element={<List Component={SlaughterLog} path="/dashboard/harvest-event/new" />}
+        />
+        <Route path="/dashboard/slaughter-log/:id" element={<AddSlaughterLog />} />
+        <Route
+          path="/dashboard/slaughter-log/new"
+          element={<AddSlaughterLog />}
+        />
+
+        <Route
+          path="/dashboard/cutup-yields"
+          element={<List Component={CutupYield} path="/dashboard/cutup-yield/new" />}
+        />
+        <Route path="/dashboard/cutup-yield/:id" element={<AddCutupYield />} />
+        <Route
+          path="/dashboard/cutup-yield/new"
+          element={<AddCutupYield />}
+        />
+
+        <Route
+          path="/dashboard/by-products"
+          element={<List Component={Byproducts} path="/dashboard/by-product/new" />}
+        />
+        <Route path="/dashboard/by-product/:id" element={<AddByproducts />} />
+        <Route
+          path="/dashboard/by-product/new"
+          element={<AddByproducts />}
+        />
+
+        <Route
+          path="/dashboard/wastes"
+          element={<List Component={Wastes} path="/dashboard/waste/new" />}
+        />
+        <Route path="/dashboard/waste/:id" element={<AddWaste />} />
+        <Route
+          path="/dashboard/waste/new"
+          element={<AddWaste />}
+        />
 
 
         </Routes>

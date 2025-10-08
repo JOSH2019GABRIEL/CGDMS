@@ -53,7 +53,7 @@ const HarvestEvents = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
     { field: "date", headerName: "Date", width: 150 },
-    { field: "flock_id", headerName: "Flock ID", width: 150 },
+    { field: "fullFlock", headerName: "Flock ID", width: 150 },
     { field: "totalHarvested", headerName: "Total Harvested", width: 180 },
     { field: "averageLiveWeight", headerName: "Average Live Weight (kg)", width: 220 },
     { field: "cullCount", headerName: "Cull Count", width: 150 },

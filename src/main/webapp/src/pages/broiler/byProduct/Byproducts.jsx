@@ -51,12 +51,13 @@ const Byproducts = () => {
 
   // DataGrid Columns
   const columns = [
-    { field: "process_id", headerName: "Process ID", width: 150 },
-    { field: "offal_liver_kg", headerName: "Liver (kg)", width: 150 },
-    { field: "offal_gizzard_kg", headerName: "Gizzard (kg)", width: 150 },
-    { field: "offal_heart_kg", headerName: "Heart (kg)", width: 150 },
-    { field: "blood_ltr", headerName: "Blood (ltr)", width: 150 },
-    { field: "feathers_kg", headerName: "Feathers (kg)", width: 150 },
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "processingBatchId", headerName: "Process ID", width: 150 },
+    { field: "liverKg", headerName: "Liver (kg)", width: 150 },
+    { field: "gizzardKg", headerName: "Gizzard (kg)", width: 150 },
+    { field: "heartKg", headerName: "Heart (kg)", width: 150 },
+    { field: "bloodLtr", headerName: "Blood (ltr)", width: 150 },
+    { field: "feathersKg", headerName: "Feathers (kg)", width: 150 },
     {
       field: "action",
       headerName: "Action",
@@ -64,14 +65,14 @@ const Byproducts = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/byproducts/${params.row.process_id}`}
+            to={`/dashboard/by-product/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"
-            onClick={() => handleDelete(params.row.process_id)}
+            onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </div>
@@ -84,7 +85,7 @@ const Byproducts = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Byproducts
-        <Link to="/dashboard/byproducts/new" className="link">
+        <Link to="/dashboard/by-product/new" className="link">
           Add New
         </Link>
       </div>

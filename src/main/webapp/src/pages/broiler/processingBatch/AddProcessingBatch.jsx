@@ -11,15 +11,13 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddProcessingBatch = () => {
   const { id } = useParams();
   const [batch, setBatch] = useState({
-    processId: "",
+    id: "",
     harvestEventId: "",
     date: "",
     plantLocation: "",
-    operatorId: "",
   });
 
   const [harvestEvents, setHarvestEvents] = useState([]);
-  const [staff, setStaff] = useState([]);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -27,7 +25,7 @@ const AddProcessingBatch = () => {
   useEffect(() => {
     const fetchHarvestEvents = async () => {
       try {
-        const response = await axios.get(`${baseUrl}harvestEvents`, {
+        const response = await axios.get(`${baseUrl}harvest-events`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setHarvestEvents(response.data.content);
@@ -39,28 +37,12 @@ const AddProcessingBatch = () => {
     fetchHarvestEvents();
   }, [token]);
 
-  // Fetch staff/operators
-  useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}staff`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setStaff(response.data.content);
-      } catch (error) {
-        console.error("Error fetching staff:", error);
-        toast.error("Could not load operators");
-      }
-    };
-    fetchStaff();
-  }, [token]);
-
   // Fetch batch if editing
   useEffect(() => {
     if (id) {
       const fetchBatch = async () => {
         try {
-          const response = await axios.get(`${baseUrl}processingBatch/${id}`, {
+          const response = await axios.get(`${baseUrl}processing-batches/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setBatch(response.data);
@@ -85,15 +67,9 @@ const AddProcessingBatch = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}processingBatch/${id}`, batch, {
+        await axios.post(`${baseUrl}processing-batches`, batch, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}processingBatch`, batch, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
 
       toast.success(id ? "Processing batch updated successfully!" : "Processing batch created successfully!");
       navigate("/dashboard/processing-batches");
@@ -114,18 +90,6 @@ const AddProcessingBatch = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-
-              <div className="formInput">
-                <label>Process ID:</label>
-                <input
-                  type="text"
-                  name="processId"
-                  value={batch.processId || ""}
-                  onChange={handleChange}
-                  placeholder="Enter unique process ID"
-                  required
-                />
-              </div>
 
               <div className="formInput">
                 <label>Harvest Event:</label>
@@ -168,21 +132,12 @@ const AddProcessingBatch = () => {
               </div>
 
               <div className="formInput">
-                <label>Operator:</label>
-                <select
-                  name="operatorId"
-                  value={batch.operatorId}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">-- Select Operator --</option>
-                  {staff.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.name}
-                    </option>
-                  ))}
-                </select>
+                <input
+                  hidden
+                />
               </div>
+
+            
 
               <button type="submit">{id ? "Update" : "Save"}</button>
             </form>

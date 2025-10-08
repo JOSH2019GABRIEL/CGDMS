@@ -11,9 +11,10 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddWaste = () => {
   const { id } = useParams();
   const [wasteData, setWasteData] = useState({
+    id: "",
     processId: "",
-    inedibleKg: "",
-    packagingKg: "",
+    inedibleWasteKg: "",
+    packagingWasteKg: "",
     effluentEstimateKg: "",
     disposalMethod: "",
   });
@@ -26,7 +27,7 @@ const AddWaste = () => {
   useEffect(() => {
     const fetchBatches = async () => {
       try {
-        const response = await axios.get(`${baseUrl}processingBatch`, {
+        const response = await axios.get(`${baseUrl}processing-batches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProcessingBatches(response.data.content);
@@ -68,17 +69,15 @@ const AddWaste = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}wastes/${id}`, wasteData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        await axios.post(`${baseUrl}wastes`, wasteData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
+      await axios.post(`${baseUrl}wastes`, wasteData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-      toast.success(id ? "Waste record updated successfully!" : "Waste record created successfully!");
+      toast.success(
+        id
+          ? "Waste record updated successfully!"
+          : "Waste record created successfully!"
+      );
       navigate("/dashboard/wastes");
     } catch (error) {
       console.error("Error saving waste:", error);
@@ -97,7 +96,6 @@ const AddWaste = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-
               <div className="formInput">
                 <label>Processing Batch:</label>
                 <select
@@ -108,8 +106,8 @@ const AddWaste = () => {
                 >
                   <option value="">-- Select Processing Batch --</option>
                   {processingBatches.map((batch) => (
-                    <option key={batch.id} value={batch.processId}>
-                      {batch.processId} - {batch.plantLocation} ({batch.date})
+                    <option key={batch.id} value={batch.id}>
+                      {batch.date} / {batch.plantLocation} - {batch.id}
                     </option>
                   ))}
                 </select>
@@ -150,14 +148,25 @@ const AddWaste = () => {
 
               <div className="formInput">
                 <label>Disposal Method:</label>
-                <input
-                  type="text"
+                <select
                   name="disposalMethod"
                   value={wasteData.disposalMethod || ""}
                   onChange={handleChange}
-                  placeholder="e.g. incineration, composting, landfill"
                   required
-                />
+                >
+                  <option value="">-- Select Disposal Method --</option>
+                  <option value="Incineration">Incineration</option>
+                  <option value="Composting">Composting</option>
+                  <option value="Landfill">Landfill</option>
+                  <option value="Recycling">Recycling</option>
+                  <option value="Burial">Burial</option>
+                  <option value="Rendering">Rendering</option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div className="formInput">
+                <input hidden />
               </div>
 
               <button type="submit">{id ? "Update" : "Save"}</button>

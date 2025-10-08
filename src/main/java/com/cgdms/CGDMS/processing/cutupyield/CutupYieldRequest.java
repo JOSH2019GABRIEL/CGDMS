@@ -18,6 +18,5 @@ public class CutupYieldRequest {
     private Double drumstickKg;
     private Double carcassKg;
 
-    @NotNull(message = "Processing batch ID is required")
     private Long processingBatchId;
 }

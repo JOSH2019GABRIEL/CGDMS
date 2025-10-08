@@ -15,7 +15,7 @@ const ProcessingBatch = () => {
   const fetchBatches = useCallback(async (page, pageSize) => {
     try {
       const response = await axios.get(
-        `${baseUrl}processing-batch?page=${page}&size=${pageSize}`,
+        `${baseUrl}processing-batches?page=${page}&size=${pageSize}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -39,7 +39,7 @@ const ProcessingBatch = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${baseUrl}processing-batch/${id}`, {
+      await axios.delete(`${baseUrl}processing-batches/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -51,11 +51,10 @@ const ProcessingBatch = () => {
 
   // Define DataGrid columns
   const columns = [
-    { field: "process_id", headerName: "Process ID", width: 150 },
-    { field: "harvest_event_id", headerName: "Harvest Event ID", width: 200 },
+    { field: "id", headerName: "ID", width: 70 },
     { field: "date", headerName: "Date", width: 150 },
-    { field: "plant_location", headerName: "Plant Location", width: 200 },
-    { field: "operator", headerName: "Operator", width: 180 },
+    { field: "plantLocation", headerName: "Plant Location", width: 200 },
+    // { field: "operator", headerName: "Operator", width: 180 },
     {
       field: "action",
       headerName: "Action",
@@ -63,14 +62,14 @@ const ProcessingBatch = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/processing-batch/${params.row.process_id}`}
+            to={`/dashboard/processing-batch/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"
-            onClick={() => handleDelete(params.row.process_id)}
+            onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </div>

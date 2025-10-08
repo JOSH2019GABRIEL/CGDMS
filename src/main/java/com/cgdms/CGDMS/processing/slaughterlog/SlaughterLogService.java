@@ -54,7 +54,7 @@ public class SlaughterLogService {
             log = mapper.toEntity(request, batch);
 
         }
-
+        log.setArchived(0);
         slaughterLogRepository.save(log);
         return request;
     }

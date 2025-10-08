@@ -56,6 +56,7 @@ public class ByproductService {
 
         }
 
+        byproduct.setArchived(0);
         byproductRepository.save(byproduct);
         return request;
     }

@@ -15,6 +15,5 @@ public class ByproductsRequest {
     private Double bloodLtr;
     private Double feathersKg;
 
-    @NotNull(message = "Processing batch ID is required")
     private Long processingBatchId;
 }

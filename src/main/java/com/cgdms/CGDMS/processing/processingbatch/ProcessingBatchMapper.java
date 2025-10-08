@@ -11,7 +11,6 @@ public class ProcessingBatchMapper {
         return ProcessingBatch.builder()
                 .date(request.getDate())
                 .plantLocation(request.getPlantLocation())
-                .operator(request.getOperator())
                 .harvestEvent(harvestEvent)
                 .build();
     }
@@ -23,7 +22,6 @@ public class ProcessingBatchMapper {
                 .id(entity.getId())
                 .date(entity.getDate())
                 .plantLocation(entity.getPlantLocation())
-                .operator(entity.getOperator())
                 .harvestEventId(entity.getHarvestEvent() != null ? entity.getHarvestEvent().getId() : null)
                 .build();
     }

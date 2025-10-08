@@ -11,7 +11,8 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddByproducts = () => {
   const { id } = useParams();
   const [byproductData, setByproductData] = useState({
-    processId: "",
+    id: "",
+    processingBatchId: "",
     liverKg: "",
     gizzardKg: "",
     heartKg: "",
@@ -27,7 +28,7 @@ const AddByproducts = () => {
   useEffect(() => {
     const fetchBatches = async () => {
       try {
-        const response = await axios.get(`${baseUrl}processingBatch`, {
+        const response = await axios.get(`${baseUrl}processing-batches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProcessingBatches(response.data.content);
@@ -69,18 +70,13 @@ const AddByproducts = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}byproducts/${id}`, byproductData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
         await axios.post(`${baseUrl}byproducts`, byproductData, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      }
+    
 
       toast.success(id ? "Byproducts updated successfully!" : "Byproducts recorded successfully!");
-      navigate("/dashboard/byproducts");
+      navigate("/dashboard/by-products");
     } catch (error) {
       console.error("Error saving byproducts:", error);
       toast.error(error.response?.data?.message || "Error saving byproducts.");
@@ -102,15 +98,15 @@ const AddByproducts = () => {
               <div className="formInput">
                 <label>Processing Batch:</label>
                 <select
-                  name="processId"
-                  value={byproductData.processId}
+                  name="processingBatchId"
+                  value={byproductData.processingBatchId}
                   onChange={handleChange}
                   required
                 >
                   <option value="">-- Select Processing Batch --</option>
                   {processingBatches.map((batch) => (
-                    <option key={batch.id} value={batch.processId}>
-                      {batch.processId} - {batch.plantLocation} ({batch.date})
+                    <option key={batch.id} value={batch.id}>
+                       {batch.date} / {batch.plantLocation} - {batch.id}
                     </option>
                   ))}
                 </select>

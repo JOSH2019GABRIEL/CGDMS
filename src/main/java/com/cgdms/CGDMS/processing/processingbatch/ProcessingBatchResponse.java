@@ -15,7 +15,6 @@ public class ProcessingBatchResponse {
     private Long id;
     private LocalDate date;
     private String plantLocation;
-    private String operator;
 
     private Long harvestEventId;
     private String harvestEventName; // optional: could be flock or event description

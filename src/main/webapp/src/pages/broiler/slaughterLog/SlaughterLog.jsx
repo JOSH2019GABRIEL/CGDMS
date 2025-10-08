@@ -15,7 +15,7 @@ const SlaughterLog = () => {
   const fetchLogs = useCallback(async (page, pageSize) => {
     try {
       const response = await axios.get(
-        `${baseUrl}slaughter-log?page=${page}&size=${pageSize}`,
+        `${baseUrl}slaughter-logs?page=${page}&size=${pageSize}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -39,7 +39,7 @@ const SlaughterLog = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${baseUrl}slaughter-log/${id}`, {
+      await axios.delete(`${baseUrl}slaughter-logs/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -51,10 +51,10 @@ const SlaughterLog = () => {
 
   // Define DataGrid columns
   const columns = [
-    { field: "process_id", headerName: "Process ID", width: 150 },
-    { field: "birds_received", headerName: "Birds Received", width: 180 },
-    { field: "birds_slaughtered", headerName: "Birds Slaughtered", width: 200 },
-    { field: "condemned_count", headerName: "Condemned Count", width: 200 },
+    { field: "id", headerName: "Process ID", width: 150 },
+    { field: "birdsReceived", headerName: "Birds Received", width: 180 },
+    { field: "birdsSlaughtered", headerName: "Birds Slaughtered", width: 200 },
+    { field: "condemnedCount", headerName: "Condemned Count", width: 200 },
     { field: "reason", headerName: "Reason", width: 250 },
     {
       field: "action",
@@ -63,7 +63,7 @@ const SlaughterLog = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/slaughter-log/${params.row.process_id}`}
+            to={`/dashboard/slaughter-log/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>

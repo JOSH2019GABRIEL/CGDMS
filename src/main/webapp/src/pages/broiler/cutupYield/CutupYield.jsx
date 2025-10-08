@@ -1,4 +1,4 @@
-imimport "../../../style/organization.scss";
+import "../../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
@@ -15,7 +15,7 @@ const CutupYield = () => {
   const fetchYields = useCallback(async (page, pageSize) => {
     try {
       const response = await axios.get(
-        `${baseUrl}cutup-yield?page=${page}&size=${pageSize}`,
+        `${baseUrl}cutup-yields?page=${page}&size=${pageSize}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
@@ -51,13 +51,14 @@ const CutupYield = () => {
 
   // DataGrid Columns
   const columns = [
-    { field: "process_id", headerName: "Process ID", width: 150 },
-    { field: "whole_birds_count", headerName: "Whole Birds Count", width: 200 },
-    { field: "breast_kg", headerName: "Breast (kg)", width: 150 },
-    { field: "thigh_kg", headerName: "Thigh (kg)", width: 150 },
-    { field: "wing_kg", headerName: "Wing (kg)", width: 150 },
-    { field: "drumstick_kg", headerName: "Drumstick (kg)", width: 180 },
-    { field: "carcass_kg", headerName: "Carcass (kg)", width: 180 },
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "processingBatchId", headerName: "Process ID", width: 150 },
+    { field: "wholeBirdsCount", headerName: "Whole Birds Count", width: 200 },
+    { field: "breastKg", headerName: "Breast (kg)", width: 150 },
+    { field: "thighKg", headerName: "Thigh (kg)", width: 150 },
+    { field: "wingKg", headerName: "Wing (kg)", width: 150 },
+    { field: "drumstickKg", headerName: "Drumstick (kg)", width: 180 },
+    { field: "carcassKg", headerName: "Carcass (kg)", width: 180 },
     {
       field: "action",
       headerName: "Action",
@@ -65,14 +66,14 @@ const CutupYield = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/cutup-yield/${params.row.process_id}`}
+            to={`/dashboard/cutup-yield/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>
           </Link>
           <div
             className="deleteButton"
-            onClick={() => handleDelete(params.row.process_id)}
+            onClick={() => handleDelete(params.row.id)}
           >
             Delete
           </div>

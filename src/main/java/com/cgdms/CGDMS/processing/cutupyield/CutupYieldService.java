@@ -56,6 +56,7 @@ public class CutupYieldService {
             cutupYield = mapper.toEntity(request, batch);
         }
 
+        cutupYield.setArchived(0);
         cutupYieldRepository.save(cutupYield);
         return request;
     }

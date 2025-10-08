@@ -30,7 +30,7 @@ public class CutupYieldMapper {
                 .wingKg(entity.getWingKg())
                 .drumstickKg(entity.getDrumstickKg())
                 .carcassKg(entity.getCarcassKg())
-//                .processId(entity.getProcessingBatch() != null ? entity.getProcessingBatch().getId() : null)
+                .processingBatchId(entity.getProcessingBatch() != null ? entity.getProcessingBatch().getId() : null)
 //                .plantLocation(entity.getProcessingBatch() != null ? entity.getProcessingBatch().getPlantLocation() : null)
 //                .operator(entity.getProcessingBatch() != null ? entity.getProcessingBatch().getOperator() : null)
                 .build();

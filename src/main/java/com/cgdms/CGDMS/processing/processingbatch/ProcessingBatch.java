@@ -20,7 +20,6 @@ import java.time.LocalDate;
 public class ProcessingBatch extends BaseEntity {
     private LocalDate date;
     private String plantLocation;
-    private String operator;
 
     @ManyToOne
     @JoinColumn(name = "harvest_event_id")

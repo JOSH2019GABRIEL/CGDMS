@@ -39,7 +39,7 @@ const Wastes = () => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`${baseUrl}wastes/${id}`, {
+      await axios.put(`${baseUrl}wastes/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -52,10 +52,11 @@ const Wastes = () => {
   // DataGrid Columns
   const columns = [
     { field: "id", headerName: "ID", width: 70 },
-    { field: "waste_inedible_kg", headerName: "Inedible Waste (kg)", width: 180 },
-    { field: "waste_packaging_kg", headerName: "Packaging Waste (kg)", width: 180 },
-    { field: "waste_effluent_kg", headerName: "Effluent (kg)", width: 180 },
-    { field: "disposal_method", headerName: "Disposal Method", width: 200 },
+    { field: "processId", headerName: "ID", width: 70 },
+    { field: "inedibleWasteKg", headerName: "Inedible Waste (kg)", width: 180 },
+    { field: "packagingWasteKg", headerName: "Packaging Waste (kg)", width: 180 },
+    { field: "effluentEstimateKg", headerName: "Effluent (kg)", width: 180 },
+    { field: "disposalMethod", headerName: "Disposal Method", width: 200 },
     {
       field: "action",
       headerName: "Action",
@@ -83,7 +84,7 @@ const Wastes = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Wastes
-        <Link to="/dashboard/wastes/new" className="link">
+        <Link to="/dashboard/waste/new" className="link">
           Add New
         </Link>
       </div>

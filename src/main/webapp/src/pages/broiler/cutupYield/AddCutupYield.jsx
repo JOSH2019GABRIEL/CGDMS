@@ -11,7 +11,8 @@ import { useNavigate, useParams } from "react-router-dom";
 const AddCutupYield = () => {
   const { id } = useParams();
   const [yieldData, setYieldData] = useState({
-    processId: "",
+    id: "",
+    processingBatchId: "",
     wholeBirdsCount: "",
     breastKg: "",
     thighKg: "",
@@ -28,7 +29,7 @@ const AddCutupYield = () => {
   useEffect(() => {
     const fetchBatches = async () => {
       try {
-        const response = await axios.get(`${baseUrl}processingBatch`, {
+        const response = await axios.get(`${baseUrl}processing-batches`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProcessingBatches(response.data.content);
@@ -45,7 +46,7 @@ const AddCutupYield = () => {
     if (id) {
       const fetchYield = async () => {
         try {
-          const response = await axios.get(`${baseUrl}cutupYield/${id}`, {
+          const response = await axios.get(`${baseUrl}cutup-yields/${id}`, {
             headers: { Authorization: `Bearer ${token}` },
           });
           setYieldData(response.data);
@@ -70,18 +71,12 @@ const AddCutupYield = () => {
     e.preventDefault();
 
     try {
-      if (id) {
-        await axios.put(`${baseUrl}cutupYield/${id}`, yieldData, {
+        await axios.post(`${baseUrl}cutup-yields`, yieldData, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      } else {
-        await axios.post(`${baseUrl}cutupYield`, yieldData, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-
+    
       toast.success(id ? "Cut-up yield updated successfully!" : "Cut-up yield created successfully!");
-      navigate("/dashboard/cutup-yield");
+      navigate("/dashboard/cutup-yields");
     } catch (error) {
       console.error("Error saving cut-up yield:", error);
       toast.error(error.response?.data?.message || "Error saving cut-up yield.");
@@ -103,15 +98,15 @@ const AddCutupYield = () => {
               <div className="formInput">
                 <label>Processing Batch:</label>
                 <select
-                  name="processId"
-                  value={yieldData.processId}
+                  name="processingBatchId"
+                  value={yieldData.processingBatchId}
                   onChange={handleChange}
                   required
                 >
                   <option value="">-- Select Processing Batch --</option>
                   {processingBatches.map((batch) => (
-                    <option key={batch.id} value={batch.processId}>
-                      {batch.processId} - {batch.plantLocation} ({batch.date})
+                    <option key={batch.id} value={batch.id}>
+                      {batch.date} / {batch.plantLocation} - {batch.id}
                     </option>
                   ))}
                 </select>
@@ -185,6 +180,12 @@ const AddCutupYield = () => {
                   value={yieldData.carcassKg || ""}
                   onChange={handleChange}
                   required
+                />
+              </div>
+
+              <div className="formInput">
+                <input
+                  hidden
                 />
               </div>
 

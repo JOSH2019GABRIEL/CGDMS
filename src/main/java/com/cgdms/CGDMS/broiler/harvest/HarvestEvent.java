@@ -3,7 +3,6 @@ package com.cgdms.CGDMS.broiler.harvest;
 
 import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.broiler.flock.Flock;
-import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;

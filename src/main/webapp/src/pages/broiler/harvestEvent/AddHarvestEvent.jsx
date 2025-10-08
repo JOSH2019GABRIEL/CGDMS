@@ -21,7 +21,6 @@ const AddHarvestEvent = () => {
   });
 
   const [flocks, setFlocks] = useState([]);
-  const [staff, setStaff] = useState([]);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -41,21 +40,6 @@ const AddHarvestEvent = () => {
     fetchFlocks();
   }, [token]);
 
-  // Fetch staff/operators
-  useEffect(() => {
-    const fetchStaff = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}staff`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setStaff(response.data.content);
-      } catch (error) {
-        console.error("Error fetching staff:", error);
-        toast.error("Could not load operators");
-      }
-    };
-    fetchStaff();
-  }, [token]);
 
   // Fetch event if editing
   useEffect(() => {

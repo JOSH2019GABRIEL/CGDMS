@@ -19,8 +19,6 @@ public class ProcessingBatchRequest {
     @NotNull(message = "Plant location is required")
     private String plantLocation;
 
-    @NotNull(message = "Operator is required")
-    private String operator;
 
     @NotNull(message = "Harvest Event ID is required")
     private Long harvestEventId;

@@ -54,6 +54,7 @@ public class WastesService {
             waste = mapper.toEntity(request, batch);
         }
 
+        waste.setArchived(0);
         wastesRepository.save(waste);
         return request;
     }

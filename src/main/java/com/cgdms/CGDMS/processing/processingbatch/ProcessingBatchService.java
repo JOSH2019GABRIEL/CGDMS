@@ -42,16 +42,15 @@ public class ProcessingBatchService {
 
             batch.setDate(request.getDate());
             batch.setPlantLocation(request.getPlantLocation());
-            batch.setOperator(request.getOperator());
-
            if (harvestEvent != null) {
                batch.setHarvestEvent(harvestEvent);
            }
         } else {
             // create new
             batch = mapper.toEntity(request, harvestEvent);
-        }
 
+        }
+        batch.setArchived(0);
         processingBatchRepository.save(batch);
         return request;
     }
