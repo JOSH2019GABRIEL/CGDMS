@@ -213,6 +213,52 @@ const Sidebar = () => {
                   <span>Harvest Event</span>
                 </li>
               </Link>
+              {/* new menus */}
+               <Link
+                to="/dashboard/processing-batch"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <PersonOutlineIcon className="icon" />
+                  <span>Processing Batch</span>
+                </li>
+              </Link>
+               <Link
+                to="/dashboard/slaughter-logs"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <PersonOutlineIcon className="icon" />
+                  <span>Slaughter Log</span>
+                </li>
+              </Link>
+               <Link
+                to="/dashboard/cutup-yields"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <PersonOutlineIcon className="icon" />
+                  <span>Cutup Yield</span>
+                </li>
+              </Link>
+               <Link
+                to="/dashboard/by-products"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <PersonOutlineIcon className="icon" />
+                  <span>Byproducts</span>
+                </li>
+              </Link>
+               <Link
+                to="/dashboard/wastes"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <PersonOutlineIcon className="icon" />
+                  <span>Wastes</span>
+                </li>
+              </Link>
             </AccordionDetails>
           </Accordion>
 

@@ -1,7 +1,6 @@
 package com.cgdms.CGDMS.processing.byproduct;
 
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatch;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -31,8 +30,6 @@ public class ByproductMapper {
                 .bloodLtr(entity.getBloodLtr())
                 .feathersKg(entity.getFeathersKg())
                 .processingBatchId(entity.getProcessingBatch() != null ? entity.getProcessingBatch().getId() : null)
-//                .plantLocation(entity.getProcessingBatch() != null ? entity.getProcessingBatch().getPlantLocation() : null)
-//                .operator(entity.getProcessingBatch() != null ? entity.getProcessingBatch().getOperator() : null)
                 .build();
     }
 }
