@@ -38,7 +38,7 @@ public class PostHarvestLossService {
             loss.setPestsDamageKg(request.getPestsDamageKg());
 
             if (harvestBatch != null){
-                loss.setHarvestBatch(harvestBatch);
+                loss.setHarvest(harvestBatch);
             }
         } else {
             loss = mapper.toEntity(request, harvestBatch);

@@ -72,16 +72,17 @@ const Sidebar = () => {
               "&:before": { display: "none" },
             }}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon className="icon" />}
-            sx={{
-      display: "flex",
-      justifyContent: "flex-start",   // keep text + arrow aligned to the left
-      alignItems: "center",           // vertical centering
-      gap: 1,                         // small spacing between text and arrow
-      "& .MuiAccordionSummary-content": {
-        margin: 0,                    // remove default margin
-      },
-    }}
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon className="icon" />}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start", // keep text + arrow aligned to the left
+                alignItems: "center", // vertical centering
+                gap: 1, // small spacing between text and arrow
+                "& .MuiAccordionSummary-content": {
+                  margin: 0, // remove default margin
+                },
+              }}
             >
               <span className="title">CAT-FISH MANAGEMENT</span>
             </AccordionSummary>
@@ -155,7 +156,9 @@ const Sidebar = () => {
               "&:before": { display: "none" },
             }}
           >
-            <AccordionSummary expandIcon={<ExpandMoreIcon className="submenu" />}>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon className="submenu" />}
+            >
               <p className="title">BROILER MANAGEMENT</p>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
@@ -165,7 +168,10 @@ const Sidebar = () => {
                   <span>Flock</span>
                 </li>
               </Link>
-              <Link to="/dashboard/broiler-log" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/broiler-log"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <WorkspacesIcon className="icon" />
                   <span>Daily Broiler Log</span>
@@ -180,7 +186,10 @@ const Sidebar = () => {
                   <span>Weight Sample</span>
                 </li>
               </Link>
-              <Link to="/dashboard/broiler-vaccination-log" style={{ textDecoration: "none" }}>
+              <Link
+                to="/dashboard/broiler-vaccination-log"
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <PsychologyOutlinedIcon className="icon" />
                   <span>Vaccination Logs</span>
@@ -214,7 +223,7 @@ const Sidebar = () => {
                 </li>
               </Link>
               {/* new menus */}
-               <Link
+              <Link
                 to="/dashboard/processing-batch"
                 style={{ textDecoration: "none" }}
               >
@@ -223,7 +232,7 @@ const Sidebar = () => {
                   <span>Processing Batch</span>
                 </li>
               </Link>
-               <Link
+              <Link
                 to="/dashboard/slaughter-logs"
                 style={{ textDecoration: "none" }}
               >
@@ -232,7 +241,7 @@ const Sidebar = () => {
                   <span>Slaughter Log</span>
                 </li>
               </Link>
-               <Link
+              <Link
                 to="/dashboard/cutup-yields"
                 style={{ textDecoration: "none" }}
               >
@@ -241,7 +250,7 @@ const Sidebar = () => {
                   <span>Cutup Yield</span>
                 </li>
               </Link>
-               <Link
+              <Link
                 to="/dashboard/by-products"
                 style={{ textDecoration: "none" }}
               >
@@ -250,10 +259,7 @@ const Sidebar = () => {
                   <span>Byproducts</span>
                 </li>
               </Link>
-               <Link
-                to="/dashboard/wastes"
-                style={{ textDecoration: "none" }}
-              >
+              <Link to="/dashboard/wastes" style={{ textDecoration: "none" }}>
                 <li>
                   <PersonOutlineIcon className="icon" />
                   <span>Wastes</span>
@@ -261,6 +267,75 @@ const Sidebar = () => {
               </Link>
             </AccordionDetails>
           </Accordion>
+
+          {/* Vegetable MANAGEMENT */}
+          <Accordion
+            expanded={expanded === "vegetables"}
+            onChange={handleChange("vegetables")}
+            disableGutters
+            square
+            sx={{
+              background: "transparent",
+              boxShadow: "none",
+              "&:before": { display: "none" },
+            }}
+          >
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon className="submenu" />}
+            >
+              <p className="title">VEGETABLE MANAGEMENT</p>
+            </AccordionSummary>
+            <AccordionDetails sx={{ padding: 0 }}>
+              <Link to="/dashboard/crop-varieties" style={{ textDecoration: "none" }}>
+                <li>
+                  <StoreIcon className="icon" />
+                  <span>Crop Varities</span>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/veg-crop-logs"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <WorkspacesIcon className="icon" />
+                  <span>Daily Crop Log</span>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/planting-events"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <TimelineIcon className="icon" />
+                  <span>Planting Events</span>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/harvest-batches"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <PsychologyOutlinedIcon className="icon" />
+                  <span>Harvest Batches</span>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/postloss-harvestes"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <MediationIcon className="icon" />
+                  <span>Post Harvest Losses</span>
+                </li>
+              </Link>
+            </AccordionDetails>
+          </Accordion>
+          <Link to="/dashboard/tasks" style={{ textDecoration: "none" }}>
+            <li>
+              <AddTaskIcon className="icon" />
+              <span>Sales Link</span>
+            </li>
+          </Link>
 
           <p className="title">USEFUL</p>
           <li>
@@ -306,6 +381,12 @@ const Sidebar = () => {
                   <li>
                     <AgricultureIcon className="icon" />
                     <span>Farm</span>
+                  </li>
+                </Link>
+                <Link to="/dashboard/plots" style={{ textDecoration: "none" }}>
+                  <li>
+                    <AgricultureIcon className="icon" />
+                    <span>Plot</span>
                   </li>
                 </Link>
                 <Link to="/dashboard/cadre" style={{ textDecoration: "none" }}>

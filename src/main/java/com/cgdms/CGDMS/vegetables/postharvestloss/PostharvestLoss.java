@@ -23,5 +23,5 @@ public class PostharvestLoss extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "harvest_id")
-    private HarvestBatch harvestBatch;
+    private HarvestBatch harvest;
 }

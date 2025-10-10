@@ -19,27 +19,15 @@ const Flock = () => {
       `${baseUrl}flocks?page=${page}&size=${pageSize}`,
       { headers: { Authorization: `Bearer ${token}` } }
     );
-
     const { content, totalElements } = response.data;
 
     console.log("Fetched flocks:", content);
-
-    // const rows = Array.isArray(content)
-    //   ? content.map((flock, index) => ({
-    //       id: flock.flock_id || index, // ensure unique ID
-    //       ...flock,
-    //     }))
-    //   : [];
-
       const rows = content.map((flock, index) => ({
         id: flock.id || index,
         ...flock,
       }));
       console.log(content)
-
-      
-
-    setFlockList(rows);
+      setFlockList(rows);
     setRowCount(totalElements);
   } catch (error) {
     console.error("Error fetching flocks:", error);

@@ -1,8 +1,104 @@
+# ---------------------------
+# Java / Spring Boot Gitignore
+# ---------------------------
+
+# Compiled class files
+*.class
+
+# Log files
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# ---------------------------
+# Maven
+# ---------------------------
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!*/src/main/**/target/
+!/src/test/**/target/
+
+# Maven local build info
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+# ---------------------------
+# IntelliJ IDEA
+# ---------------------------
+.idea/
+*.iws
+*.iml
+*.ipr
+
 # Default ignored files
 /shelf/
 /workspace.xml
+
 # Editor-based HTTP Client requests
 /httpRequests/
+
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml
+
+# ---------------------------
+# Eclipse
+# ---------------------------
+.project
+.classpath
+.settings/
+.loadpath
+
+# ---------------------------
+# VS Code
+# ---------------------------
+.vscode/
+
+# ---------------------------
+# OS-specific files
+# ---------------------------
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# ---------------------------
+# Others
+# ---------------------------
+# Build directories
+out/
+
+## Environment / local configs
+#.env
+#application.properties
+#application.yml
+#application-local.yml
+#application-dev.yml
+#application-test.yml
+
+# ---------------------------
+# End of File
+# ---------------------------

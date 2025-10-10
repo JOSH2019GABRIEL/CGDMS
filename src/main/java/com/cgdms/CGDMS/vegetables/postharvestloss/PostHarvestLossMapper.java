@@ -13,7 +13,7 @@ public class PostHarvestLossMapper {
                 .spoilageKg(request.getSpoilageKg())
                 .trimmingWasteKg(request.getTrimmingWasteKg())
                 .pestsDamageKg(request.getPestsDamageKg())
-                .harvestBatch(harvest)
+                .harvest(harvest)
                 .build();
     }
 
@@ -25,7 +25,7 @@ public class PostHarvestLossMapper {
                 .spoilageKg(entity.getSpoilageKg())
                 .trimmingWasteKg(entity.getTrimmingWasteKg())
                 .pestsDamageKg(entity.getPestsDamageKg())
-                .harvestBatchId(entity.getHarvestBatch() != null ? entity.getHarvestBatch().getId() : null)
+                .harvestBatchId(entity.getHarvest() != null ? entity.getHarvest().getId() : null)
                 .build();
     }
 }
