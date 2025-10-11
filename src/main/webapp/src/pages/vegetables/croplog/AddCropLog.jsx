@@ -104,7 +104,9 @@ const AddCropLog = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success(id ? "Crop log updated successfully!" : "Crop log created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/veg-crop-logs");
+      }, 1000);
     } catch (error) {
       console.error("Error saving crop log:", error);
       toast.error(error.response?.data?.message || "Error saving crop log.");

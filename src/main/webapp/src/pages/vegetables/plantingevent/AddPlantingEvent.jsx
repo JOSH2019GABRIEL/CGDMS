@@ -108,7 +108,9 @@ const AddPlantingEvent = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
       toast.success(id ? "Planting event updated successfully!" : "Planting event created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/planting-events");
+      }, 1000);
     } catch (error) {
       console.error("Error saving planting event:", error);
       toast.error(error.response?.data?.message || "Error saving planting event.");

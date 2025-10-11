@@ -70,7 +70,7 @@ const PostLossHarvest = () => {
       renderCell: (params) => (
         <div className="cellAction">
           <Link
-            to={`/dashboard/postharvest-losses/${params.row.id}`}
+            to={`/dashboard/postloss-harvest/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">Edit</div>

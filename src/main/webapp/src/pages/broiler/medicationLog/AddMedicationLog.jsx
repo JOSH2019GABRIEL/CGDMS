@@ -76,7 +76,9 @@ const AddMedicationLogs = () => {
         });
 
       toast.success(id ? "Medication log updated successfully!" : "Medication log created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/broiler-medication-log");
+      }, 1000);
     } catch (error) {
       console.error("Error saving log:", error);
       toast.error(error.response?.data?.message || "Error saving log.");

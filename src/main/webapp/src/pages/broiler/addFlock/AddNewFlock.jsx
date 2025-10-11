@@ -97,7 +97,9 @@ const AddNewFlock = () => {
       });
 
       toast.success(id ? "Flock updated successfully!" : "Flock created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/flock");
+      }, 1000);
     } catch (error) {
       console.error("Error saving flock:", error);
       toast.error(error.response?.data?.message || "Error saving flock.");

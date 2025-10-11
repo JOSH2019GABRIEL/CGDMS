@@ -76,7 +76,9 @@ const AddWeightSample = () => {
       
 
       toast.success(id ? "Weight sample updated successfully!" : "Weight sample created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/weight-sample");
+      }, 1000);
     } catch (error) {
       console.error("Error saving sample:", error);
       toast.error(error.response?.data?.message || "Error saving sample.");

@@ -79,7 +79,9 @@ const AddNewCadre = () => {
       toast.success(
         id ? "Cadre updated successfully!" : "Cadre created successfully!"
       );
+      setTimeout(() => {
       navigate("/dashboard/cadre");
+      }, 1000);
     } catch (error) {
       console.error("Error saving cadre:", error);
       toast.error(error.response?.data?.message || "Error saving cadre.");

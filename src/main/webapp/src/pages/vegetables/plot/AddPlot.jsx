@@ -55,7 +55,9 @@ const AddPlot = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Plot record created successfully!");
+        setTimeout(() => {
       navigate("/dashboard/plots");
+      }, 1000);
     } catch (error) {
       console.error("Error saving plot:", error);
       toast.error(error.response?.data?.message || "Error saving plot.");

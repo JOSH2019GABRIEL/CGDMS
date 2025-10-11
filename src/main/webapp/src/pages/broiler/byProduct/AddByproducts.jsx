@@ -76,7 +76,9 @@ const AddByproducts = () => {
     
 
       toast.success(id ? "Byproducts updated successfully!" : "Byproducts recorded successfully!");
+      setTimeout(() => {
       navigate("/dashboard/by-products");
+      }, 1000);
     } catch (error) {
       console.error("Error saving byproducts:", error);
       toast.error(error.response?.data?.message || "Error saving byproducts.");

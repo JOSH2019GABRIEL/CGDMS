@@ -60,8 +60,9 @@ const AddCropVariety = () => {
         });
      toast.success(id ? "Crop variety updated successfully!" : "Crop variety created successfully!");
 
-
+setTimeout(() => {
       navigate("/dashboard/crop-varieties");
+      }, 1000);
     } catch (error) {
       console.error("Error saving crop variety:", error);
       toast.error(error.response?.data?.message || "Error saving crop variety.");

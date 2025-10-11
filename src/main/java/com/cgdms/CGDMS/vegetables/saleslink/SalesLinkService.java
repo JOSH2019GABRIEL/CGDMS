@@ -50,7 +50,7 @@ public class SalesLinkService {
     }
 
     public PageResponse<SalesLinkResponse> findAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("harvestId").descending());
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Page<SalesLink> list = salesLinkRepository.findAllNotArchived(pageable);
         List<SalesLinkResponse> responses = list.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, list.getNumber(), list.getSize(),

@@ -80,7 +80,9 @@ const AddHarvestEvent = () => {
           ? "Harvest event updated successfully!"
           : "Harvest event created successfully!"
       );
+      setTimeout(() => {
       navigate("/dashboard/harvest-event");
+      }, 1000);
     } catch (error) {
       console.error("Error saving event:", error);
       toast.error(error.response?.data?.message || "Error saving event.");

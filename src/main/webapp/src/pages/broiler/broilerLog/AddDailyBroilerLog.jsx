@@ -101,7 +101,9 @@ const AddDailyBroilerLog = () => {
       toast.success(
         id ? "Log updated successfully!" : "Log created successfully!"
       );
+      setTimeout(() => {
       navigate("/dashboard/broiler-log");
+      }, 1000);
     } catch (error) {
       console.error("Error saving log:", error);
       toast.error(error.response?.data?.message || "Error saving log.");

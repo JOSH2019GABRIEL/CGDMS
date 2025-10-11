@@ -70,6 +70,8 @@ import HarvestBatches from "pages/vegetables/harvestbatche/HarvestBatches";
 import AddHarvestBatch from "pages/vegetables/harvestbatche/AddHarvestBatch";
 import PostLossHarvest from "pages/vegetables/postlossharvest/PostLossHarvests";
 import AddPostLossHarvest from "pages/vegetables/postlossharvest/AddPossLossHarvest";
+import AddSalesLink from "pages/vegetables/saleslink/AddSalesLink";
+import SalesLink from "pages/vegetables/saleslink/SalesLink";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -417,6 +419,17 @@ function App() {
           path="/dashboard/postloss-harvest/new"
           element={<AddPostLossHarvest />}
         />
+
+        <Route
+          path="/dashboard/sales"
+          element={<List Component={SalesLink} path="/dashboard/sales/new" />}
+        />
+        <Route path="/dashboard/sales/:id" element={<AddSalesLink />} />
+        <Route
+          path="/dashboard/sales/new"
+          element={<AddSalesLink />}
+        />
+        
 
 
 

@@ -72,7 +72,9 @@ const AddProcessingBatch = () => {
         });
 
       toast.success(id ? "Processing batch updated successfully!" : "Processing batch created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/processing-batches");
+      }, 1000);
     } catch (error) {
       console.error("Error saving batch:", error);
       toast.error(error.response?.data?.message || "Error saving batch.");

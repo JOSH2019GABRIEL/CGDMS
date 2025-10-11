@@ -76,7 +76,9 @@ const AddCutupYield = () => {
         });
     
       toast.success(id ? "Cut-up yield updated successfully!" : "Cut-up yield created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/cutup-yields");
+      }, 1000);
     } catch (error) {
       console.error("Error saving cut-up yield:", error);
       toast.error(error.response?.data?.message || "Error saving cut-up yield.");

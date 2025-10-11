@@ -74,7 +74,9 @@ const AddSlaughterLog = () => {
         });
       
       toast.success(id ? "Slaughter log updated successfully!" : "Slaughter log created successfully!");
+     setTimeout(() => {
       navigate("/dashboard/slaughter-logs");
+      }, 1000);
     } catch (error) {
       console.error("Error saving slaughter log:", error);
       toast.error(error.response?.data?.message || "Error saving slaughter log.");

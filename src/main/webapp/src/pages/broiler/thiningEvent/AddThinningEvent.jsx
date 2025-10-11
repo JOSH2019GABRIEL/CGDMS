@@ -75,7 +75,9 @@ const AddThinningEvent = () => {
 
 
       toast.success(id ? "Thinning event updated successfully!" : "Thinning event created successfully!");
+      setTimeout(() => {
       navigate("/dashboard/thinning-event");
+      }, 1000);
     } catch (error) {
       console.error("Error saving event:", error);
       toast.error(error.response?.data?.message || "Error saving event.");

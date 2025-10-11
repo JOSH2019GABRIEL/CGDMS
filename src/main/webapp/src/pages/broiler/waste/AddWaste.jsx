@@ -78,7 +78,9 @@ const AddWaste = () => {
           ? "Waste record updated successfully!"
           : "Waste record created successfully!"
       );
+      setTimeout(() => {
       navigate("/dashboard/wastes");
+      }, 1000);
     } catch (error) {
       console.error("Error saving waste:", error);
       toast.error(error.response?.data?.message || "Error saving waste.");
