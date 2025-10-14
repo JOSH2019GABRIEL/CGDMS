@@ -1,10 +1,11 @@
 package com.cgdms.CGDMS.batch;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.pond.Pond;
 import com.cgdms.CGDMS.pond.PondRepository;
-import com.cgdms.CGDMS.pond.PondRequest;
-import com.cgdms.CGDMS.pond.PondResponse;
+import com.cgdms.CGDMS.user.User;
+import com.cgdms.CGDMS.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,6 +27,10 @@ public class BatchService {
 
     @Autowired
     private BatchMapperService batchMapper;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public BatchRequest saveBatch(BatchRequest batchRequest) {
         Batch batch;
@@ -79,13 +84,22 @@ public class BatchService {
         return batchRequest;
     }
 
-
     public PageResponse<BatchResponse> findAllBatch(int page, int size) {
+
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Batch> batches = batchRepository.findAllNotArchived(pageable); // or findAllUsers if you need custom filtering
+
+        Page<Batch> batches = isAdmin
+                ? batchRepository.findAllNotArchived(pageable, farmId)
+                : batchRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
+
         List<BatchResponse> batchResponses = batches.stream()
                 .map(batchMapper::toBatchResponse)
                 .toList();
+
         return new PageResponse<>(
                 batchResponses,
                 batches.getNumber(),
@@ -110,6 +124,8 @@ public class BatchService {
     }
 
     public Integer totalNumberOfFingerlings() {
-        return batchRepository.getSumOfAllFingerlings();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+        return batchRepository.getSumOfAllFingerlings(farmId);
     }
 }

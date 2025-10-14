@@ -2,6 +2,7 @@ package com.cgdms.CGDMS.broiler.harvest;
 
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
@@ -26,6 +27,8 @@ public class HarvestEventService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public HarvestEventRequest saveHarvest(HarvestEventRequest request) {
         HarvestEvent harvest;
@@ -78,9 +81,15 @@ public class HarvestEventService {
     }
 
     public PageResponse<HarvestEventResponse> findAllHarvests(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<HarvestEvent> harvests = harvestEventRepository.findAllNotArchived(pageable);
+        Page<HarvestEvent> harvests = isAdmin
+                 ? harvestEventRepository.findAllNotArchived(pageable, farmId)
+                : harvestEventRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
 
         List<HarvestEventResponse> responses = harvests.stream()
                 .map(mapper::toResponse)

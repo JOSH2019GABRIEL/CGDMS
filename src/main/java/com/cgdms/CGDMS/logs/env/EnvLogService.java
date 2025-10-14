@@ -1,5 +1,6 @@
 package com.cgdms.CGDMS.logs.env;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +22,7 @@ public class EnvLogService {
 
     private final EnvLogRepository repo;
     private final EnvLogMapper mapper;
+    private final AuthUtils authUtils;
 
     @Transactional
     public EnvLogResponse create(EnvLogRequest req, Authentication connectedUser) {
@@ -55,8 +57,12 @@ public class EnvLogService {
 
     @Transactional //(readOnly = true)
     public PageResponse<EnvLogResponse> listAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "measuredAt", "createdDate"));
-        Page<EnvLog> p = repo.findAll(pageable);
+        Page<EnvLog> p = isAdmin ?  repo.findAllUnArchived(pageable, farmId) : repo.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
         List<EnvLogResponse> content = p.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(content, p.getNumber(), p.getSize(), p.getTotalElements(), p.getTotalPages(), p.isFirst(), p.isLast());
     }

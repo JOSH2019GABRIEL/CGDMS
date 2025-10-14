@@ -1,9 +1,11 @@
 package com.cgdms.CGDMS.processing.slaughterlog;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatch;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatchRepository;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -22,6 +24,8 @@ public class SlaughterLogService {
 
     @Autowired
     private SlaughterLogMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
 
     /**
      * Create or update a SlaughterLog
@@ -63,9 +67,14 @@ public class SlaughterLogService {
      * Paginated retrieval of all SlaughterLogs
      */
     public PageResponse<SlaughterLogResponse> findAllSlaughterLogs(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<SlaughterLog> logs = slaughterLogRepository.findAllNotArchived(pageable);
+        Page<SlaughterLog> logs = isAdmin ? slaughterLogRepository.findAllNotArchived(pageable, farmId) : slaughterLogRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<SlaughterLogResponse> responses = logs.stream()
                 .map(mapper::toResponse)

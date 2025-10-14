@@ -1,7 +1,9 @@
 package com.cgdms.CGDMS.broiler.dailybroilerlogs;
 
+import com.cgdms.CGDMS.batch.Batch;
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
@@ -26,6 +28,8 @@ public class DailyBroilerLogService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public DailyBroilerLogRequest saveLog(DailyBroilerLogRequest request) {
         DailyBroilerLog log;
@@ -79,9 +83,16 @@ public class DailyBroilerLogService {
     }
 
     public PageResponse<DailyBroilerLogResponse> findAllLogs(int page, int size) {
+
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<DailyBroilerLog> logs = logRepository.findAllNotArchived(pageable);
+        Page<DailyBroilerLog> logs = isAdmin
+                ? logRepository.findAllNotArchived(pageable, farmId)
+                : logRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
 
         List<DailyBroilerLogResponse> responses = logs.stream()
                 .map(mapper::toResponse)

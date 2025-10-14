@@ -2,6 +2,7 @@ package com.cgdms.CGDMS.user;
 
 import com.cgdms.CGDMS.cadre.Cadre;
 import com.cgdms.CGDMS.cadre.CadreRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.email.EmailService;
 import com.cgdms.CGDMS.email.EmailTemplateName;
@@ -52,15 +53,19 @@ public class UserService {
     private AuthenticationManager authenticationManager;
     @Autowired
     private JWTService jwtService;
+    @Autowired
+    private AuthUtils authUtils;
 
     @Value("${application.mailing.frontend.activation-url}")
     private String activationUrl;
 
+    private final static String DEFAULT_PASSWORD = "defaultPassword";
+
 
     public void register(RegistrationRequest request) throws MessagingException {
+        String emailLowerCase = request.getEmail().toLowerCase();
         var userRole = roleRepository.findById(request.getRoleId())
                 .orElseThrow(() -> new IllegalStateException("ROLE was not initialized"));
-        System.out.println(userRole);
         var userFarm = farmRepository.findById(request.getFarmId())
                 .orElseThrow(() -> new IllegalStateException("FARM was not initialized"));
 
@@ -72,13 +77,13 @@ public class UserService {
                 .lastname(request.getLastname())
                 .cadre(cadre)
                 .phone(request.getPhone())
-                .email(request.getEmail())
+                .email(emailLowerCase)
                 .dateOfBirth(request.getDateOfBirth())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .accountLocked(false)
                 .enabled(true)
                 .archived(0)
-                .roles(List.of(userRole))
+                .role(userRole)
                 .farm(userFarm)
                 .build();
         userRepository.save(user);
@@ -153,9 +158,13 @@ public class UserService {
 
 
     public PageResponse<UserResponse> findAllStaff(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<User> users = userRepository.findAllUsers(pageable); // or findAllUsers if you need custom filtering
+        Page<User> users = isAdmin ? userRepository.findAllUsers(pageable, farmId) : userRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<UserResponse> userResponses = users.stream()
                 .map(userMapperService::toUserResponse)
@@ -226,10 +235,22 @@ public class UserService {
     }
 
     // Optional: ADMIN can reset user password without old one
-    public void adminResetPassword(Integer userId, String newPassword) {
-        User user = userRepository.findById(userId)
+    public void adminResetPassword(String userEmail, String newPassword) {
+        String cleanEmail = userEmail.toLowerCase();
+        newPassword = passwordEncoder.encode(DEFAULT_PASSWORD);
+        User user = userRepository.findByEmail(cleanEmail)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         user.setPassword(passwordEncoder.encode(newPassword));
+        userRepository.save(user);
+    }
+
+    public void userResetPassword(String userEmail) {
+        String cleanEmail = userEmail.toLowerCase();
+        String newPassword = passwordEncoder.encode(DEFAULT_PASSWORD);
+        User user = userRepository.findByEmail(cleanEmail)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        //boolean matches = passwordEncoder.matches(DEFAULT_PASSWORD, newPassword);
+        user.setPassword(newPassword);
         userRepository.save(user);
     }
 
@@ -241,7 +262,9 @@ public class UserService {
     }
 
     public Integer totalNumberOfUsers() {
-        return userRepository.findAllCount();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+        return userRepository.findAllCount(farmId);
     }
 
 }

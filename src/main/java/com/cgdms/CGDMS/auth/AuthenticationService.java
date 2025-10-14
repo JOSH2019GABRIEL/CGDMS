@@ -1,20 +1,17 @@
 package com.cgdms.CGDMS.auth;
 
-
-import com.cgdms.CGDMS.role.Role;
 import com.cgdms.CGDMS.security.JWTService;
-import com.cgdms.CGDMS.user.*;
+import com.cgdms.CGDMS.user.User;
+import com.cgdms.CGDMS.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 @Service
-//@RequiredArgsConstructor
 public class AuthenticationService {
 
     @Autowired
@@ -22,9 +19,9 @@ public class AuthenticationService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
     @Autowired
     private JWTService jwtService;
-
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         var auth = authenticationManager.authenticate(
@@ -33,27 +30,25 @@ public class AuthenticationService {
                         request.getPassword()
                 )
         );
+
+        var user = (User) auth.getPrincipal();
         var claims = new HashMap<String, Object>();
-        var user = ((User)auth.getPrincipal());
+
         claims.put("fullName", user.fullName());
         claims.put("farm", user.getFarm() != null ? user.getFarm().getFarmName() : "No Farm");
-        claims.put("role", user.getRoles() != null ?
-                user.getRoles().stream().map(Role::getName).toList() :
-                Collections.emptyList());
+        claims.put("org", user.getFarm() != null ? user.getFarm().getOrganization().getName() : "No Organization");
+        claims.put("role", user.getRole() != null ? user.getRole().getName() : "No Role");
+
         var jwtToken = jwtService.generateToken(claims, user);
+
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .farmName(user.getFarm() != null ? user.getFarm().getFarmName() : "No Farm")
-                .roles(user.getRoles().stream()
-                        .map(Role::getName)
-                        .toList())
+                .roles(List.of(user.getRole() != null ? user.getRole().getName() : "No Role"))
                 .build();
-
-
     }
 
     public List<User> fetchUsers() {
         return userRepository.findAll();
-
     }
 }

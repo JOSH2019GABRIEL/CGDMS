@@ -1,7 +1,6 @@
 package com.cgdms.CGDMS.auth;
 
-
-import com.cgdms.CGDMS.user.User;
+import com.cgdms.CGDMS.user.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,29 +16,33 @@ public class AuthenticationController {
 
     @Autowired
     private AuthenticationService service;
-
-
-//    @PostMapping("/register")
-//    public ResponseEntity<?> register(@RequestBody @Valid RegistrationRequest request) throws MessagingException {
-//        service.register(request);
-//        return ResponseEntity.accepted().build();
-//    }
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate (@RequestBody @Valid AuthenticationRequest request) {
         return ResponseEntity.ok(service.authenticate(request));
 
     }
+    @PutMapping("/{userEmail}/reset-password")
+    public ResponseEntity<?> resetPassword(@Valid @PathVariable String userEmail) {
+        userService.userResetPassword(userEmail);
+        return ResponseEntity.ok("Password reset successfully");
+    }
+
+
+//    @PutMapping("/{email}/reset-password")
+////    @PreAuthorize("hasAuthority('ADMIN')")
+//    public ResponseEntity<?> resetPassword(
+//            @PathVariable String userEmail) {
+//
+//        userService.userResetPassword(userEmail);
+//        return ResponseEntity.ok("Password reset successfully");
+//    }
 
 //    @GetMapping("/activate-account")
 //    public void confirm (@RequestParam String token) throws MessagingException {
 //        service.activateAccount(token);
 //    }
-
-    @GetMapping("/users")
-    public ResponseEntity<List<User>> getUsers (){
-       List<User> users =  service.fetchUsers();
-        return ResponseEntity.ok(users);
-    }
 
 }

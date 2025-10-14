@@ -11,6 +11,15 @@ public interface HarvestEventRepository extends JpaRepository<HarvestEvent, Long
                 SELECT h 
                 FROM HarvestEvent h
                 WHERE h.archived = 0
+                AND h.farm.id= :farmId
                 """)
-    Page<HarvestEvent> findAllNotArchived(Pageable pageable);
+    Page<HarvestEvent> findAllNotArchived(Pageable pageable, Long farmId);
+
+    @Query(value = """
+                SELECT h 
+                FROM HarvestEvent h
+                WHERE h.archived = 0
+                AND h.farm.id= :farmId AND h.operatorUserId = :id
+                """)
+    Page<HarvestEvent> findAllNotArchivedForUsers(Pageable pageable, Integer id, Long farmId);
 }

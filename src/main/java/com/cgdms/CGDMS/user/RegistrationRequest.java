@@ -36,7 +36,7 @@ public class RegistrationRequest {
     @Size(min = 8, message = "Password should be 8 character long minimum")
     private String password;
     private String confirmPassword;
-    private Integer roleId;
+    private Long roleId;
     private Long farmId;
 
 

@@ -10,9 +10,15 @@ public interface SlaughterLogRepository extends JpaRepository <SlaughterLog, Lon
     @Query(value = """
                 SELECT slaughterlog 
                 FROM SlaughterLog slaughterlog
-                WHERE slaughterlog.archived = 0
+                WHERE slaughterlog.archived = 0 and slaughterlog.farm.id = :farmId
                 """)
-    Page<SlaughterLog> findAllNotArchived(Pageable pageable);
+    Page<SlaughterLog> findAllNotArchived(Pageable pageable, Long farmId);
 
 
+    @Query(value = """
+                SELECT slaughterlog 
+                FROM SlaughterLog slaughterlog
+                WHERE slaughterlog.archived = 0 and slaughterlog.farm.id = :farmId and slaughterlog.operatorUserId = :id
+                """)
+    Page<SlaughterLog> findAllNotArchivedForUsers(Pageable pageable, Long farmId, Integer id);
 }

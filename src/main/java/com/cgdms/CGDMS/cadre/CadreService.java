@@ -1,14 +1,17 @@
 package com.cgdms.CGDMS.cadre;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
-import com.cgdms.CGDMS.pond.Pond;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
 
 
 @Service
@@ -18,6 +21,7 @@ public class CadreService {
     private final CadreRepository cadreRepository;
     private final CadreMapperService mapper;
     private final CadreMapperService cadreMapperService;
+    private final AuthUtils authUtils;
 
     public CadreRequest createCadre(CadreRequest request) {
         Cadre cadre;
@@ -41,8 +45,11 @@ public class CadreService {
     }
 
     public PageResponse<CadreResponse> getAllCadres(int page, int size) {
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Cadre> cadres = cadreRepository.findAllNotArchived(pageable);
+        Page<Cadre> cadres = isAdmin ? cadreRepository.findAllNotArchived(pageable, farmId) : null;
 
         var responses = cadres.getContent().stream()
                 .map(mapper::toResponse)

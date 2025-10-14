@@ -11,7 +11,14 @@ public interface ThinningEventRepository extends JpaRepository<ThinningEvent, Lo
     @Query(value = """
                 SELECT e 
                 FROM ThinningEvent e
-                WHERE e.archived = 0
+                WHERE e.archived = 0 AND e.farm.id= :farmId
                 """)
-    Page<ThinningEvent> findAllNotArchived(Pageable pageable);
+    Page<ThinningEvent> findAllNotArchived(Pageable pageable, Long farmId);
+
+    @Query(value = """
+                SELECT e 
+                FROM ThinningEvent e
+                WHERE e.archived = 0 AND e.farm.id= :farmId AND e.operatorUserId = :id
+                """)
+    Page<ThinningEvent> findAllNotArchivedForUsers(Pageable pageable, Integer id, Long farmId);
 }

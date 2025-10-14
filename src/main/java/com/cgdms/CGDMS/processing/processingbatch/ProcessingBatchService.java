@@ -3,7 +3,9 @@ package com.cgdms.CGDMS.processing.processingbatch;
 
 import com.cgdms.CGDMS.broiler.harvest.HarvestEvent;
 import com.cgdms.CGDMS.broiler.harvest.HarvestEventRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -22,6 +24,8 @@ public class ProcessingBatchService {
 
     @Autowired
     private ProcessingBatchMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
 
     /**
      * Create or update a ProcessingBatch
@@ -59,9 +63,14 @@ public class ProcessingBatchService {
      * Paginated retrieval of all ProcessingBatches
      */
     public PageResponse<ProcessingBatchResponse> findAllProcessingBatches(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<ProcessingBatch> batches = processingBatchRepository.findAllNotArchived(pageable);
+        Page<ProcessingBatch> batches = isAdmin ? processingBatchRepository.findAllNotArchived(pageable, farmId) : processingBatchRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<ProcessingBatchResponse> responses = batches.stream()
                 .map(mapper::toResponse)

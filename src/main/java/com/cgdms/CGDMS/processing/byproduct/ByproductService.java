@@ -1,9 +1,11 @@
 package com.cgdms.CGDMS.processing.byproduct;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatch;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatchRepository;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -22,6 +24,8 @@ public class ByproductService {
 
     @Autowired
     private ByproductMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
 
     /**
      * Create or update a Byproduct
@@ -65,9 +69,14 @@ public class ByproductService {
      * Paginated retrieval of all Byproducts
      */
     public PageResponse<ByproductsResponse> findAllByproducts(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<Byproduct> byproducts = byproductRepository.findAllNotArchived(pageable);
+        Page<Byproduct> byproducts = isAdmin ?  byproductRepository.findAllNotArchived(pageable, farmId) : byproductRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<ByproductsResponse> responses = byproducts.stream()
                 .map(mapper::toResponse)

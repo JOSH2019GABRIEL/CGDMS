@@ -12,7 +12,16 @@ public interface BroilerMedicationLogRepository extends JpaRepository<BroilerMed
     @Query(value = """
                 SELECT medication 
                 FROM BroilerMedicationLog medication
-                WHERE medication.archived = 0
+                WHERE medication.archived = 0 AND medication.farm.id = :farmId
                 """)
-    Page<BroilerMedicationLog> findAllNotArchived(Pageable pageable);
+    Page<BroilerMedicationLog> findAllNotArchived(Pageable pageable, Long farmId);
+
+    @Query(value = """
+                SELECT medication 
+                FROM BroilerMedicationLog medication
+                WHERE medication.archived = 0
+                AND medication.farm.id =:farmId
+                AND medication.operatorUserId= :id
+                """)
+    Page<BroilerMedicationLog> findAllNotArchivedForUsers(Pageable pageable, Integer id, Long farmId);
 }

@@ -10,7 +10,14 @@ public interface WeightSampleRepository extends JpaRepository<WeightSample, Long
     @Query(value = """
                 SELECT weightsample 
                 FROM WeightSample weightsample
-                WHERE weightsample.archived = 0
+                WHERE weightsample.archived = 0 and weightsample.farm.id = :farmId
                 """)
-    Page<WeightSample> findAllNotArchived(Pageable pageable);
+    Page<WeightSample> findAllNotArchived(Pageable pageable, Long farmId);
+
+    @Query(value = """
+                SELECT weightsample 
+                FROM WeightSample weightsample
+                WHERE weightsample.archived = 0 AND weightsample.operatorUserId = :id and weightsample.farm.id = :farmId
+                """)
+    Page<WeightSample> findAllNotArchivedForUsers(Pageable pageable, Integer id, Long farmId);
 }

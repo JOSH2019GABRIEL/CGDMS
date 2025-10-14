@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.vegetables.plantingevent;
 
-import com.cgdms.CGDMS.vegetables.crop.CropVariety;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +10,14 @@ public interface PlantingEventRepository extends JpaRepository<PlantingEvent, Lo
     @Query(value = """
                 SELECT p
                 FROM PlantingEvent p
-                WHERE p.archived = 0
+                WHERE p.archived = 0 and p.farm.id = :farmId
                 """)
-    Page<PlantingEvent> findAllNotArchived(Pageable pageable);
+    Page<PlantingEvent> findAllNotArchived(Pageable pageable, Long farmId);
+
+    @Query(value = """
+                SELECT p
+                FROM PlantingEvent p
+                WHERE p.archived = 0 and p.farm.id = :farmId and p.operatorUserId = :id
+                """)
+    Page<PlantingEvent> findAllNotArchivedForUsers(Pageable pageable, Long farmId, Integer id);
 }

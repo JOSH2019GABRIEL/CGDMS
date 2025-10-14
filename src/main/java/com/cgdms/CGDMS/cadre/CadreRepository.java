@@ -11,8 +11,8 @@ import java.util.Optional;
 @Repository
 public interface CadreRepository extends JpaRepository<Cadre, Long> {
 
-    @Query("SELECT c FROM Cadre c WHERE c.archived = 0")
-    Page<Cadre> findAllNotArchived(Pageable pageable);
+    @Query("SELECT c FROM Cadre c WHERE c.archived = 0 and c.farm.id = :farmId")
+    Page<Cadre> findAllNotArchived(Pageable pageable, Long farmId);
 
     boolean existsByCadreNameIgnoreCase(String name);
 

@@ -1,8 +1,8 @@
 package com.cgdms.CGDMS.pond;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
-import com.cgdms.CGDMS.user.UserResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,6 +20,8 @@ public class PondService {
     private PondMapperService pondMapperService;
     @Autowired
     private PondRepository pondRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public PondRequest savePond(PondRequest pondRequest) {
         Pond pond;
@@ -43,15 +45,21 @@ public class PondService {
 
 
     public PageResponse<PondResponse> findAllPond(int page, int size) {
+
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<Pond> ponds = pondRepository.findAllNotArchived(pageable); // or findAllUsers if you need custom filtering
+        Page<Pond> ponds =  isAdmin
+                ? pondRepository.findAllNotArchived(pageable, farmId)
+                : pondRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
+
 
         List<PondResponse> pondResponses = ponds.stream()
                 .map(pondMapperService::toPondResponse)
                 .toList();
-
-        System.out.println("Here ooooooooo");
 
         return new PageResponse<>(
                 pondResponses,
@@ -82,6 +90,7 @@ public class PondService {
     }
 
     public Integer totalNumberOfAvailableFingerlings() {
-        return pondRepository.getAvailableFingerlingsInPonds();
+        Long farmId = authUtils.getCurrentUserFarmId();
+        return pondRepository.getAvailableFingerlingsInPonds(farmId);
     }
 }

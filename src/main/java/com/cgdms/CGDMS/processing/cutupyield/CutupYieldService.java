@@ -1,9 +1,11 @@
 package com.cgdms.CGDMS.processing.cutupyield;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatch;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatchRepository;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -22,6 +24,9 @@ public class CutupYieldService {
 
     @Autowired
     private CutupYieldMapper mapper;
+
+    @Autowired
+    private AuthUtils authUtils;
 
     /**
      * Create or update a CutupYield
@@ -65,9 +70,14 @@ public class CutupYieldService {
      * Paginated retrieval of all CutupYields
      */
     public PageResponse<CutupYieldResponse> findAllCutupYields(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<CutupYield> cutupYields = cutupYieldRepository.findAllNotArchived(pageable);
+        Page<CutupYield> cutupYields = isAdmin ? cutupYieldRepository.findAllNotArchived(pageable, farmId) : cutupYieldRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<CutupYieldResponse> responses = cutupYields.stream()
                 .map(mapper::toResponse)

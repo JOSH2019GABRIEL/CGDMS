@@ -2,8 +2,10 @@ package com.cgdms.CGDMS.performance;
 
 import com.cgdms.CGDMS.batch.Batch;
 import com.cgdms.CGDMS.batch.BatchRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.pond.Pond;
 import com.cgdms.CGDMS.pond.PondRepository;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,7 @@ public class PerformanceService {
     private final PondRepository pondRepository;
     private final BatchRepository batchRepository;
     private final PerformanceMapper mapper;
+    private final AuthUtils authUtils;
 
     public PerformanceResponse createPerformance(PerformanceRequest request) {
         Pond pond = pondRepository.findById(request.getPondId())
@@ -67,9 +70,21 @@ public class PerformanceService {
 
     // ✅ Pageable version
     public Page<PerformanceResponse> getAllPerformances(Pageable pageable) {
-        return performanceRepository.findAll(pageable)
-                .map(mapper::toResponse);
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+        Page<Performance> performances;
+
+        if (isAdmin) {
+            performances = performanceRepository.findAllNotArchived(pageable, farmId);
+        } else {
+            performances = performanceRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
+        }
+
+        return performances.map(mapper::toResponse);
     }
+
 
     public PerformanceResponse getPerformanceById(Long id) {
         return performanceRepository.findById(id)

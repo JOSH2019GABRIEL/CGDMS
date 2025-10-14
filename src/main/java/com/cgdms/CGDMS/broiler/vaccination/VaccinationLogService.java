@@ -2,6 +2,7 @@ package com.cgdms.CGDMS.broiler.vaccination;
 
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
@@ -26,6 +27,8 @@ public class VaccinationLogService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public VaccinationLogRequest saveVaccinationLog(VaccinationLogRequest request) {
         VaccinationLog log;
@@ -75,9 +78,16 @@ public class VaccinationLogService {
     }
 
     public PageResponse<VaccinationLogResponse> findAllVaccinationLogs(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<VaccinationLog> logs = vaccinationLogRepository.findAllNotArchived(pageable);
+        Page<VaccinationLog> logs = isAdmin
+        ? vaccinationLogRepository.findAllNotArchived(pageable, farmId)
+                : vaccinationLogRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
 
         List<VaccinationLogResponse> responses = logs.stream()
                 .map(mapper::toResponse)

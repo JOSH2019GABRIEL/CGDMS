@@ -1,6 +1,8 @@
 package com.cgdms.CGDMS.vegetables.postharvestloss;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.vegetables.harvestBatch.HarvestBatch;
 import com.cgdms.CGDMS.vegetables.harvestBatch.HarvestBatchRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -19,6 +21,9 @@ public class PostHarvestLossService {
 
     @Autowired
     private PostHarvestLossMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
+
 
     public PostharvestLossRequest saveLoss(PostharvestLossRequest request) {
         PostharvestLoss loss;
@@ -50,8 +55,13 @@ public class PostHarvestLossService {
     }
 
     public PageResponse<PostharvestLossResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<PostharvestLoss> list = postHarvestLossRepository.findAllNotArchived(pageable);
+        Page<PostharvestLoss> list = isAdmin ? postHarvestLossRepository.findAllNotArchived(pageable, farmId) : postHarvestLossRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
         List<PostharvestLossResponse> responses = list.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, list.getNumber(), list.getSize(),
                 list.getTotalElements(), list.getTotalPages(), list.isFirst(), list.isLast());

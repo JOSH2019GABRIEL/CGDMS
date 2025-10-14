@@ -2,6 +2,7 @@ package com.cgdms.CGDMS.broiler.weightsample;
 
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
@@ -26,6 +27,8 @@ public class WeightSampleService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public WeightSampleRequest saveWeightSample(WeightSampleRequest request) {
         WeightSample sample;
@@ -75,9 +78,16 @@ public class WeightSampleService {
     }
 
     public PageResponse<WeightSampleResponse> findAllWeightSamples(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<WeightSample> samples = weightSampleRepository.findAllNotArchived(pageable);
+        Page<WeightSample> samples = isAdmin
+                ? weightSampleRepository.findAllNotArchived(pageable, farmId)
+                : weightSampleRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
 
         List<WeightSampleResponse> responses = samples.stream()
                 .map(mapper::toResponse)

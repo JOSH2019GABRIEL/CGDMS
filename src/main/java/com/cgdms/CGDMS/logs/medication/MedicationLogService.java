@@ -1,6 +1,8 @@
 package com.cgdms.CGDMS.logs.medication;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ public class MedicationLogService {
 
     private final MedicationLogRepository repo;
     private final MedicationLogMapper mapper;
+    private final AuthUtils authUtils;
 
     @Transactional
     public MedicationLogResponse create(MedicationLogRequest req) {
@@ -53,8 +56,13 @@ public class MedicationLogService {
 
     @Transactional //(readOnly = true)
     public PageResponse<MedicationLogResponse> listAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "treatmentDate", "createdDate"));
-        Page<MedicationLog> p = repo.findAll(pageable);
+        Page<MedicationLog> p = isAdmin ? repo.findAllNotArchived(pageable, farmId) : repo.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
         List<MedicationLogResponse> content = p.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(content, p.getNumber(), p.getSize(), p.getTotalElements(), p.getTotalPages(), p.isFirst(), p.isLast());
     }

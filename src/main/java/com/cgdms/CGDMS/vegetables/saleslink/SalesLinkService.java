@@ -1,6 +1,8 @@
 package com.cgdms.CGDMS.vegetables.saleslink;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.vegetables.harvestBatch.HarvestBatch;
 import com.cgdms.CGDMS.vegetables.harvestBatch.HarvestBatchRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -20,6 +22,10 @@ public class SalesLinkService {
 
     @Autowired
     private SalesLinkMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
+
+
 
     public SalesLinkRequest saveSalesLink(SalesLinkRequest request) {
         SalesLink link;
@@ -50,8 +56,12 @@ public class SalesLinkService {
     }
 
     public PageResponse<SalesLinkResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<SalesLink> list = salesLinkRepository.findAllNotArchived(pageable);
+        Page<SalesLink> list = isAdmin ? salesLinkRepository.findAllNotArchived(pageable, farmId) : salesLinkRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
         List<SalesLinkResponse> responses = list.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, list.getNumber(), list.getSize(),
                 list.getTotalElements(), list.getTotalPages(), list.isFirst(), list.isLast());

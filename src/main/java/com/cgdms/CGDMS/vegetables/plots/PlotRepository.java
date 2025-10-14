@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.vegetables.plots;
 
-import com.cgdms.CGDMS.vegetables.crop.CropVariety;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,7 +10,7 @@ public interface PlotRepository extends JpaRepository<Plot, Long> {
     @Query(value = """
                 SELECT p 
                 FROM Plot p
-                WHERE p.archived = 0
+                WHERE p.archived = 0 and p.farm.id = :id
                 """)
-    Page<Plot> findAllNotArchived(Pageable pageable);
+    Page<Plot> findAllNotArchived(Pageable pageable, Long farmId);
 }

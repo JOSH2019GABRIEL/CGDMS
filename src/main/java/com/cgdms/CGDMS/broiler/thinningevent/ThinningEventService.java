@@ -2,7 +2,9 @@ package com.cgdms.CGDMS.broiler.thinningevent;
 
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class ThinningEventService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public ThinningEventRequest saveThinningEvent(ThinningEventRequest request) {
         ThinningEvent event;
@@ -75,9 +79,15 @@ public class ThinningEventService {
     }
 
     public PageResponse<ThinningEventResponse> findAllThinningEvents(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<ThinningEvent> events = thinningEventRepository.findAllNotArchived(pageable);
+        Page<ThinningEvent> events = isAdmin
+        ? thinningEventRepository.findAllNotArchived(pageable, farmId)
+                : thinningEventRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
 
         List<ThinningEventResponse> responses = events.stream()
                 .map(mapper::toResponse)

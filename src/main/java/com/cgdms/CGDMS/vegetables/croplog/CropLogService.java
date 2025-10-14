@@ -1,7 +1,9 @@
 package com.cgdms.CGDMS.vegetables.croplog;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.vegetables.plots.Plot;
 import com.cgdms.CGDMS.vegetables.plots.PlotRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +23,9 @@ public class CropLogService {
 
     @Autowired
     private CropLogMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
+
 
     public CropLogRequest saveCropLog(CropLogRequest request) {
         CropLog log;
@@ -56,8 +61,13 @@ public class CropLogService {
     }
 
     public PageResponse<CropLogResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<CropLog> logs = cropLogRepository.findAllNotArchived(pageable);
+        Page<CropLog> logs = isAdmin ? cropLogRepository.findAllNotArchived(pageable, farmId) : cropLogRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
         List<CropLogResponse> responses = logs.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, logs.getNumber(), logs.getSize(),
                 logs.getTotalElements(), logs.getTotalPages(), logs.isFirst(), logs.isLast());

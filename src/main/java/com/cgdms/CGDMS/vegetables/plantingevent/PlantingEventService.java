@@ -1,7 +1,9 @@
 package com.cgdms.CGDMS.vegetables.plantingevent;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.vegetables.crop.CropVariety;
 import com.cgdms.CGDMS.vegetables.crop.CropVarietyRepository;
 import com.cgdms.CGDMS.vegetables.plots.Plot;
@@ -26,6 +28,8 @@ public class PlantingEventService {
 
     @Autowired
     private PlantingEventMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
 
     public PlantingEventRequest saveEvent(PlantingEventRequest request) {
         PlantingEvent event;
@@ -62,8 +66,12 @@ public class PlantingEventService {
     }
 
     public PageResponse<PlantingEventResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<PlantingEvent> list = plantingEventRepository.findAllNotArchived(pageable);
+        Page<PlantingEvent> list = isAdmin ? plantingEventRepository.findAllNotArchived(pageable, farmId) : plantingEventRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
         List<PlantingEventResponse> responses = list.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, list.getNumber(), list.getSize(), list.getTotalElements(),
                 list.getTotalPages(), list.isFirst(), list.isLast());

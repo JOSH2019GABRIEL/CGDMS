@@ -1,8 +1,10 @@
 package com.cgdms.CGDMS.broiler.flock;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.farm.Farm;
 import com.cgdms.CGDMS.farm.FarmRepository;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -22,6 +24,8 @@ public class FlockService {
 
     @Autowired
     private FarmRepository farmRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
 
     public FlockRequest saveFlock(FlockRequest flockRequest) {
@@ -56,8 +60,14 @@ public class FlockService {
 
     @Transactional(readOnly = true)
     public PageResponse<FlockResponse> findAllFlocks(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Flock> flocks = flockRepository.findAllNotArchived(pageable);
+        Page<Flock> flocks = isAdmin
+                ? flockRepository.findAllNotArchived(pageable, farmId)
+                : flockRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);;
 
         List<FlockResponse> responses = flocks.stream()
                 .map(mapper::toResponse)
@@ -75,30 +85,6 @@ public class FlockService {
 
         );
     }
-
-
-//    @Transactional(readOnly = true)
-//    public PageResponse<FlockResponse> findAllFlocks(int page, int size) {
-//        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-//
-//        Page<Flock> flocks = flockRepository.findAllNotArchived(pageable);
-//
-//        List<FlockResponse> responses = flocks.stream()
-//                .map(mapper::toResponse)
-//                .toList();
-//
-//        System.out.println("flocks count: " + flocks.getSize());
-//
-//        return new PageResponse<>(
-//                responses,
-//                flocks.getNumber(),
-//                flocks.getSize(),
-//                flocks.getTotalElements(),
-//                flocks.getTotalPages(),
-//                flocks.isFirst(),
-//                flocks.isLast()
-//        );
-//    }
 
     public FlockResponse findById(Long flockId) {
         return flockRepository.findById(flockId)

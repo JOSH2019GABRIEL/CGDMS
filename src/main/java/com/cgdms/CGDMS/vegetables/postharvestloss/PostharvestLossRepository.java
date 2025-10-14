@@ -12,7 +12,14 @@ public interface PostharvestLossRepository extends JpaRepository<PostharvestLoss
     @Query(value = """
                 SELECT p 
                 FROM PostharvestLoss p
-                WHERE p.archived = 0
+                WHERE p.archived = 0 and p.farm.id = :farmId
                 """)
-    Page<PostharvestLoss> findAllNotArchived(Pageable pageable);
+    Page<PostharvestLoss> findAllNotArchived(Pageable pageable, Long farmId);
+
+    @Query(value = """
+                SELECT p 
+                FROM PostharvestLoss p
+                WHERE p.archived = 0 and p.farm.id = :farmId and p.operatorUserId = :id
+                """)
+    Page<PostharvestLoss> findAllNotArchivedForUsers(Pageable pageable, Long farmId, Integer id);
 }

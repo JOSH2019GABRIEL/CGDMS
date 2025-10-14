@@ -1,6 +1,7 @@
 package com.cgdms.CGDMS.payroll;
 
 import com.cgdms.CGDMS.cadre.Cadre;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ public class PayrollService {
 
     private final PayrollRepository payrollRepository;
     private final PayrollMapper mapper;
+    private final AuthUtils authUtils;
 
     @Transactional
     public PayrollResponse createPayroll(PayrollRequest request) {
@@ -46,6 +48,10 @@ public class PayrollService {
     }
 
     public PageResponse<PayrollResponse> getAllPayrolls(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
         Page<Payroll> payrolls = payrollRepository.findAll(pageable);
 

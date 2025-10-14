@@ -1,7 +1,9 @@
 package com.cgdms.CGDMS.vegetables.harvestBatch;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.vegetables.plots.Plot;
 import com.cgdms.CGDMS.vegetables.plots.PlotRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,6 +23,8 @@ public class HarvestBatchService {
 
     @Autowired
     private HarvestBatchMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
 
 
     public HarvestBatchRequest saveHarvest(HarvestBatchRequest request) {
@@ -51,8 +55,13 @@ public class HarvestBatchService {
     }
 
     public PageResponse<HarvestBatchResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("date").descending());
-        Page<HarvestBatch> batches = harvestBatchRepository.findAllNotArchived(pageable);
+        Page<HarvestBatch> batches = isAdmin ? harvestBatchRepository.findAllNotArchived(pageable, farmId) : harvestBatchRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
         List<HarvestBatchResponse> responses = batches.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, batches.getNumber(), batches.getSize(),
                 batches.getTotalElements(), batches.getTotalPages(), batches.isFirst(), batches.isLast());

@@ -98,7 +98,7 @@ public class DataInitializer implements CommandLineRunner {
                     .email("admin@system.com")
                     .archived(0)
                     .password(passwordEncoder.encode("Admin123"))
-                    .roles(List.of(adminRole))
+                    .role(adminRole)
                     .farm(defaultFarm)
                     .enabled(true)
                     .build();

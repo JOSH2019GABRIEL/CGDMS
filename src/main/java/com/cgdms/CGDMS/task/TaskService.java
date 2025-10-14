@@ -1,5 +1,6 @@
 package com.cgdms.CGDMS.task;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
@@ -22,6 +23,7 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final TaskMapperService taskMapper;
+    private final AuthUtils authUtils;
 
     public TaskResponse createTask(TaskRequest request, Authentication connectedUser) {
         User loggedInUser = ((User) connectedUser.getPrincipal());
@@ -73,9 +75,14 @@ public class TaskService {
     }
 
     public PageResponse<TaskResponse> getAllTasks(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<Task> tasks = taskRepository.findAllTask(pageable);
+        Page<Task> tasks = isAdmin ? taskRepository.findAllTask(pageable, farmId) : taskRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<TaskResponse> taskResponses = tasks.stream()
                 .map(taskMapper::toResponse)

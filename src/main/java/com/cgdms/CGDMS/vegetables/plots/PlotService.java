@@ -1,7 +1,9 @@
 package com.cgdms.CGDMS.vegetables.plots;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -16,6 +18,8 @@ public class PlotService {
 
     @Autowired
     private PlotMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
 
     public PlotRequest savePlot(PlotRequest request) {
         Plot plot;
@@ -38,8 +42,13 @@ public class PlotService {
     }
 
     public PageResponse<PlotResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Plot> plots = plotRepository.findAllNotArchived(pageable);
+        Page<Plot> plots = isAdmin ? plotRepository.findAllNotArchived(pageable, farmId) : null;
         List<PlotResponse> responses = plots.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, plots.getNumber(), plots.getSize(), plots.getTotalElements(),
                 plots.getTotalPages(), plots.isFirst(), plots.isLast());

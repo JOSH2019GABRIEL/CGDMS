@@ -11,8 +11,14 @@ public interface ProcessingBatchRepository extends JpaRepository<ProcessingBatch
     @Query(value = """
                 SELECT processingBatch 
                 FROM ProcessingBatch processingBatch
-                WHERE processingBatch.archived = 0
+                WHERE processingBatch.archived = 0 and processingBatch.farm.id = :farmId
                 """)
-    Page<ProcessingBatch> findAllNotArchived(Pageable pageable);
+    Page<ProcessingBatch> findAllNotArchived(Pageable pageable, Long farmId);
 
+    @Query(value = """
+                SELECT processingBatch 
+                FROM ProcessingBatch processingBatch
+                WHERE processingBatch.archived = 0 and processingBatch.farm.id = :farmId and processingBatch.operatorUserId = :id
+                """)
+    Page<ProcessingBatch> findAllNotArchivedForUsers(Pageable pageable, Long farmId, Integer id);
 }

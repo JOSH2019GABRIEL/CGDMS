@@ -10,7 +10,15 @@ public interface VaccinationLogRepository extends JpaRepository<VaccinationLog, 
     @Query(value = """
                 SELECT vaccination 
                 FROM VaccinationLog vaccination
-                WHERE vaccination.archived = 0
+                WHERE vaccination.archived = 0 AND vaccination.farm.id=:farmId
                 """)
-    Page<VaccinationLog> findAllNotArchived(Pageable pageable);
+    Page<VaccinationLog> findAllNotArchived(Pageable pageable, Long farmId);
+
+    @Query(value = """
+                SELECT vaccination 
+                FROM VaccinationLog vaccination
+                WHERE vaccination.archived = 0 AND vaccination.farm.id=:farmId and
+                vaccination.operatorUserId= :id
+                """)
+    Page<VaccinationLog> findAllNotArchivedForUsers(Pageable pageable, Integer id, Long farmId);
 }

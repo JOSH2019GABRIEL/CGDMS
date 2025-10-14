@@ -1,6 +1,8 @@
 package com.cgdms.CGDMS.organization;
 
 import com.cgdms.CGDMS.batch.Batch;
+import com.cgdms.CGDMS.common.AuthUtils;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import java.util.stream.Collectors;
 public class OrganizationService {
 
     private final OrganizationRepository organizationRepository;
+    private final AuthUtils authUtils;
 
     public OrganizationResponse create(OrganizationRequest request) {
         Organization org = OrganizationMapper.toEntity(request);
@@ -20,6 +23,10 @@ public class OrganizationService {
     }
 
     public List<OrganizationResponse> getAll() {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         return organizationRepository.findAll()
                 .stream()
                 .map(OrganizationMapper::toResponse)

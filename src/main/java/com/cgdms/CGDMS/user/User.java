@@ -51,8 +51,9 @@ public class User implements UserDetails, Principal {
     @JoinColumn(name = "farm_id")
     private Farm farm;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    private List<Role> roles;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "role_id", nullable = false)
+    private Role role;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -73,10 +74,7 @@ public class User implements UserDetails, Principal {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(role.getName()))
-                .collect(Collectors.toList());
+        return List.of(new SimpleGrantedAuthority(role.getName()));
     }
 
     @Override

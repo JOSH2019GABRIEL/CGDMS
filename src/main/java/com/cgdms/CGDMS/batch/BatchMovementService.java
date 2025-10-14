@@ -1,8 +1,10 @@
 package com.cgdms.CGDMS.batch;
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.pond.Pond;
 import com.cgdms.CGDMS.pond.PondRepository;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +22,7 @@ public class BatchMovementService {
     private final BatchRepository batchRepository;
     private final PondRepository pondRepository;
     private final BatchMovementMapper mapper;
+    private final AuthUtils authUtils;
 
     @Transactional
     public BatchMovementResponse create(BatchMovementRequest req) {
@@ -81,8 +84,13 @@ public class BatchMovementService {
 
     @Transactional //(readOnly = true)
     public PageResponse<BatchMovementResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "movementDate", "createdDate"));
-        Page<BatchMovement> p = movementRepository.findAll(pageable);
+        Page<BatchMovement> p = isAdmin ? movementRepository.findAllNotArchived(pageable, farmId)
+                : movementRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
         var content = p.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(content, p.getNumber(), p.getSize(), p.getTotalElements(), p.getTotalPages(), p.isFirst(), p.isLast());
     }

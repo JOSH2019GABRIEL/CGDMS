@@ -1,9 +1,11 @@
 package com.cgdms.CGDMS.processing.waste;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatch;
 import com.cgdms.CGDMS.processing.processingbatch.ProcessingBatchRepository;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
@@ -22,6 +24,8 @@ public class WastesService {
 
     @Autowired
     private WastesMapper mapper;
+    @Autowired
+    private AuthUtils authUtils;
 
     /**
      * Create or update a Waste record
@@ -64,9 +68,14 @@ public class WastesService {
      * Paginated retrieval of all Wastes
      */
     public PageResponse<WastesResponse> findAllWastes(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<Wastes> wastes = wastesRepository.findAllNotArchived(pageable);
+        Page<Wastes> wastes = isAdmin ? wastesRepository.findAllNotArchived(pageable, farmId) : wastesRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<WastesResponse> responses = wastes.stream()
                 .map(mapper::toResponse)

@@ -1,7 +1,9 @@
 package com.cgdms.CGDMS.vegetables.crop;
 
 
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +16,11 @@ import java.util.List;
 public class CropVarietyService {
 
     private final CropVarietyRepository cropVarietyRepository;
+    private final AuthUtils authUtils;
 
     @Autowired
     private CropVarietyMapper mapper;
+
 
     public CropVarietyRequest saveCropVariety(CropVarietyRequest request) {
         CropVariety entity;
@@ -42,8 +46,12 @@ public class CropVarietyService {
     }
 
     public PageResponse<CropVarietyResponse> findAll(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<CropVariety> list = cropVarietyRepository.findAllNotArchived(pageable);
+        Page<CropVariety> list = isAdmin ? cropVarietyRepository.findAllNotArchived(pageable, farmId) : cropVarietyRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
 
         List<CropVarietyResponse> responses = list.stream().map(mapper::toResponse).toList();
 

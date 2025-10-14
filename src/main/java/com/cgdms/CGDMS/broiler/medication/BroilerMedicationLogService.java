@@ -2,7 +2,9 @@ package com.cgdms.CGDMS.broiler.medication;
 
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
+import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,8 @@ public class BroilerMedicationLogService {
 
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private AuthUtils authUtils;
 
     public BroilerMedicationLogRequest saveMedication(BroilerMedicationLogRequest request) {
         BroilerMedicationLog medication;
@@ -76,9 +80,15 @@ public class BroilerMedicationLogService {
     }
 
     public PageResponse<BroilerMedicationLogResponse> findAllMedications(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<BroilerMedicationLog> medications = broilerMedicationLogRepository.findAllNotArchived(pageable);
+        Page<BroilerMedicationLog> medications = isAdmin
+                ? broilerMedicationLogRepository.findAllNotArchived(pageable, farmId)
+                : broilerMedicationLogRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
 
         List<BroilerMedicationLogResponse> responses = medications.stream()
                 .map(mapper::toResponse)

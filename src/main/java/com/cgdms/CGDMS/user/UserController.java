@@ -65,12 +65,12 @@ public class UserController {
 
     // Optional: ADMIN reset password for a staff
     @PutMapping("/{id}/reset-password")
-    @PreAuthorize("hasAuthority('ADMIN')")
+//    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<?> resetPassword(
-            @PathVariable Integer id,
+            @PathVariable String userEmail,
             @RequestBody String newPassword) {
 
-        userService.adminResetPassword(id, newPassword);
+        userService.adminResetPassword(userEmail, newPassword);
         return ResponseEntity.ok("Password reset successfully by ADMIN");
     }
 
