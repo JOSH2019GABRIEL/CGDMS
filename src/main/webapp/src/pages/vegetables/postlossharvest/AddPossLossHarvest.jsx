@@ -43,9 +43,12 @@ const AddPostLossHarvest = () => {
     if (id) {
       const fetchPostLossHarvest = async () => {
         try {
-          const response = await axios.get(`${baseUrl}postharvest-losses/${id}`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
+          const response = await axios.get(
+            `${baseUrl}postharvest-losses/${id}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            }
+          );
           setPostLoss(response.data);
         } catch (error) {
           console.error("Error fetching post-loss harvest record:", error);
@@ -69,16 +72,22 @@ const AddPostLossHarvest = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        await axios.post(`${baseUrl}postharvest-losses`, postLoss, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        toast.success(id ? "Post-loss harvest updated successfully!" : "Post-loss harvest created successfully!");
+      await axios.post(`${baseUrl}postharvest-losses`, postLoss, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(
+        id
+          ? "Post-loss harvest updated successfully!"
+          : "Post-loss harvest created successfully!"
+      );
       setTimeout(() => {
         navigate("/dashboard/postloss-harvestes");
-        }, 1000);
+      }, 1000);
     } catch (error) {
       console.error("Error saving post-loss harvest:", error);
-      toast.error(error.response?.data?.message || "Error saving record.");
+      setTimeout(() => {
+        toast.error(error.response?.data?.message || "Error saving record.");
+      }, 1000);
     }
   };
 

@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
+
 
 const Batch = () => {
   const [batchList, setBatchList] = useState([]);
@@ -35,13 +39,17 @@ const Batch = () => {
 
   useEffect(() => {
     fetchBatch(page, pageSize);
-  }, [page, pageSize, fetchBatch]);
+  }, [page, pageSize]);
 
   const handleDelete = async (id) => {
     try {
-      await axios.put(`${baseUrl}batch/archive/${id}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `${baseUrl}batch/archive/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setBatchList(batchList.filter((batch) => batch.id !== id));
     } catch (error) {
@@ -55,7 +63,11 @@ const Batch = () => {
     { field: "pondName", headerName: "Pond name", width: 200 },
     { field: "source", headerName: "Source", width: 150 },
     { field: "stockDate", headerName: "Stock Date", width: 200 },
-    { field: "initialAvgWeightG", headerName: "Initial Average Weight", width: 200 },
+    {
+      field: "initialAvgWeightG",
+      headerName: "Initial Average Weight",
+      width: 200,
+    },
     { field: "initialCount", headerName: "Initial Count", width: 150 },
 
     {
@@ -68,13 +80,15 @@ const Batch = () => {
             to={`/dashboard/batch/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
-            <div className="viewButton">Edit</div>
+            <div className="editButton">
+              <EditIcon style={{ marginRight: "5px" }} />
+            </div>
           </Link>
           <div
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            Delete
+            <DeleteIcon style={{ marginRight: "5px" }} />
           </div>
         </div>
       ),

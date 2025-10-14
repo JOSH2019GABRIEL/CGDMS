@@ -4,6 +4,10 @@ import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
+
 
 const Staff = () => {
   const [staffList, setStaffList] = useState([]);
@@ -76,13 +80,15 @@ const Staff = () => {
             to={`/dashboard/staff-user/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
-            <div className="viewButton">Edit</div>
+             <div className="editButton">
+              <EditIcon style={{ marginRight: "5px" }} />
+            </div>
           </Link>
           <div
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            Delete
+            <DeleteIcon style={{ marginRight: "5px" }} />
           </div>
           {/* <div
             className="deleteButton"
@@ -99,12 +105,6 @@ const Staff = () => {
     <div className="datatable">
       <div className="datatableTitle">
         Staffs
-        <Link to="/dashboard/staff-user/change-password" className="link">
-          Change Password
-        </Link>
-        <Link to="/dashboard/staff-user/new" className="link">
-          Reset Password
-        </Link>
         <Link to="/dashboard/staff-user/new" className="link">
           Add New
         </Link>

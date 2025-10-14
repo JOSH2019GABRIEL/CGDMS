@@ -113,7 +113,9 @@ const AddPlantingEvent = () => {
       }, 1000);
     } catch (error) {
       console.error("Error saving planting event:", error);
+      setTimeout(() => {
       toast.error(error.response?.data?.message || "Error saving planting event.");
+       }, 1000);
     }
   };
 

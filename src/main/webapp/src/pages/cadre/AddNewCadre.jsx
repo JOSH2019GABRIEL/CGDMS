@@ -80,11 +80,13 @@ const AddNewCadre = () => {
         id ? "Cadre updated successfully!" : "Cadre created successfully!"
       );
       setTimeout(() => {
-      navigate("/dashboard/cadre");
+        navigate("/dashboard/cadre");
       }, 1000);
     } catch (error) {
       console.error("Error saving cadre:", error);
-      toast.error(error.response?.data?.message || "Error saving cadre.");
+      setTimeout(() => {
+        toast.error(error.response?.data?.message || "Error saving cadre.");
+      }, 1000);
     }
   };
 

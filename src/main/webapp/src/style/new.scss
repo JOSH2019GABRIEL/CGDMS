@@ -1,23 +1,43 @@
 .new {
   width: 100%;
   display: flex;
+  background-color: #f7f8fa;
+  min-height: 100vh;
 
   .newContainer {
     flex: 6;
+    padding: 2rem;
 
     .top,
     .bottom {
-      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-      padding: 20px;
-      margin: 20px;
-      display: flex;
-      flex-direction: column;
+      background-color: #fff;
+      border-radius: 12px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: all 0.3s ease-in-out;
+
+      &:hover {
+        box-shadow: 0 5px 16px rgba(0, 0, 0, 0.12);
+      }
 
       h1 {
-        color: lightgray;
-        font-size: 20px;
-        margin-bottom: 20px;
+        font-size: 1.4rem;
+        color: #2e2e2e;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        position: relative;
+
+        &::after {
+          content: "";
+          position: absolute;
+          bottom: -8px;
+          left: 0;
+          width: 40px;
+          height: 3px;
+          background-color: #1976d2;
+          border-radius: 2px;
+        }
       }
 
       .right {
@@ -26,25 +46,49 @@
         form {
           display: flex;
           flex-wrap: wrap;
-          gap: 30px;
+          gap: 1.5rem;
 
           .formInput {
             flex: 1 1 45%;
             display: flex;
             flex-direction: column;
+            position: relative;
 
             label {
+              font-size: 14px;
+              font-weight: 600;
+              color: #444;
+              margin-bottom: 6px;
               display: flex;
               align-items: center;
-              gap: 10px;
+              gap: 8px;
+
+              svg {
+                color: #1976d2;
+              }
             }
 
             input,
             select {
               width: 100%;
-              padding: 5px;
+              padding: 10px;
+              border: 1px solid #ccc;
+              border-radius: 6px;
+              font-size: 14px;
+              color: #333;
+              transition: all 0.3s ease;
               border: none;
               border-bottom: 1px solid gray;
+
+              &:focus {
+                outline: none;
+                border-color: #1976d2;
+                box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+              }
+
+              &::placeholder {
+                color: #aaa;
+              }
             }
           }
 
@@ -55,15 +99,16 @@
             flex-direction: column;
 
             label {
-              display: flex;
-              align-items: center;
-              cursor: pointer;
               font-size: 14px;
               font-weight: 500;
               color: #333;
+              display: flex;
+              align-items: center;
+              cursor: pointer;
+              gap: 10px;
 
               input[type="checkbox"] {
-                display: none; // hide default checkbox
+                display: none;
               }
 
               .slider {
@@ -71,24 +116,25 @@
                 width: 50px;
                 height: 24px;
                 background-color: #ccc;
-                border-radius: 34px;
-                transition: 0.3s;
-              }
+                border-radius: 24px;
+                transition: background-color 0.3s ease;
+                cursor: pointer;
 
-              .slider::before {
-                content: "";
-                position: absolute;
-                height: 18px;
-                width: 18px;
-                left: 3px;
-                bottom: 3px;
-                background-color: white;
-                border-radius: 50%;
-                transition: 0.3s;
+                &::before {
+                  content: "";
+                  position: absolute;
+                  height: 18px;
+                  width: 18px;
+                  left: 3px;
+                  bottom: 3px;
+                  background-color: #fff;
+                  border-radius: 50%;
+                  transition: transform 0.3s ease;
+                }
               }
 
               input:checked + .slider {
-                background-color: #4caf50; // green when active
+                background-color: #43a047;
               }
 
               input:checked + .slider::before {
@@ -97,40 +143,87 @@
             }
           }
 
+          /* ✅ Password Visibility */
           .passwordWrapper {
             position: relative;
             display: flex;
             align-items: center;
+
+            input {
+              padding-right: 35px;
+            }
+
+            .eye-icon {
+              position: absolute;
+              right: 10px;
+              cursor: pointer;
+              color: #777;
+              transition: color 0.3s ease;
+
+              &:hover {
+                color: #1976d2;
+              }
+            }
           }
 
-          .eye-icon {
-            position: absolute;
-            right: 10px;
-            cursor: pointer;
-            color: #666;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-          }
-
+          /* ✅ Action Buttons */
           .formActions {
             width: 100%;
             display: flex;
             justify-content: flex-end;
-            margin-top: 20px;
+            margin-top: 2rem;
 
             button {
               width: 180px;
               padding: 12px;
+              background: linear-gradient(135deg, #1976d2, #1565c0);
               border: none;
-              background-color: teal;
-              color: white;
-              font-weight: bold;
+              color: #fff;
+              font-weight: 600;
+              font-size: 14px;
+              border-radius: 6px;
               cursor: pointer;
-              border-radius: 5px;
+              box-shadow: 0 3px 8px rgba(25, 118, 210, 0.3);
+              transition: all 0.3s ease;
+
+              &:hover {
+                background: linear-gradient(135deg, #1565c0, #0d47a1);
+                transform: translateY(-2px);
+                box-shadow: 0 6px 12px rgba(25, 118, 210, 0.35);
+              }
+
+              &:active {
+                transform: translateY(0);
+                box-shadow: none;
+              }
             }
           }
+        }
+      }
+    }
+  }
+
+  /* ✅ Responsive Layout */
+  @media (max-width: 768px) {
+    .newContainer {
+      padding: 1rem;
+
+      .top,
+      .bottom {
+        margin: 1rem 0;
+        padding: 1.2rem;
+      }
+
+      form {
+        flex-direction: column;
+
+        .formInput,
+        .checkboxInput {
+          flex: 1 1 100%;
+        }
+
+        .formActions {
+          justify-content: center;
         }
       }
     }

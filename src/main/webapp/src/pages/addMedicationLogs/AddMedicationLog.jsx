@@ -165,7 +165,7 @@ const AddNewMedicationLog = () => {
                   <option value="">-- Select Batch --</option>
                   {batches.map((b) => (
                     <option key={b.id} value={b.id}>
-                      {b.id}
+                      {b.stockDate} / {b.source} - {b.id}
                     </option>
                   ))}
                 </select>

@@ -71,17 +71,24 @@ const AddHarvestBatch = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-
-        await axios.post(`${baseUrl}harvest-batches`, harvestBatch, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        toast.success( id ? "Harvest batch updated successfully!" : "Harvest batch created successfully!");
+      await axios.post(`${baseUrl}harvest-batches`, harvestBatch, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(
+        id
+          ? "Harvest batch updated successfully!"
+          : "Harvest batch created successfully!"
+      );
       setTimeout(() => {
         navigate("/dashboard/harvest-batches");
-        }, 1000);
+      }, 1000);
     } catch (error) {
       console.error("Error saving harvest batch:", error);
-      toast.error(error.response?.data?.message || "Error saving harvest batch.");
+      setTimeout(() => {
+        toast.error(
+          error.response?.data?.message || "Error saving harvest batch."
+        );
+      }, 1000);
     }
   };
 

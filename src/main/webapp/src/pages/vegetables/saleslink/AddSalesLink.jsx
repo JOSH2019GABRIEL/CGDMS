@@ -71,13 +71,19 @@ const AddSalesLink = () => {
       await axios.post(`${baseUrl}sales-links`, sales, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      toast.success(id ? "Sales record updated successfully!" : "Sales record created successfully!");
+      toast.success(
+        id
+          ? "Sales record updated successfully!"
+          : "Sales record created successfully!"
+      );
       setTimeout(() => {
-      navigate("/dashboard/sales");
+        navigate("/dashboard/sales");
       }, 1000);
     } catch (error) {
       console.error("Error saving sales record:", error);
-      toast.error(error.response?.data?.message || "Error saving record.");
+      setTimeout(() => {
+        toast.error(error.response?.data?.message || "Error saving record.");
+      }, 1000);
     }
   };
 

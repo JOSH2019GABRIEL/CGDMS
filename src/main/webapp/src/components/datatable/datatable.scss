@@ -1,78 +1,241 @@
 .datatable {
   height: 600px;
-  padding: 20px;
-  
-  .datatableTitle{
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease-in-out;
+
+  /* 🔹 Table Header Section */
+  .datatableTitle {
     width: 100%;
-    font-size: 24px;
-    color: gray;
-    margin-bottom: 10px;
+    font-size: 22px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    .link{
+    .link {
       text-decoration: none;
-      color: green;
-      font-size: 16px;
-      font-weight: 400;
-      border: 1px solid green;
-      padding: 5px;
-      border-radius: 5px;
+      color: #fff;
+      background-color: #28a745;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 8px 14px;
+      border-radius: 8px;
       cursor: pointer;
+      box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #218838;
+        transform: translateY(-2px);
+      }
     }
   }
 
+  /* 🔹 Data Grid or Table Styling */
+  .datagrid {
+    border-radius: 10px;
+    overflow: hidden;
+    font-size: 14px;
+    background-color: #fff;
+    color: #333;
+    border: 1px solid #eee;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .MuiDataGrid-columnHeaders {
+      background-color: #f7f9fc;
+      color: #555;
+      font-weight: 600;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .MuiDataGrid-cell {
+      border-bottom: 1px solid #f0f0f0;
+    }
+  }
+
+  /* 🔹 Cell With Image */
   .cellWithImg {
     display: flex;
     align-items: center;
 
     .cellImg {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       object-fit: cover;
-      margin-right: 20px;
+      margin-right: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    span {
+      font-weight: 500;
+      color: #333;
     }
   }
 
+  /* 🔹 Status Tag Badges */
   .cellWithStatus {
-    padding: 5px;
-    border-radius: 5px;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    text-align: center;
+    transition: all 0.3s ease;
 
     &.active {
-      background-color: rgba(0, 128, 0, 0.05);
-      color: green;
+      background-color: rgba(40, 167, 69, 0.1);
+      color: #28a745;
     }
     &.pending {
-      background-color: rgba(255, 217, 0, 0.05);
-      color: goldenrod;
+      background-color: rgba(255, 193, 7, 0.1);
+      color: #ffc107;
     }
     &.passive {
-      background-color: rgba(255, 0, 0, 0.05);
-      color: crimson;
+      background-color: rgba(220, 53, 69, 0.1);
+      color: #dc3545;
     }
   }
 
+  /* 🔹 Action Buttons */
   .cellAction {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
+
+    .viewButton,
+    .deleteButton {
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
 
     .viewButton {
-      padding: 2px 5px;
-      border-radius: 5px;
-      color: darkblue;
-      border: 1px dotted rgba(0, 0, 139, 0.596);
-      cursor: pointer;
+      color: #0056b3;
+      background-color: rgba(0, 86, 179, 0.08);
+      border: 1px solid rgba(0, 86, 179, 0.2);
+
+      &:hover {
+        background-color: rgba(0, 86, 179, 0.15);
+        transform: translateY(-1px);
+      }
     }
-    
+
     .deleteButton {
-      padding: 2px 5px;
-      border-radius: 5px;
-      color: crimson;
-      border: 1px dotted rgba(220, 20, 60, 0.6);
-      cursor: pointer;
+      color: #dc3545;
+      background-color: rgba(220, 53, 69, 0.08);
+      border: 1px solid rgba(220, 53, 69, 0.2);
+
+      &:hover {
+        background-color: rgba(220, 53, 69, 0.15);
+        transform: translateY(-1px);
+      }
+    }
+  }
+
+  /* 🔹 Empty state styling */
+  .emptyState {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #888;
+    font-size: 15px;
+    font-style: italic;
+  }
+
+  /* 🌙 Dark Mode Support */
+  &.dark {
+    background-color: #1c1c1e;
+    color: #ddd;
+
+    .datatableTitle {
+      color: #bbb;
+      .link {
+        background-color: #0d6efd;
+        &:hover {
+          background-color: #0b5ed7;
+        }
+      }
+    }
+
+    .datagrid {
+      background-color: #2a2a2a;
+      border: 1px solid #333;
+
+      .MuiDataGrid-columnHeaders {
+        background-color: #333;
+        color: #ddd;
+      }
+
+      .MuiDataGrid-cell {
+        border-color: #444;
+      }
+    }
+
+    .cellWithStatus {
+      &.active {
+        background-color: rgba(40, 167, 69, 0.2);
+      }
+      &.pending {
+        background-color: rgba(255, 193, 7, 0.2);
+      }
+      &.passive {
+        background-color: rgba(220, 53, 69, 0.2);
+      }
+    }
+
+    .cellAction {
+      .viewButton {
+        background-color: rgba(13, 110, 253, 0.15);
+      }
+      .deleteButton {
+        background-color: rgba(220, 53, 69, 0.15);
+      }
+    }
+  }
+
+  /* 📱 Responsive */
+  @media (max-width: 768px) {
+    padding: 16px;
+
+    .datatableTitle {
+      font-size: 18px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+
+      .link {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    .cellAction {
+      gap: 8px;
+
+      .viewButton,
+      .deleteButton {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
     }
   }
 }

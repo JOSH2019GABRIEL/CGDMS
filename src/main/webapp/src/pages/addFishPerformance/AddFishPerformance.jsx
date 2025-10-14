@@ -19,10 +19,27 @@ const AddFishPerformance = () => {
     biomassKg: "",
   });
 
+  const [batches, setBatches] = useState([]);
   const [ponds, setPonds] = useState([]);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
   const { id } = useParams();
+
+  // fetch batches
+  useEffect(() => {
+    const fetchBatches = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}batch`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBatches(response.data.content);
+      } catch (error) {
+        console.error("Error fetching batches:", error);
+        toast.error("Could not load batches");
+      }
+    };
+    fetchBatches();
+  }, [token]);
 
   // Fetch ponds
   useEffect(() => {
@@ -135,15 +152,20 @@ const AddFishPerformance = () => {
               </div>
 
               <div className="formInput">
-                <label>Batch ID:</label>
-                <input
-                  type="text"
+                <label>Batch:</label>
+                <select
                   name="batchId"
                   value={fishPerformanceLog.batchId || ""}
                   onChange={handleChange}
-                  placeholder="Enter batch ID"
                   required
-                />
+                >
+                  <option value="">-- Select Batch --</option>
+                  {batches.map((b) => (
+                    <option key={b.id} value={b.id}>
+                      {b.stockDate} / {b.source} - {b.id}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               <div className="formInput">

@@ -4,6 +4,9 @@ import { Link } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { url as baseUrl } from "../../../api";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
 
 const DailyBroilerLog = () => {
   const [logList, setLogList] = useState([]);
@@ -78,13 +81,15 @@ const DailyBroilerLog = () => {
             to={`/dashboard/broiler-log/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
-            <div className="viewButton">Edit</div>
+             <div className="editButton">
+              <EditIcon style={{ marginRight: "5px" }} />
+            </div>
           </Link>
           <div
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            Delete
+            <DeleteIcon style={{ marginRight: "5px" }} />
           </div>
         </div>
       ),

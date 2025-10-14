@@ -6,7 +6,6 @@ import {
   AccordionDetails,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import DashboardIcon from "@mui/icons-material/Dashboard";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import StoreIcon from "@mui/icons-material/Store";
 import WorkspacesIcon from "@mui/icons-material/Workspaces";
@@ -22,27 +21,25 @@ import RestaurantIcon from "@mui/icons-material/Restaurant";
 import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
 import DeleteSweepIcon from "@mui/icons-material/DeleteSweep";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import InsertChartIcon from "@mui/icons-material/InsertChart";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import SettingsSystemDaydreamOutlinedIcon from "@mui/icons-material/SettingsSystemDaydreamOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import SettingsIcon from "@mui/icons-material/Settings";
 import { DarkModeContext } from "../../context/darkModeContext";
 import "./sidebar.scss";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
-  const [openSettings, setOpenSettings] = useState(false);
   const { dispatch } = useContext(DarkModeContext);
   const farm = localStorage.getItem("farmName");
 
-  const handleChange = (panel) => (event, isExpanded) => {
-    setExpanded(isExpanded ? panel : false);
-  };
+  // const handleChange = (panel) => (event, isExpanded) => {
+  //   setExpanded(isExpanded ? panel : false);
+  // };
+
+  const handleChange = (panel) => () => {
+  setExpanded((prevExpanded) => (prevExpanded === panel ? false : panel));
+};
 
   return (
     <div className="sidebar">
@@ -54,22 +51,6 @@ const Sidebar = () => {
       <hr />
       <div className="center">
         <ul>
-          <p className="title">MAIN</p>
-          <Link to="/dashboard" style={{ textDecoration: "none" }}>
-            <li>
-              <DashboardIcon className="icon" />
-              <span>Dashboard</span>
-            </li>
-          </Link>
-
-          <p className="title">LISTS</p>
-          <Link to="/dashboard/tasks" style={{ textDecoration: "none" }}>
-            <li>
-              <AddTaskIcon className="icon" />
-              <span>Task</span>
-            </li>
-          </Link>
-
           {/* CATFISH MANAGEMENT */}
           <Accordion
             expanded={expanded === "catfish"}
@@ -83,7 +64,7 @@ const Sidebar = () => {
             }}
           >
             <AccordionSummary expandIcon={<ExpandMoreIcon className="icon" />}>
-              <span className="title">CAT-FISH MANAGEMENT</span>
+              <span className="title">CATFISH MANAGEMENT</span>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
               <Link to="/dashboard/pond" style={{ textDecoration: "none" }}>
@@ -334,86 +315,69 @@ const Sidebar = () => {
             </AccordionDetails>
           </Accordion>
 
-          <p className="title">USEFUL</p>
-          <li>
-            <InsertChartIcon className="icon" />
-            <span>Stats</span>
-          </li>
-          <li>
-            <NotificationsNoneIcon className="icon" />
-            <span>Notifications</span>
-          </li>
-
-          <p className="title">SERVICE</p>
-          <li>
-            <SettingsSystemDaydreamOutlinedIcon className="icon" />
-            <span>System Health</span>
-          </li>
-          <li>
-            <MonitorHeartIcon className="icon" />
-            <span>Logs</span>
-          </li>
-
-          {/* SETTINGS */}
-          <ul>
-            <li
-              onClick={() => setOpenSettings(!openSettings)}
-              className="menu-item"
-            >
-              <SettingsApplicationsIcon className="icon" />
-              <span>Settings</span>
-              {openSettings ? <ArrowDropDownIcon /> : <ArrowRightIcon />}
-            </li>
-
-            {openSettings && (
-              <ul className="submenu">
-                <Link
-                  to="/dashboard/organizations"
-                  style={{ textDecoration: "none" }}
-                >
-                  <li>
-                    <InventoryIcon className="icon" />
-                    <span>Organization</span>
-                  </li>
-                </Link>
-                <Link to="/dashboard/farms" style={{ textDecoration: "none" }}>
-                  <li>
-                    <AgricultureIcon className="icon" />
-                    <span>Farm</span>
-                  </li>
-                </Link>
-                <Link to="/dashboard/plots" style={{ textDecoration: "none" }}>
-                  <li>
-                    <AgricultureIcon className="icon" />
-                    <span>Plot</span>
-                  </li>
-                </Link>
-                <Link to="/dashboard/cadre" style={{ textDecoration: "none" }}>
-                  <li>
-                    <WorkspacesIcon className="icon" />
-                    <span>Cadre</span>
-                  </li>
-                </Link>
-              </ul>
-            )}
-          </ul>
-
-          <Link to="/dashboard/staff-user" style={{ textDecoration: "none" }}>
-            <p className="title">USER</p>
-            <li>
-              <AccountCircleOutlinedIcon className="icon" />
-              <span>Admin Panel</span>
-            </li>
-          </Link>
-          <Link to="/dashboard/logout" style={{ textDecoration: "none" }}>
-            <li>
-              <ExitToAppIcon className="icon" />
-              <span>Logout</span>
-            </li>
-          </Link>
+          <Accordion
+            expanded={expanded === "settings"}
+            onChange={handleChange("settings")}
+            disableGutters
+            square
+            sx={{
+              background: "transparent",
+              boxShadow: "none",
+              "&:before": { display: "none" },
+            }}
+          >
+            <AccordionSummary expandIcon={<ExpandMoreIcon className="icon" />}>
+              <p className="title">SYSTEM MANAGEMENT</p>
+            </AccordionSummary>
+            <AccordionDetails sx={{ padding: 0 }}>
+              <Link to="/dashboard/tasks" style={{ textDecoration: "none" }}>
+                <li>
+                  <AddTaskIcon className="icon" />
+                  <span>Task</span>
+                </li>
+              </Link>
+              <Link to="/dashboard/cadre" style={{ textDecoration: "none" }}>
+                <li>
+                  <WorkspacesIcon className="icon" />
+                  <span>Cadre</span>
+                </li>
+              </Link>
+              <Link to="/dashboard/plots" style={{ textDecoration: "none" }}>
+                <li>
+                  <AgricultureIcon className="icon" />
+                  <span>Plots</span>
+                </li>
+              </Link>
+              <Link to="/dashboard/farms" style={{ textDecoration: "none" }}>
+                <li>
+                  <AgricultureIcon className="icon" />
+                  <span>Farms</span>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/organizations"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <InventoryIcon className="icon" />
+                  <span>Organizations</span>
+                </li>
+              </Link>
+              <Link
+                to="/dashboard/staff-user"
+                style={{ textDecoration: "none" }}
+              >
+                <li>
+                  <AccountCircleOutlinedIcon className="icon" />
+                  <span>Staffs</span>
+                </li>
+              </Link>
+            </AccordionDetails>
+          </Accordion>
         </ul>
       </div>
 
+      {/* THEME SWITCH */}
       <div className="bottom">
         <div
           className="colorOption"
@@ -423,6 +387,14 @@ const Sidebar = () => {
           className="colorOption"
           onClick={() => dispatch({ type: "DARK" })}
         ></div>
+        <div>
+          <Link
+            to="/dashboard/logout"
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <ExitToAppIcon />
+          </Link>
+        </div>
       </div>
     </div>
   );

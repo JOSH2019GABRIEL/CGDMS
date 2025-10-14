@@ -109,7 +109,10 @@ const AddCropLog = () => {
       }, 1000);
     } catch (error) {
       console.error("Error saving crop log:", error);
+      setTimeout(() => {
       toast.error(error.response?.data?.message || "Error saving crop log.");
+      }, 1000);
+
     }
   };
 

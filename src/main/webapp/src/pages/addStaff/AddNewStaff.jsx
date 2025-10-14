@@ -223,6 +223,7 @@ const AddNewStaff = () => {
                       value={newStaff.password}
                       onChange={handleChange}
                       placeholder="Enter password"
+                      minLength={8}
                     />
                     <span onClick={togglePassword} className="eye-icon">
                       {showPassword ? <VisibilityOff /> : <Visibility />}

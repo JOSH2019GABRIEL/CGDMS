@@ -8,6 +8,8 @@ const Logout = () => {
   useEffect(() => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    localStorage.removeItem("roles");
+    localStorage.removeItem("farmName");
 
     const timer = setTimeout(() => {
       navigate("/");

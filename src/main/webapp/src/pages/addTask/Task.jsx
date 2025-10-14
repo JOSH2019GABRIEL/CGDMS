@@ -5,6 +5,10 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
 import { toast } from "react-toastify";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
+
 
 const Task = () => {
   const [taskList, setTaskList] = useState([]);
@@ -74,13 +78,15 @@ const Task = () => {
             to={`/dashboard/task/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
-            <div className="viewButton">Edit</div>
+             <div className="editButton">
+              <EditIcon style={{ marginRight: "5px" }} />
+            </div>
           </Link>
           <div
             className="deleteButton"
             onClick={() => handleDelete(params.row.id)}
           >
-            Delete
+            <DeleteIcon style={{ marginRight: "5px" }} />
           </div>
         </div>
       ),

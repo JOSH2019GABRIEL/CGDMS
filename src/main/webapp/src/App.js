@@ -72,6 +72,7 @@ import PostLossHarvest from "pages/vegetables/postlossharvest/PostLossHarvests";
 import AddPostLossHarvest from "pages/vegetables/postlossharvest/AddPossLossHarvest";
 import AddSalesLink from "pages/vegetables/saleslink/AddSalesLink";
 import SalesLink from "pages/vegetables/saleslink/SalesLink";
+import ForgetPassword from "pages/login/ForgetPassword";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
@@ -82,6 +83,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Login />} />
 
+          <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/dashboard/logout" element={<Logout />} />
           {/* Dashboard root */}
           <Route path="/dashboard" element={<Home />} />

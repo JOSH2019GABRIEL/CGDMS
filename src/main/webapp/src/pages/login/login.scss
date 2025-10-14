@@ -1,88 +1,113 @@
 .login-container {
   display: flex;
   height: 100vh;
-  font-family: "Inter", sans-serif;
+  font-family: "Inter", system-ui, sans-serif;
   color: #111;
+  background: linear-gradient(135deg, #f9fafb, #eef2ff);
+  overflow: hidden;
+  animation: fadeIn 0.8s ease-in-out;
+
+  @media (max-width: 900px) {
+    flex-direction: column;
+    height: auto;
+  }
 
   .login-left {
     flex: 1;
-    background: #f9fafb;
+    background: linear-gradient(145deg, #f0fdf4, #dcfce7);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     padding: 3rem;
+    text-align: center;
+    animation: slideInLeft 0.8s ease-out;
 
     .brand-logo {
       font-size: 2rem;
-      font-weight: 700;
+      font-weight: 800;
       color: #22c55e;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.2rem;
     }
 
     h1 {
-      font-size: 2rem;
-      font-weight: 600;
+      font-size: 1.9rem;
+      font-weight: 700;
+      color: #065f46;
       margin-bottom: 0.5rem;
     }
 
     p {
-      color: #6b7280;
+      color: #4b5563;
+      max-width: 340px;
       margin-bottom: 2rem;
     }
 
     .illustration img {
-      max-width: 320px;
-      margin-bottom: 2rem;
+      max-width: 340px;
+      margin: 2rem 0;
+      animation: float 3s ease-in-out infinite;
     }
 
     .partners {
       display: flex;
       gap: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
 
       img {
-        height: 32px;
+        height: 28px;
         opacity: 0.7;
+        transition: 0.3s;
+        filter: grayscale(100%);
+
+        &:hover {
+          opacity: 1;
+          filter: none;
+        }
       }
     }
   }
 
   .login-right {
-    flex: 1;
+    flex: 1.1;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 3rem 4rem;
+    align-items: flex-start;
+    padding: 3rem 5rem;
+    background: #fff;
+    border-left: 1px solid #e5e7eb;
+    animation: slideInRight 0.8s ease-out;
 
-    h2 {
-      font-size: 1.5rem;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
+    @media (max-width: 900px) {
+      align-items: center;
+      padding: 2rem;
     }
 
-    p {
+    h2 {
+      font-size: 1.75rem;
+      font-weight: 700;
       margin-bottom: 1.5rem;
-
-      a {
-        color: #10b981;
-        font-weight: 500;
-        text-decoration: none;
-      }
+      color: #111827;
     }
 
     .info-box {
       background: #ecfdf5;
-      border-radius: 8px;
+      border: 1px solid #a7f3d0;
+      border-radius: 10px;
       padding: 1rem;
       font-size: 0.9rem;
       color: #065f46;
       display: flex;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
+      width: 100%;
+      max-width: 420px;
 
       .info-icon {
         font-size: 20px;
-        margin-right: 0.5rem;
+        margin-right: 0.6rem;
         color: #10b981;
       }
     }
@@ -90,24 +115,45 @@
     .login-form {
       display: flex;
       flex-direction: column;
+      width: 100%;
+      max-width: 420px;
 
       label {
         font-size: 0.85rem;
-        margin-bottom: 0.25rem;
         font-weight: 500;
+        color: #374151;
+        margin-bottom: 0.35rem;
       }
 
-      input {
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 8px;
-        margin-bottom: 1.2rem;
-        font-size: 1rem;
-        outline: none;
+      .input-with-icon,
+      .password-input {
+        position: relative;
+        display: flex;
+        align-items: center;
 
-        &:focus {
-          border-color: #10b981;
-          box-shadow: 0 0 0 2px #a7f3d0;
+        .field-icon {
+          position: absolute;
+          left: 12px;
+          color: #9ca3af;
+        }
+
+        input {
+          width: 100%;
+          padding: 0.85rem 0.85rem 0.85rem 42px;
+          border: 1px solid #d1d5db;
+          border-radius: 8px;
+          margin-bottom: 1.2rem;
+          font-size: 1rem;
+          background-color: #f9fafb;
+          transition: all 0.25s ease;
+          border: none;
+          border-bottom: 1px solid gray;
+
+          &:focus {
+            border-color: #10b981;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+          }
         }
       }
 
@@ -115,14 +161,23 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        margin: -0.2rem 0 1.2rem 0;
 
-        label {
-          margin-bottom: 0;
+        .remember-me {
+          display: flex;
+          align-items: center;
+          font-size: 0.9rem;
+          color: #374151;
+
+          input {
+            margin-right: 0.4rem;
+            accent-color: #10b981;
+          }
         }
 
-        a {
-          font-size: 0.8rem;
-          color: #6b7280;
+        .forgot-link {
+          font-size: 0.9rem;
+          color: #059669;
           text-decoration: none;
 
           &:hover {
@@ -131,39 +186,48 @@
         }
       }
 
-      .password-input {
-        position: relative;
-
-        input {
-          width: 93.7%;
-          padding-right: 40px;
-        }
-
-        .eye-icon {
-          position: absolute;
-          right: 12px;
-          top: 50%;
-          transform: translateY(-50%);
-          cursor: pointer;
-          color: #6b7280;
-        }
-      }
-
       .login-btn {
-        background: #111827;
-        color: white;
+        background: linear-gradient(90deg, #22c55e, #16a34a);
+        color: #fff;
         padding: 0.9rem;
         border-radius: 8px;
         font-size: 1rem;
-        font-weight: 500;
+        font-weight: 600;
         cursor: pointer;
         border: none;
-        margin-top: 1rem;
+        transition: all 0.3s ease;
+        letter-spacing: 0.3px;
 
         &:hover {
-          background: #1f2937;
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        &:active {
+          transform: scale(0.98);
         }
       }
     }
   }
+}
+
+/* Animations */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

@@ -55,17 +55,25 @@ const AddCropVariety = () => {
     e.preventDefault();
 
     try {
-          await axios.post(`${baseUrl}crop-varieties`, newVariety, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-     toast.success(id ? "Crop variety updated successfully!" : "Crop variety created successfully!");
+      await axios.post(`${baseUrl}crop-varieties`, newVariety, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      toast.success(
+        id
+          ? "Crop variety updated successfully!"
+          : "Crop variety created successfully!"
+      );
 
-setTimeout(() => {
-      navigate("/dashboard/crop-varieties");
+      setTimeout(() => {
+        navigate("/dashboard/crop-varieties");
       }, 1000);
     } catch (error) {
       console.error("Error saving crop variety:", error);
-      toast.error(error.response?.data?.message || "Error saving crop variety.");
+      setTimeout(() => {
+        toast.error(
+          error.response?.data?.message || "Error saving crop variety."
+        );
+      }, 1000);
     }
   };
 
@@ -82,7 +90,6 @@ setTimeout(() => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-              
               {/* Crop Name */}
               <div className="formInput">
                 <label>Crop Name:</label>

@@ -1,78 +1,167 @@
 .datatable {
-  height: 600px;
-  padding: 20px;
-  
-  .datatableTitle{
-    width: 100%;
-    font-size: 24px;
-    color: gray;
-    margin-bottom: 10px;
+  height: 100%;
+  padding: 1.5rem;
+  background-color: #fafafa;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease-in-out;
+
+  &:hover {
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
+  }
+
+  .datatableTitle {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-bottom: 1rem;
 
-    .link{
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #333;
+      margin: 0;
+    }
+
+    .link {
       text-decoration: none;
-      color: green;
-      font-size: 16px;
-      font-weight: 400;
-      border: 1px solid green;
-      padding: 5px;
-      border-radius: 5px;
+      color: #2e7d32;
+      font-size: 14px;
+      font-weight: 500;
+      border: 1px solid #2e7d32;
+      padding: 6px 10px;
+      border-radius: 6px;
       cursor: pointer;
+      background-color: transparent;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background-color: #2e7d32;
+        color: #fff;
+        transform: translateY(-2px);
+        box-shadow: 0 3px 6px rgba(46, 125, 50, 0.3);
+      }
+
+      &:active {
+        transform: translateY(0);
+        box-shadow: none;
+      }
     }
   }
 
   .cellWithImg {
     display: flex;
     align-items: center;
+    gap: 10px;
 
     .cellImg {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       object-fit: cover;
-      margin-right: 20px;
+      border: 2px solid #eee;
+      transition: transform 0.2s ease;
+
+      &:hover {
+        transform: scale(1.1);
+      }
+    }
+
+    span {
+      font-size: 14px;
+      color: #444;
+      font-weight: 500;
     }
   }
 
   .cellWithStatus {
-    padding: 5px;
-    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    min-width: 90px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-transform: capitalize;
 
     &.active {
-      background-color: rgba(0, 128, 0, 0.05);
-      color: green;
+      background-color: rgba(56, 142, 60, 0.1);
+      color: #388e3c;
     }
+
     &.pending {
-      background-color: rgba(255, 217, 0, 0.05);
-      color: goldenrod;
+      background-color: rgba(255, 193, 7, 0.15);
+      color: #f9a825;
     }
+
     &.passive {
-      background-color: rgba(255, 0, 0, 0.05);
-      color: crimson;
+      background-color: rgba(244, 67, 54, 0.1);
+      color: #e53935;
     }
   }
 
   .cellAction {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
+
+    .viewButton,
+    .deleteButton {
+      font-size: 13px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
     .viewButton {
-      padding: 2px 5px;
-      border-radius: 5px;
-      color: darkblue;
-      border: 1px dotted rgba(0, 0, 139, 0.596);
-      cursor: pointer;
+      color: #1565c0;
+      border: 1px solid rgba(21, 101, 192, 0.3);
+
+      &:hover {
+        background-color: #1565c0;
+        color: white;
+        transform: scale(1.05);
+      }
     }
-    
+
     .deleteButton {
-      padding: 2px 5px;
-      border-radius: 5px;
-      color: crimson;
-      border: 1px dotted rgba(220, 20, 60, 0.6);
-      cursor: pointer;
+      color: #c62828;
+      border: 1px solid rgba(198, 40, 40, 0.3);
+
+      &:hover {
+        background-color: #c62828;
+        color: white;
+        transform: scale(1.05);
+      }
+    }
+  }
+
+  // Responsive padding
+  @media (max-width: 768px) {
+    padding: 1rem;
+
+    .datatableTitle {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+
+      h2 {
+        font-size: 1.2rem;
+      }
+    }
+
+    .cellAction {
+      gap: 8px;
+
+      .viewButton,
+      .deleteButton {
+        padding: 3px 6px;
+        font-size: 12px;
+      }
     }
   }
 }

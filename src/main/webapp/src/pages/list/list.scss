@@ -1,7 +1,158 @@
 .list {
   display: flex;
   width: 100%;
+  min-height: calc(100vh - 60px); // ensure full height minus navbar
+  background-color: #f9fafb;
+  color: #333;
+  transition: all 0.3s ease-in-out;
+
+  /* Smooth entrance animation */
+  animation: fadeIn 0.4s ease-in-out;
+
   .listContainer {
     flex: 6;
+    background-color: #fff;
+    margin: 20px;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
+
+    /* 🧭 Header styling */
+    .listHeader {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+
+      h2 {
+        font-size: 20px;
+        font-weight: 600;
+        color: #222;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        button {
+          background-color: #007bff;
+          color: #fff;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-size: 14px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background-color: #0056d2;
+            box-shadow: 0 2px 8px rgba(0, 91, 211, 0.3);
+          }
+        }
+      }
+    }
+
+    /* 🧾 Content area */
+    .listContent {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #ccc transparent;
+      transition: all 0.3s ease;
+
+      /* Subtle hover effect on rows/items */
+      .listItem {
+        padding: 12px 16px;
+        border-bottom: 1px solid #f0f0f0;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+
+        &:hover {
+          background-color: #f7faff;
+          transform: translateY(-1px);
+        }
+      }
+
+      /* Empty state */
+      .emptyState {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 60vh;
+        font-size: 16px;
+        color: #888;
+      }
+    }
+  }
+
+  /* ✨ Dark Mode Support */
+  &.dark {
+    background-color: #111;
+    color: #ddd;
+
+    .listContainer {
+      background-color: #1a1a1a;
+      box-shadow: 0 2px 12px rgba(255, 255, 255, 0.05);
+      border: 1px solid #333;
+
+      .listHeader {
+        border-bottom: 1px solid #333;
+
+        h2 {
+          color: #ddd;
+        }
+
+        .actions button {
+          background-color: #0d6efd;
+          &:hover {
+            background-color: #0b5ed7;
+          }
+        }
+      }
+
+      .listContent {
+        .listItem {
+          border-bottom: 1px solid #222;
+          &:hover {
+            background-color: #222;
+          }
+        }
+
+        .emptyState {
+          color: #777;
+        }
+      }
+    }
+  }
+
+  /* 🎞️ Animations */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* 📱 Responsive */
+  @media (max-width: 768px) {
+    .listContainer {
+      margin: 10px;
+      padding: 16px;
+      .listHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+    }
   }
 }
