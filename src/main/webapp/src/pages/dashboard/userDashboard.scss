@@ -1,0 +1,95 @@
+.dashboard {
+  padding: 20px;
+  background-color: #f9fafb;
+  min-height: 100vh;
+
+  .dashboard-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  .cards-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+  }
+
+  .card {
+    border-radius: 16px;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    padding: 20px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      h3 {
+        font-size: 16px;
+        color: #777;
+      }
+
+      h1 {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+      }
+
+      .icon-container {
+        background: rgba(0, 0, 0, 0.05);
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      .icon {
+        font-size: 30px;
+      }
+
+      .farm {
+        color: #6a5acd;
+      }
+
+      .user {
+        color: #1e90ff;
+      }
+
+      .plot {
+        color: #28a745;
+      }
+
+      .earn {
+        color: #ffa500;
+      }
+    }
+  }
+
+  .charts-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
+    gap: 20px;
+
+    .chart-card {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+
+      h3 {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #333;
+      }
+    }
+  }
+}
