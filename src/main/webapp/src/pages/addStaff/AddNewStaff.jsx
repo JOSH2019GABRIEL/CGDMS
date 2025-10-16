@@ -13,7 +13,6 @@ const AddNewStaff = () => {
   const [newStaff, setNewStaff] = useState({
     firstname: "",
     lastname: "",
-    // cadre: "",
     cadreId: "",
     phone: "",
     dateOfBirth: "",
@@ -68,7 +67,7 @@ const AddNewStaff = () => {
       }
     };
     fetchCadres();
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     const fetchFarms = async () => {
@@ -76,7 +75,6 @@ const AddNewStaff = () => {
         const response = await axios.get(`${baseUrl}farms`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        console.log("Herer ", response.data);
         setFarms(response.data);
       } catch (error) {
         console.error("Error fetching farms:", error);
@@ -93,7 +91,6 @@ const AddNewStaff = () => {
             headers: { Authorization: `Bearer ${token}` },
           });
           setNewStaff(response.data);
-          console.log("Herer ", response.data);
         } catch (error) {
           console.error("Error fetching staff:", error);
         }
@@ -263,6 +260,11 @@ const AddNewStaff = () => {
                   ))}
                 </select>
               </div>
+              <div className="formInput">
+                <input
+                hidden
+                />
+                </div>
 
               <button type="submit">{id ? "Update" : "Save"}</button>
             </form>

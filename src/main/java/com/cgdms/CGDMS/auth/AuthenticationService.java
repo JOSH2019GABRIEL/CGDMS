@@ -45,6 +45,7 @@ public class AuthenticationService {
                 .token(jwtToken)
                 .farmName(user.getFarm() != null ? user.getFarm().getFarmName() : "No Farm")
                 .roles(List.of(user.getRole() != null ? user.getRole().getName() : "No Role"))
+                .organization(user.getFarm() != null ? user.getFarm().getOrganization().getName() : "No Organization")
                 .build();
     }
 

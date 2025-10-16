@@ -41,7 +41,7 @@ const Widget = ({ type }) => {
             break;
           case "fingerlins":
              res = await axios.get(
-          `${baseUrl}batch/get-count`,
+          `${baseUrl}plot/get-count`,
                   { headers: { Authorization: `Bearer ${token}` } }
                 );
             break;
@@ -80,7 +80,7 @@ const Widget = ({ type }) => {
     case "pond":
       data = {
         title: "PONDS",
-        link: "View all ponds",
+        link: <Link to="/dashboard/pond" style={{ textDecoration: "none" }}> View all ponds </Link>,
         icon: (
           <ShoppingCartOutlinedIcon
             className="icon"
@@ -94,7 +94,7 @@ const Widget = ({ type }) => {
       break;
     case "fingerlins":
       data = {
-        title: "FINGERLINS",
+        title: "PLOTS",
         link: "View all fingerlins",
         icon: (
           <MonetizationOnOutlinedIcon

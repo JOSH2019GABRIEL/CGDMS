@@ -73,9 +73,12 @@ import AddPostLossHarvest from "pages/vegetables/postlossharvest/AddPossLossHarv
 import AddSalesLink from "pages/vegetables/saleslink/AddSalesLink";
 import SalesLink from "pages/vegetables/saleslink/SalesLink";
 import ForgetPassword from "pages/login/ForgetPassword";
+import UserDashboard from "pages/dashboard/UserDashBoard";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
+  const roles = localStorage.getItem("roles");
+  const isAdmin = roles.includes("ROLE_ADMIN");
 
   return (
     <div className={darkMode ? "app dark" : "app"}>
@@ -86,7 +89,7 @@ function App() {
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/dashboard/logout" element={<Logout />} />
           {/* Dashboard root */}
-          <Route path="/dashboard" element={<Home />} />
+          <Route path="/dashboard" element={isAdmin ? <Home /> : <UserDashboard/>} />
 
           <Route
             path="/dashboard/users"

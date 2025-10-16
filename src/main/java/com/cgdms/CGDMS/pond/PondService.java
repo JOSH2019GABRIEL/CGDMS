@@ -86,7 +86,8 @@ public class PondService {
     }
 
     public Integer totalNumberOfPonds() {
-        return pondRepository.findAllCount();
+        Long farmId = authUtils.getCurrentUserFarmId();
+        return pondRepository.findAllCount(farmId);
     }
 
     public Integer totalNumberOfAvailableFingerlings() {

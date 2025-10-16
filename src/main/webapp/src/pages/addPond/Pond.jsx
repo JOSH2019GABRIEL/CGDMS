@@ -14,6 +14,8 @@ const Pond = () => {
   const [pageSize, setPageSize] = useState(10);
   const [rowCount, setRowCount] = useState(0);
   const token = localStorage.getItem("token");
+  const roles = localStorage.getItem("roles");
+  const isAdmin = roles.includes("ROLE_ADMIN");
 
   // Fetch ponds with backend pagination
   const fetchPonds = async (page, pageSize) => {

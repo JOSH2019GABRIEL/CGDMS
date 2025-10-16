@@ -35,11 +35,11 @@ public class UserMapperService {
                 .id(user.getId())
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())
-//                .cadre(user.getCadre())
-
                 .cadreId(user.getCadre() != null ? user.getCadre().getId() : null)
                 .cadre(user.getCadre() != null ? user.getCadre().getCadreName() : null)
                 .rate(user.getCadre() != null ? user.getCadre().getRate() : null)
+                .roleId(user.getRole() != null ? user.getRole().getId() : null)
+                .farmId(user.getFarm() != null ? user.getFarm().getId() : null)
 
                 .phone(user.getPhone())
                 .dateOfBirth(user.getDateOfBirth())

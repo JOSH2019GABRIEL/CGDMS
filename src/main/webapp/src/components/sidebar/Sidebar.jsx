@@ -1,10 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Link } from "react-router-dom";
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-} from "@mui/material";
+import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddTaskIcon from "@mui/icons-material/AddTask";
 import StoreIcon from "@mui/icons-material/Store";
@@ -32,22 +28,30 @@ const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
   const { dispatch } = useContext(DarkModeContext);
   const farm = localStorage.getItem("farmName");
+  const org = localStorage.getItem("organization");
+  const roles = localStorage.getItem("roles");
+  const isAdmin = roles.includes("ROLE_ADMIN");
 
   // const handleChange = (panel) => (event, isExpanded) => {
   //   setExpanded(isExpanded ? panel : false);
   // };
 
   const handleChange = (panel) => () => {
-  setExpanded((prevExpanded) => (prevExpanded === panel ? false : panel));
-};
+    setExpanded((prevExpanded) => (prevExpanded === panel ? false : panel));
+  };
 
   return (
     <div className="sidebar">
       <div className="top">
-        <Link to="/dashboard" style={{ textDecoration: "none" }}>
-          <span className="logo">{farm}</span>
+        <Link to="/dashboard" className="logo-link">
+          <div className="logo">
+            <span className="org-name">{org}</span>
+            <hr />
+            <span className="farm-name">{farm}</span>
+          </div>
         </Link>
       </div>
+
       <hr />
       <div className="center">
         <ul>
@@ -315,7 +319,8 @@ const Sidebar = () => {
             </AccordionDetails>
           </Accordion>
 
-          <Accordion
+          
+          {isAdmin && <Accordion
             expanded={expanded === "settings"}
             onChange={handleChange("settings")}
             disableGutters
@@ -373,7 +378,7 @@ const Sidebar = () => {
                 </li>
               </Link>
             </AccordionDetails>
-          </Accordion>
+          </Accordion>}
         </ul>
       </div>
 

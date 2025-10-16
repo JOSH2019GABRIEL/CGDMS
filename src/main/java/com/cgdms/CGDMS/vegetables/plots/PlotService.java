@@ -48,7 +48,7 @@ public class PlotService {
 
 
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
-        Page<Plot> plots = isAdmin ? plotRepository.findAllNotArchived(pageable, farmId) : null;
+        Page<Plot> plots = isAdmin ? plotRepository.findAllNotArchived(pageable, farmId) : plotRepository.findAllNotArchivedForUsers(pageable, loggedInUser.getId(), farmId);
         List<PlotResponse> responses = plots.stream().map(mapper::toResponse).toList();
         return new PageResponse<>(responses, plots.getNumber(), plots.getSize(), plots.getTotalElements(),
                 plots.getTotalPages(), plots.isFirst(), plots.isLast());
@@ -65,5 +65,9 @@ public class PlotService {
                 .orElseThrow(() -> new EntityNotFoundException("Plot not found with id: " + id));
         plot.setArchived(1);
         plotRepository.save(plot);
+    }
+    public Integer totalNumberOfPlots() {
+        Long farmId = authUtils.getCurrentUserFarmId();
+        return plotRepository.countAllPlots(farmId);
     }
 }

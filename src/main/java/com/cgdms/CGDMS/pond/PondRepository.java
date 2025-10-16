@@ -30,9 +30,9 @@ public interface PondRepository extends JpaRepository<Pond, Long> {
     @Query(value = """
            SELECT COUNT(pond)
            FROM Pond pond
-           WHERE pond.archived = 0     
+           WHERE pond.archived = 0 and pond.farm.id = :farmId  
                 """)
-    Integer findAllCount();
+    Integer findAllCount(Long farmId);
 
     @Query(value = """
            SELECT SUM(pond.availableFingerlin)

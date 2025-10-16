@@ -25,6 +25,8 @@ public class UserResponse {
     private String password;
     private boolean enabled;
     private boolean accountLocked;
+    private Long roleId;
+    private Long farmId;
 
 
 }

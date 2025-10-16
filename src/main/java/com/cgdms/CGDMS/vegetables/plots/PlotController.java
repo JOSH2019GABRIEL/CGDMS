@@ -38,4 +38,10 @@ public class PlotController {
         plotService.delete(id);
         return ResponseEntity.ok("Plot deleted successfully");
     }
+
+    @GetMapping("/get-count")
+    public ResponseEntity<Integer> getTotalPlots () {
+        Integer number = plotService.totalNumberOfPlots();
+        return ResponseEntity.ok(number);
+    }
 }

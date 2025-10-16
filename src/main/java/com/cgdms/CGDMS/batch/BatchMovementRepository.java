@@ -16,7 +16,7 @@ public interface BatchMovementRepository extends JpaRepository<BatchMovement, Lo
     FROM BatchMovement m
     WHERE m.farm.id = :farmId
     AND m.archived = 0
-    AND m.operatorUserId = :operatorUserId
+    AND m.operatorUserId = :userId
 """)
     Page<BatchMovement> findAllNotArchivedForUsers(Pageable pageable, Integer userId, Long farmId);
 

@@ -36,14 +36,15 @@ const Login = () => {
         }
       );
 
-      const { token, fullName, farmName, roles } = response.data;
+      const { token, fullName, farmName, roles, organization } = response.data;
 
       // ✅ Store securely in localStorage
       localStorage.setItem("token", token);
       if (fullName) localStorage.setItem("fullName", fullName);
       if (farmName) localStorage.setItem("farmName", farmName);
-      if (roles) localStorage.setItem("roles", JSON.stringify(roles));
-
+      if (roles) localStorage.setItem("roles", roles);
+      if (organization) localStorage.setItem("organization", organization);
+      
       toast.success("Login successful 🎉");
 
       setTimeout(() => navigate("/dashboard"), 1500);
