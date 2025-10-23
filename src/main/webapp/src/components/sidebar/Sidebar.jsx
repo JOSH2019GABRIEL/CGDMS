@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { Accordion, AccordionSummary, AccordionDetails } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import AddTaskIcon from "@mui/icons-material/AddTask";
@@ -20,9 +20,10 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import SettingsIcon from "@mui/icons-material/Settings";
+// import SettingsIcon from "@mui/icons-material/Settings";
 import { DarkModeContext } from "../../context/darkModeContext";
 import "./sidebar.scss";
+import { Dashboard } from "@mui/icons-material";
 
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
@@ -43,18 +44,29 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <div className="top">
-        <Link to="/dashboard" className="logo-link">
+        <NavLink to="/dashboard" className="logo-NavLink" style={{ textDecoration: "none" }}>
           <div className="logo">
             <span className="org-name">{org}</span>
             <hr />
             <span className="farm-name">{farm}</span>
           </div>
-        </Link>
+        </NavLink>
       </div>
 
       <hr />
       <div className="center">
         <ul>
+          <NavLink
+            to="/dashboard"
+            className={({ isActive }) => (isActive ? "" : "active")}
+            style={{ textDecoration: "none" }}
+          >
+            <li>
+              <Dashboard className="icon" />
+              <span>Dashboard</span>
+            </li>
+          </NavLink>
+
           {/* CATFISH MANAGEMENT */}
           <Accordion
             expanded={expanded === "catfish"}
@@ -71,60 +83,76 @@ const Sidebar = () => {
               <span className="title">CATFISH MANAGEMENT</span>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
-              <Link to="/dashboard/pond" style={{ textDecoration: "none" }}>
+              <NavLink
+                to="/dashboard/pond"
+                className={({ isActive }) => (isActive ? "active" : "")}
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <StoreIcon className="icon" />
                   <span>Pond</span>
                 </li>
-              </Link>
-              <Link to="/dashboard/batches" style={{ textDecoration: "none" }}>
+              </NavLink>
+              <NavLink
+                to="/dashboard/batches"
+                className={({ isActive }) => (isActive ? "active" : "")}
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <WorkspacesIcon className="icon" />
                   <span>Batch</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/batch-movement"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <TimelineIcon className="icon" />
                   <span>Batch Movement</span>
                 </li>
-              </Link>
-              <Link to="/dashboard/feed-log" style={{ textDecoration: "none" }}>
+              </NavLink>
+              <NavLink
+                to="/dashboard/feed-log"
+                className={({ isActive }) => (isActive ? "active" : "")}
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <RestaurantIcon className="icon" />
                   <span>Feed Logs</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/medication-logs"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <LocalHospitalIcon className="icon" />
                   <span>Medication Logs</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/environment-logs"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <ScienceIcon className="icon" />
                   <span>Environment Logs</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/fish-performances"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <MonitorHeartIcon className="icon" />
                   <span>Fish Performance</span>
                 </li>
-              </Link>
+              </NavLink>
             </AccordionDetails>
           </Accordion>
 
@@ -144,108 +172,126 @@ const Sidebar = () => {
               <p className="title">BROILER MANAGEMENT</p>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
-              <Link to="/dashboard/flock" style={{ textDecoration: "none" }}>
+              <NavLink
+                to="/dashboard/flock"
+                className={({ isActive }) => (isActive ? "active" : "")}
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <AgricultureIcon className="icon" />
                   <span>Flock</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/broiler-log"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <LineWeightIcon className="icon" />
                   <span>Daily Broiler Log</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/weight-sample"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <TimelineIcon className="icon" />
                   <span>Weight Sample</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/broiler-vaccination-log"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <OpacityIcon className="icon" />
                   <span>Vaccination Logs</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/broiler-medication-log"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <LocalHospitalIcon className="icon" />
                   <span>Medication Logs</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/thinning-event"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <SetMealIcon className="icon" />
                   <span>Thinning Event</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/harvest-event"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <ReceiptLongIcon className="icon" />
                   <span>Harvest Event</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/processing-batch"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <InventoryIcon className="icon" />
                   <span>Processing Batch</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/slaughter-logs"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <SetMealIcon className="icon" />
                   <span>Slaughter Log</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/cutup-yields"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <LineWeightIcon className="icon" />
                   <span>Cutup Yield</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/by-products"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <StoreIcon className="icon" />
                   <span>Byproducts</span>
                 </li>
-              </Link>
-              <Link to="/dashboard/wastes" style={{ textDecoration: "none" }}>
+              </NavLink>
+              <NavLink
+                to="/dashboard/wastes"
+                className={({ isActive }) => (isActive ? "active" : "")}
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <DeleteSweepIcon className="icon" />
                   <span>Wastes</span>
                 </li>
-              </Link>
+              </NavLink>
             </AccordionDetails>
           </Accordion>
 
@@ -265,120 +311,150 @@ const Sidebar = () => {
               <p className="title">VEGETABLE MANAGEMENT</p>
             </AccordionSummary>
             <AccordionDetails sx={{ padding: 0 }}>
-              <Link
+              <NavLink
                 to="/dashboard/crop-varieties"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <AgricultureIcon className="icon" />
                   <span>Crop Varieties</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/veg-crop-logs"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <TimelineIcon className="icon" />
                   <span>Daily Crop Log</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/planting-events"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <ScienceIcon className="icon" />
                   <span>Planting Events</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/harvest-batches"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <ReceiptLongIcon className="icon" />
                   <span>Harvest Batches</span>
                 </li>
-              </Link>
-              <Link
+              </NavLink>
+              <NavLink
                 to="/dashboard/postloss-harvestes"
+                className={({ isActive }) => (isActive ? "active" : "")}
                 style={{ textDecoration: "none" }}
               >
                 <li>
                   <DeleteSweepIcon className="icon" />
                   <span>Post Harvest Losses</span>
                 </li>
-              </Link>
-              <Link to="/dashboard/sales" style={{ textDecoration: "none" }}>
+              </NavLink>
+              <NavLink
+                to="/dashboard/sales"
+                className={({ isActive }) => (isActive ? "active" : "")}
+                style={{ textDecoration: "none" }}
+              >
                 <li>
                   <ShoppingCartIcon className="icon" />
-                  <span>Sales Link</span>
+                  <span>Sales NavLink</span>
                 </li>
-              </Link>
+              </NavLink>
             </AccordionDetails>
           </Accordion>
 
-          
-          {isAdmin && <Accordion
-            expanded={expanded === "settings"}
-            onChange={handleChange("settings")}
-            disableGutters
-            square
-            sx={{
-              background: "transparent",
-              boxShadow: "none",
-              "&:before": { display: "none" },
-            }}
-          >
-            <AccordionSummary expandIcon={<ExpandMoreIcon className="icon" />}>
-              <p className="title">SYSTEM MANAGEMENT</p>
-            </AccordionSummary>
-            <AccordionDetails sx={{ padding: 0 }}>
-              <Link to="/dashboard/tasks" style={{ textDecoration: "none" }}>
-                <li>
-                  <AddTaskIcon className="icon" />
-                  <span>Task</span>
-                </li>
-              </Link>
-              <Link to="/dashboard/cadre" style={{ textDecoration: "none" }}>
-                <li>
-                  <WorkspacesIcon className="icon" />
-                  <span>Cadre</span>
-                </li>
-              </Link>
-              <Link to="/dashboard/plots" style={{ textDecoration: "none" }}>
-                <li>
-                  <AgricultureIcon className="icon" />
-                  <span>Plots</span>
-                </li>
-              </Link>
-              <Link to="/dashboard/farms" style={{ textDecoration: "none" }}>
-                <li>
-                  <AgricultureIcon className="icon" />
-                  <span>Farms</span>
-                </li>
-              </Link>
-              <Link
-                to="/dashboard/organizations"
-                style={{ textDecoration: "none" }}
+          {isAdmin && (
+            <Accordion
+              expanded={expanded === "settings"}
+              onChange={handleChange("settings")}
+              disableGutters
+              square
+              sx={{
+                background: "transparent",
+                boxShadow: "none",
+                "&:before": { display: "none" },
+              }}
+            >
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon className="icon" />}
               >
-                <li>
-                  <InventoryIcon className="icon" />
-                  <span>Organizations</span>
-                </li>
-              </Link>
-              <Link
-                to="/dashboard/staff-user"
-                style={{ textDecoration: "none" }}
-              >
-                <li>
-                  <AccountCircleOutlinedIcon className="icon" />
-                  <span>Staffs</span>
-                </li>
-              </Link>
-            </AccordionDetails>
-          </Accordion>}
+                <p className="title">SYSTEM MANAGEMENT</p>
+              </AccordionSummary>
+              <AccordionDetails sx={{ padding: 0 }}>
+                <NavLink
+                  to="/dashboard/tasks"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <AddTaskIcon className="icon" />
+                    <span>Task</span>
+                  </li>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/cadre"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <WorkspacesIcon className="icon" />
+                    <span>Cadre</span>
+                  </li>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/plots"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <AgricultureIcon className="icon" />
+                    <span>Plots</span>
+                  </li>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/farms"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <AgricultureIcon className="icon" />
+                    <span>Farms</span>
+                  </li>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/organizations"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <InventoryIcon className="icon" />
+                    <span>Organizations</span>
+                  </li>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/staff-user"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <AccountCircleOutlinedIcon className="icon" />
+                    <span>Staffs</span>
+                  </li>
+                </NavLink>
+              </AccordionDetails>
+            </Accordion>
+          )}
         </ul>
       </div>
 
@@ -393,12 +469,12 @@ const Sidebar = () => {
           onClick={() => dispatch({ type: "DARK" })}
         ></div>
         <div>
-          <Link
+          <NavLink
             to="/dashboard/logout"
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <ExitToAppIcon />
-          </Link>
+          </NavLink>
         </div>
       </div>
     </div>
