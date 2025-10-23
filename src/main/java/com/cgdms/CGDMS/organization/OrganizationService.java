@@ -1,10 +1,14 @@
 package com.cgdms.CGDMS.organization;
 
-import com.cgdms.CGDMS.batch.Batch;
 import com.cgdms.CGDMS.common.AuthUtils;
+import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,27 +20,25 @@ public class OrganizationService {
 
     private final OrganizationRepository organizationRepository;
     private final AuthUtils authUtils;
+    private final OrganizationMapper organizationMapper; // ✅ dependency injected instance
 
     public OrganizationResponse create(OrganizationRequest request) {
-        Organization org = OrganizationMapper.toEntity(request);
-        return OrganizationMapper.toResponse(organizationRepository.save(org));
+        // ✅ use instance method instead of static
+        Organization org = organizationMapper.toEntity(request);
+        return organizationMapper.toResponse(organizationRepository.save(org));
     }
 
-    public List<OrganizationResponse> getAll() {
-        User loggedInUser = authUtils.getCurrentUser();
-        boolean isAdmin = authUtils.isAdmin();
-        Long farmId = authUtils.getCurrentUserFarmId();
-
-        return organizationRepository.findAll()
-                .stream()
-                .map(OrganizationMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+//    public List<OrganizationResponse> getAll() {
+//        return organizationRepository.findAll()
+//                .stream()
+//                .map(organizationMapper::toResponse)
+//                .collect(Collectors.toList());
+//    }
 
     public OrganizationResponse getById(Long id) {
         Organization org = organizationRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Organization not found with id " + id));
-        return OrganizationMapper.toResponse(org);
+        return organizationMapper.toResponse(org);
     }
 
     public OrganizationResponse update(Long id, OrganizationRequest request) {
@@ -45,7 +47,8 @@ public class OrganizationService {
         org.setName(request.getName());
         org.setAddress(request.getAddress());
         org.setContactEmail(request.getContactEmail());
-        return OrganizationMapper.toResponse(organizationRepository.save(org));
+        org.setContactPhone(request.getContactPhone());
+        return organizationMapper.toResponse(organizationRepository.save(org));
     }
 
     public void delete(Long id) {
@@ -56,8 +59,35 @@ public class OrganizationService {
     }
 
     public void archiveOrganization(Long orgId) {
-        Organization organization = organizationRepository.findById(orgId).orElseThrow(()-> new RuntimeException("Organization not found"));
+        Organization organization = organizationRepository.findById(orgId)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
         organization.setArchived(1);
         organizationRepository.save(organization);
+    }
+
+    public PageResponse<OrganizationResponse> findAllOrganization(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page<Organization> organizations = isAdmin
+                ? organizationRepository.findAllNotArchived(pageable, farmId)
+                : organizationRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
+
+        List<OrganizationResponse> responses = organizations.stream()
+                .map(organizationMapper::toResponse)
+                .toList();
+
+        return new PageResponse<>(
+                responses,
+                organizations.getNumber(),
+                organizations.getSize(),
+                organizations.getTotalElements(),
+                organizations.getTotalPages(),
+                organizations.isFirst(),
+                organizations.isLast()
+        );
     }
 }

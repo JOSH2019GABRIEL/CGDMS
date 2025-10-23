@@ -182,6 +182,7 @@ com\cgdms\CGDMS\processing\cutupyield\CutupYield.class
 com\cgdms\CGDMS\broiler\thinningevent\ThinningEvent.class
 com\cgdms\CGDMS\farm\FarmService.class
 com\cgdms\CGDMS\broiler\flock\FlockResponse$FlockResponseBuilder.class
+com\cgdms\CGDMS\common\AuthUtils.class
 com\cgdms\CGDMS\vegetables\harvestBatch\HarvestBatch$HarvestBatchBuilder.class
 com\cgdms\CGDMS\logs\feed\FeedLogService.class
 com\cgdms\CGDMS\vegetables\harvestBatch\HarvestBatchController.class

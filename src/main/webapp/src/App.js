@@ -77,8 +77,6 @@ import UserDashboard from "pages/dashboard/UserDashBoard";
 
 function App() {
   const { darkMode } = useContext(DarkModeContext);
-  const roles = localStorage.getItem("roles");
-  const isAdmin = roles.includes("ROLE_ADMIN");
 
   return (
     <div className={darkMode ? "app dark" : "app"}>
@@ -88,8 +86,9 @@ function App() {
 
           <Route path="/forgot-password" element={<ForgetPassword />} />
           <Route path="/dashboard/logout" element={<Logout />} />
+          <Route path="/dashboard" element= {<Home />}/>
           {/* Dashboard root */}
-          <Route path="/dashboard" element={isAdmin ? <Home /> : <UserDashboard/>} />
+          {/* <Route path="/dashboard" element={isAdmin ? <Home /> : <UserDashboard/>} /> */}
 
           <Route
             path="/dashboard/users"

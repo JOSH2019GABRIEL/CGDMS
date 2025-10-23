@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.processing.processingbatch;
 
-import com.cgdms.CGDMS.processing.cutupyield.CutupYield;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

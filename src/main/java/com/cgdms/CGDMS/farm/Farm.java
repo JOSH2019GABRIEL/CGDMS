@@ -1,12 +1,10 @@
 package com.cgdms.CGDMS.farm;
 
 
-import com.cgdms.CGDMS.base.BaseEntity;
 import com.cgdms.CGDMS.base.FarmBaseEntity;
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.organization.Organization;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

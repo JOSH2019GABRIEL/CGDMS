@@ -1,21 +1,15 @@
 package com.cgdms.CGDMS.organization;
 
-import com.cgdms.CGDMS.farm.Farm;
-import com.cgdms.CGDMS.farm.FarmRepository;
-import jakarta.persistence.EntityNotFoundException;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class OrganizationMapper {
 
-    private static final FarmRepository farmRepository = null;
 
-    public static Organization toEntity(OrganizationRequest request) {
-
+    public Organization toEntity(OrganizationRequest request) {
         return Organization.builder()
                 .name(request.getName())
                 .contactEmail(request.getContactEmail())
@@ -25,7 +19,7 @@ public class OrganizationMapper {
                 .build();
     }
 
-    public static OrganizationResponse toResponse(Organization organization) {
+    public OrganizationResponse toResponse(Organization organization) {
         return OrganizationResponse.builder()
                 .id(organization.getId())
                 .name(organization.getName())

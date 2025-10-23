@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.broiler.dailybroilerlogs;
 
-import com.cgdms.CGDMS.batch.Batch;
 import com.cgdms.CGDMS.broiler.flock.Flock;
 import com.cgdms.CGDMS.broiler.flock.FlockRepository;
 import com.cgdms.CGDMS.common.AuthUtils;
@@ -26,8 +25,6 @@ public class DailyBroilerLogService {
     @Autowired
     private FlockRepository flockRepository;
 
-    @Autowired
-    private UserRepository userRepository;
     @Autowired
     private AuthUtils authUtils;
 

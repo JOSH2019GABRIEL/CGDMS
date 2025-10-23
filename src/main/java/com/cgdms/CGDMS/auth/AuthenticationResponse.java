@@ -1,6 +1,5 @@
 package com.cgdms.CGDMS.auth;
 
-import com.cgdms.CGDMS.role.Role;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

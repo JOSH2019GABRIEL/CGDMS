@@ -1,5 +1,7 @@
 package com.cgdms.CGDMS.organization;
 
+import com.cgdms.CGDMS.common.PageResponse;
+import com.cgdms.CGDMS.processing.byproduct.ByproductsResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,17 @@ public class OrganizationController {
         return ResponseEntity.ok(organizationService.create(request));
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<OrganizationResponse>> getAll() {
+//        return ResponseEntity.ok(organizationService.getAll());
+//    }
+
     @GetMapping
-    public ResponseEntity<List<OrganizationResponse>> getAll() {
-        return ResponseEntity.ok(organizationService.getAll());
+    public ResponseEntity<PageResponse<OrganizationResponse>> findAllOrganization (
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size
+    ) {
+        return ResponseEntity.ok(organizationService.findAllOrganization(page, size));
     }
 
     @GetMapping("/{id}")

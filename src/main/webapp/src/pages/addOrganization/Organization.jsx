@@ -7,40 +7,52 @@ import { url as baseUrl } from "../../api";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-
 const Organization = () => {
   const [organizationList, setOrganizationList] = useState([]);
   const token = localStorage.getItem("token");
+  const [page, setPage] = useState(0);
+  const [pageSize, setPageSize] = useState(10);
+  const [rowCount, setRowCount] = useState(0);
 
   // Fetch organizations
-  const fetchOrganizations = async () => {
+  const fetchOrganizations = async (page, pageSize) => {
     try {
-      const response = await axios.get(`${baseUrl}organizations`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.get(
+        `${baseUrl}organizations?page=${page}&size=${pageSize}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      const rows = response.data.map((org, index) => ({
-        id: org.id || index, 
+      const { content, totalElements } = response.data;
+
+      const rows = content.map((org, index) => ({
+        id: org.id || index,
         ...org,
       }));
 
       setOrganizationList(rows);
+      setRowCount(totalElements);
     } catch (error) {
       console.error("Error fetching organizations:", error);
     }
   };
 
   useEffect(() => {
-    fetchOrganizations();
-  }, []);
+    fetchOrganizations(page, pageSize);
+  }, [page, pageSize]);
 
   const handleDelete = async (id) => {
     try {
-      await axios.put(`${baseUrl}organizations/archive/${id}`, {}, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await axios.put(
+        `${baseUrl}organizations/archive/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-      console.log("action Hit ", `${id}`)
+      console.log("action Hit ", `${id}`);
       setOrganizationList(organizationList.filter((org) => org.id !== id));
     } catch (error) {
       console.error("Error deleting organization:", error);
@@ -91,8 +103,14 @@ const Organization = () => {
         className="datagrid"
         rows={organizationList}
         columns={columns}
-        pageSize={10}
-        rowsPerPageOptions={[10]}
+        pagination
+        paginationMode="server"
+        rowCount={rowCount}
+        page={page}
+        pageSize={pageSize}
+        onPageChange={(newPage) => setPage(newPage)}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        rowsPerPageOptions={[5, 10, 20]}
         checkboxSelection
       />
     </div>
