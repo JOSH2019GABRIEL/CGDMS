@@ -15,4 +15,6 @@ public class PerformanceResponse {
     private Double avgWeightG;
     private Integer liveCount;
     private Double biomassKg;
+    private Integer archived;
+
 }

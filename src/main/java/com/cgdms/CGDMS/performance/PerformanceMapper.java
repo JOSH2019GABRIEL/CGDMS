@@ -20,6 +20,7 @@ public class PerformanceMapper {
                 .avgWeightG(request.getAvgWeightG())
                 .liveCount(request.getLiveCount())
                 .biomassKg(biomassKg)
+                .archived(0)
                 .build();
     }
 
@@ -34,6 +35,7 @@ public class PerformanceMapper {
                 .avgWeightG(performance.getAvgWeightG())
                 .liveCount(performance.getLiveCount())
                 .biomassKg(performance.getBiomassKg())
+                .archived(performance.getArchived())
                 .build();
     }
 }

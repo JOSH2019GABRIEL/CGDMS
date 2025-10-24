@@ -8,9 +8,9 @@ import { createRoot } from 'react-dom/client';
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <DarkModeContextProvider>
       <App />
     </DarkModeContextProvider>
-  </React.StrictMode>
+  // </React.StrictMode>
 );
