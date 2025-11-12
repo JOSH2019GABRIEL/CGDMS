@@ -16,7 +16,7 @@ function App() {
 
   return (
     <div className={darkMode ? "app dark" : "app"}>
-      <BrowserRouter>
+      <BrowserRouter basename="/api/v1">
         <Routes>
           {CoreRoutes}
           {AquacultureRoutes}

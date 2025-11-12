@@ -33,13 +33,13 @@ const Sidebar = () => {
   const roles = localStorage.getItem("roles");
   const isAdmin = roles.includes("ROLE_ADMIN");
 
-  // const handleChange = (panel) => (event, isExpanded) => {
-  //   setExpanded(isExpanded ? panel : false);
-  // };
-
-  const handleChange = (panel) => () => {
-    setExpanded((prevExpanded) => (prevExpanded === panel ? false : panel));
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
   };
+
+  // const handleChange = (panel) => () => {
+  //   setExpanded((prevExpanded) => (prevExpanded === panel ? false : panel));
+  // };
 
   return (
     <div className="sidebar">
@@ -69,8 +69,8 @@ const Sidebar = () => {
 
           {/* CATFISH MANAGEMENT */}
           <Accordion
-            expanded={expanded === "catfish"}
-            onChange={handleChange("catfish")}
+            expanded={expanded === "broiler"}
+            onChange={handleChange("broiler")}
             disableGutters
             square
             sx={{
