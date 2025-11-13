@@ -37,14 +37,13 @@ public class FishPostHarvestService {
         PostHarvest postHarvest;
         FishHarvest fishHarvest;
 
-        if (request.getHarvestId() != null) {
+        if (request.getId() != null) {
             //update existing
             fishHarvest = fishHarvestRepository.findById(request.getHarvestId())
                     .orElseThrow(() -> new EntityNotFoundException("FishHarvest not found"));
 
             postHarvest = postHarvestRepository.findById(request.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Post Harvest not found"));
-
 
             postHarvest.setDestinationType(request.getDestinationType());
             postHarvest.setQuantityToLiveSaleKg(request.getQuantityToLiveSaleKg());

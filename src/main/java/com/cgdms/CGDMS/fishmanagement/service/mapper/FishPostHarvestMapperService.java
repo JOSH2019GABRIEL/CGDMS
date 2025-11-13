@@ -28,6 +28,7 @@ public class FishPostHarvestMapperService {
                 .destinationBatchNo(request.getDestinationBatchNo())
                 .transferDate(request.getTransferDate())
                 .harvest(fishHarvest)
+                .archived(0)
                 .build();
     }
 

@@ -34,7 +34,7 @@ public class FishHarvestController {
     }
 
     @GetMapping("/{fish-id}")
-    public ResponseEntity<FishHarvestResponse> findFishHarvestById(@PathVariable Long fishHarvestId) {
+    public ResponseEntity<FishHarvestResponse> findFishHarvestById(@PathVariable("fish-id") Long fishHarvestId) {
         return ResponseEntity.ok(fishHarvestService.findFishHarvestById(fishHarvestId));
     }
 

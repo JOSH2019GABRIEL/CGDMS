@@ -30,6 +30,7 @@ public class SmokingPlantTransferMapperService {
                 .smokedOutputKg(request.getSmokedOutputKg())
                 .transferNoteNo(request.getTransferNoteNo())
                 .qcInspectionStatus(request.getQcInspectionStatus())
+                .archived(0)
                 .build();
     }
 

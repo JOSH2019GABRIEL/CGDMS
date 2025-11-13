@@ -29,6 +29,8 @@ public class LiveSalesDetails extends BaseEntity {
     @Column(name = "sale_price_per_kg", nullable = false)
     private Double salePricePerKg;
 
+    private Integer quantitySale;
+
     @Column(name = "total_sale_value")
     private Double totalSaleValue;
 

@@ -15,6 +15,14 @@ import AddNewEnvironmentLog from "pages/addEnvironmentLogs/AddNewEnvironmentLog"
 import FishPerformance from "pages/addFishPerformance/FishPerformance";
 import AddFishPerformance from "pages/addFishPerformance/AddFishPerformance";
 import List from "pages/list/List";
+import FishHarvest from "pages/addFishHarvest/FishHarvest";
+import AddFishHarvest from "pages/addFishHarvest/AddFishHarvest";
+import FishPostHarvest from "pages/fishManagement/fishPostHarvest/FishPostHarvest";
+import AddFishPostHarvest from "pages/fishManagement/fishPostHarvest/AddFishPostHarvest";
+import FishLiveSale from "pages/fishManagement/fishlivesale/FishLiveSale";
+import AddFishLiveSale from "pages/fishManagement/fishlivesale/AddFishLiveSale";
+import SmokingTransfer from "pages/fishManagement/smokingTransfer/SmokingTransfer";
+import AddSmokingTransfer from "pages/fishManagement/smokingTransfer/AddSmokingTransfer";
 
 
 export const AquacultureRoutes = (
@@ -46,5 +54,24 @@ export const AquacultureRoutes = (
     <Route path="/dashboard/fish-performances" element={<List Component={FishPerformance} path="/dashboard/fish-performance/new" />} />
     <Route path="/dashboard/fish-performance/new" element={<AddFishPerformance />} />
     <Route path="/dashboard/fish-performance/:id" element={<AddFishPerformance />} />
+    
+    {/* new endpoint */}
+    <Route path="/dashboard/fish-harvests" element={<List Component={FishHarvest} path="/dashboard/fish-harvest/new" />} />
+    <Route path="/dashboard/fish-harvest/new" element={<AddFishHarvest />} />
+    <Route path="/dashboard/fish-harvest/:id" element={<AddFishHarvest />} />
+
+    <Route path="/dashboard/fish-post-harvests" element={<List Component={FishPostHarvest} path="/dashboard/fish-post-harvest/new" />} />
+    <Route path="/dashboard/fish-post-harvest/new" element={<AddFishPostHarvest />} />
+    <Route path="/dashboard/fish-post-harvest/:id" element={<AddFishPostHarvest />} />
+  
+    <Route path="/dashboard/fish-sales" element={<List Component={FishLiveSale} path="/dashboard/fish-sale/new" />} />
+    <Route path="/dashboard/fish-sale/new" element={<AddFishLiveSale />} />
+    <Route path="/dashboard/fish-sale/:id" element={<AddFishLiveSale />} />
+
+    <Route path="/dashboard/smoking-plants" element={<List Component={SmokingTransfer} path="/dashboard/smoking-plant/new" />} />
+    <Route path="/dashboard/smoking-plant/new" element={<AddSmokingTransfer />} />
+    <Route path="/dashboard/smoking-plant/:id" element={<AddSmokingTransfer />} />
+
+  
   </>
 );

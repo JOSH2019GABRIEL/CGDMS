@@ -40,9 +40,9 @@ public class SmokingPlantTransferService {
         PostHarvest postHarvest;
         SmokingPlantTransferDetails transferDetails;
 
-        if (request.getPostHarvestId() != null) {
+        if (request.getId() != null) {
             //update existing
-            postHarvest = postHarvestRepository.findById(request.getId())
+            postHarvest = postHarvestRepository.findById(request.getPostHarvestId())
                     .orElseThrow(() -> new EntityNotFoundException("Post Harvest not found"));
 
             transferDetails = smokingPlantTransferRepository.findById(request.getId())

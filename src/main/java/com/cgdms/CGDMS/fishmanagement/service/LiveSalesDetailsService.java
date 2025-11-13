@@ -35,7 +35,7 @@ public class LiveSalesDetailsService {
         PostHarvest postHarvest;
         LiveSalesDetails liveSalesDetails;
 
-        if (request.getPostHarvestId() != null) {
+        if (request.getId() != null) {
             //update existing
             postHarvest = postHarvestRepository.findById(request.getId())
                     .orElseThrow(() -> new EntityNotFoundException("Post Harvest not found"));

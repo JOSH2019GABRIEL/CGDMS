@@ -13,4 +13,5 @@ public class LiveSalesRequest {
     private String paymentStatus;
     private String invoiceNo;
     private String dispatchMethod;
+    private Integer quantitySale;
 }

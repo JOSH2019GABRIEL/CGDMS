@@ -30,6 +30,7 @@ public class LiveSalesMapperService {
                 .paymentStatus(request.getPaymentStatus())
                 .invoiceNo(request.getInvoiceNo())
                 .dispatchMethod(request.getDispatchMethod())
+                .quantitySale(request.getQuantitySale())
                 .archived(0)
                 .build();
     }
@@ -45,6 +46,7 @@ public class LiveSalesMapperService {
                 .paymentStatus(entity.getPaymentStatus())
                 .invoiceNo(entity.getInvoiceNo())
                 .dispatchMethod(entity.getDispatchMethod())
+                .quantitySale(entity.getQuantitySale())
                 .build();
     }
 }
