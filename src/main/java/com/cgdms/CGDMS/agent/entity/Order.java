@@ -43,7 +43,7 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "center_id")
-    private Farm fulfillmentCenterId;
+    private FulfillmentEvent fulfillmentCenterId;
 
     private LocalDateTime orderDate = LocalDateTime.now();
     private LocalDateTime fulfilledDate;

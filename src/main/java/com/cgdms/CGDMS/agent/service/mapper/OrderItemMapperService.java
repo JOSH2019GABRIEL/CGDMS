@@ -32,6 +32,7 @@ public class OrderItemMapperService {
                 .quantity(request.getQuantity())
                 .unitPrice(request.getUnitPrice())
                 .lineTotal(lineTotal)
+                .archived(0)
                 .build();
     }
 

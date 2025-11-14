@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Order Created Successfully</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    .email-wrapper {
+      max-width: 600px;
+      margin: auto;
+      background: #ffffff;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    .header {
+      background-color: #27ae60;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .content {
+      padding: 20px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .order-details {
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      padding: 15px;
+      margin-top: 10px;
+      border: 1px solid #e0e0e0;
+    }
+    .button {
+      display: inline-block;
+      background-color: #27ae60;
+      color: #ffffff;
+      padding: 12px 20px;
+      margin-top: 20px;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #777;
+      padding: 20px;
+      background: #fafafa;
+      border-top: 1px solid #eaeaea;
+    }
+  </style>
+</head>
+<body>
+<div class="email-wrapper">
+  <div class="header">
+    <h1>Order Created Successfully!</h1>
+  </div>
+
+  <div class="content">
+    <p>Dear <span th:text="${agentName}">Agent Name</span>,</p>
+
+    <p>
+      Your order <strong th:text="${orderNumber}">#ORD12345</strong> has been successfully created and recorded in the system.
+    </p>
+
+    <p>
+      Our fulfilment team will now begin processing your order for dispatch. You will receive an update once your package is ready for shipment.
+    </p>
+
+    <div class="order-details">
+      <h3>Order Summary</h3>
+      <p><strong>Customer:</strong> <span th:text="${customerName}">John Doe</span></p>
+      <p><strong>Phone:</strong> <span th:text="${customerPhone}">08012345678</span></p>
+      <p><strong>Delivery Address:</strong> <span th:text="${deliveryAddress}">Abuja, Nigeria</span></p>
+      <p><strong>Total Amount:</strong> ₦<span th:text="${totalAmount}">50,000</span></p>
+      <p><strong>Order Date:</strong> <span th:text="${orderDate}">2025-11-13</span></p>
+      <p><strong>Status:</strong> <span th:text="${status}">Created</span></p>
+    </div>
+
+    <p>
+      You can view full details of your order or track its fulfilment progress below:
+    </p>
+
+    <a th:href="${orderDetailsUrl}" class="button" target="_blank">View Order Details</a>
+
+    <p>
+      Thank you for your order. We appreciate your business and look forward to serving you again!
+    </p>
+
+    <p>Warm regards,<br/><strong>CGDMS Fulfilment Team</strong></p>
+  </div>
+
+  <div class="footer">
+    &copy; 2025 CGDMS. All rights reserved.<br />
+    123 Your Street, Your City, Nigeria
+  </div>
+</div>
+</body>
+</html>

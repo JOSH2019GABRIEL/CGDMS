@@ -3,6 +3,8 @@ package com.cgdms.CGDMS.agent.service.mapper;
 import com.cgdms.CGDMS.agent.entity.Order;
 import com.cgdms.CGDMS.agent.entity.request.OrderRequest;
 import com.cgdms.CGDMS.agent.entity.response.OrderResponse;
+import com.cgdms.CGDMS.common.AuthUtils;
+import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,8 +22,14 @@ public class OrderMapperService {
     @Autowired
     private OrderItemMapperService orderItemMapperService;
 
-    public Order toOrder(OrderRequest request) {
-        var agent = agentRepository.findById(request.getAgentId())
+    @Autowired
+    private AuthUtils authUtils;
+
+
+    public Order toOrder(OrderRequest request, User agentId) {
+        User loggedInUser = authUtils.getCurrentUser();
+
+        var agent = agentRepository.findById(loggedInUser.getId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with ID " + request.getAgentId()));
 
         Order order = Order.builder()
@@ -31,8 +39,10 @@ public class OrderMapperService {
                 .customerPhone(request.getCustomerPhone())
                 .deliveryAddress(request.getDeliveryAddress())
                 .status(Order.Status.PENDING_FULFILLMENT)
+                .totalAmount(request.getTotalAmount())
                 .orderDate(LocalDateTime.now())
                 .createdAt(LocalDateTime.now())
+                .archived(0)
                 .build();
 
         if (request.getItems() != null) {
@@ -66,7 +76,6 @@ public class OrderMapperService {
 
         response.setOrderDate(order.getOrderDate());
         response.setFulfilledDate(order.getFulfilledDate());
-        response.setCreatedAt(order.getCreatedAt());
 
         // Safe mapping for items: null-safe and avoids streaming a null list
         if (order.getItems() != null && orderItemMapperService != null) {

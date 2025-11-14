@@ -60,6 +60,18 @@ public class DataInitializer implements CommandLineRunner {
                         .archived(0)
                         .build()));
 
+        // ✅ Create default roles if not exist
+        Role agentRole = roleRepository.findByName("ROLE_AGENT")
+                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_AGENT")
+                        .createdBy(0)
+                        .createdDate(LocalDateTime.now())
+                        .lastModifiedBy(0)
+                        .lastModifiedDate(LocalDateTime.now())
+                        .operatorUserId(1)
+                        .farm(defaultFarm)
+                        .archived(0)
+                        .build()));
+
         Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_USER")
                                 .createdBy(0)

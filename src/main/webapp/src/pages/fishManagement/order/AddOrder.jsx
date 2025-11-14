@@ -1,0 +1,298 @@
+import "../../../style/new.scss";
+import "../../../style/addorder.scss";
+
+import Sidebar from "../../../components/Sidebar/Sidebar";
+import Navbar from "../../../components/Navbar/Navbar";
+
+import { useState, useEffect } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import { url as baseUrl } from "../../../api";
+import { useNavigate, useParams } from "react-router-dom";
+
+const AddOrder = () => {
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
+  const { id } = useParams();
+
+  const [products, setProducts] = useState([]);
+  const [loadingOrder, setLoadingOrder] = useState(true);
+
+  const [order, setOrder] = useState({
+    id: "",
+    orderNumber: "",
+    agentId: "",
+    customerName: "",
+    customerPhone: "",
+    deliveryAddress: "",
+    items: [],
+    totalAmount: 0,
+  });
+
+  // Load Products
+  useEffect(() => {
+    const loadProducts = async () => {
+      try {
+        const res = await axios.get(`${baseUrl}product`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        setProducts(res.data.content || res.data);
+      } catch (error) {
+        toast.error("Unable to load products");
+      }
+    };
+    loadProducts();
+  }, [token]);
+
+  // Load Order for Editing
+  useEffect(() => {
+    if (!id) return; // If creating new, skip
+
+    if (products.length === 0) return; // Wait until products are loaded
+
+    const fetchOrder = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}order-place/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = response.data;
+
+        // Recalculate items based on products
+        const updatedItems = data.items.map((item) => {
+          const product = products.find((p) => p.id === item.productId);
+
+          const unitPrice = product ? product.unitPrice : item.unitPrice;
+          const total = item.quantity * unitPrice;
+
+          return {
+            ...item,
+            unitPrice,
+            total,
+          };
+        });
+
+        setOrder({
+          ...data,
+          items: updatedItems,
+          totalAmount: updatedItems.reduce((s, i) => s + i.total, 0),
+        });
+
+        setLoadingOrder(false);
+      } catch (error) {
+        toast.error("Could not load order");
+        console.error("Error fetching order:", error);
+      }
+    };
+
+    fetchOrder();
+  }, [id, token, products]);
+
+  // Add a new item row
+  const addItem = () => {
+    setOrder((prev) => ({
+      ...prev,
+      items: [
+        ...prev.items,
+        { productId: "", quantity: 1, unitPrice: 0, total: 0 },
+      ],
+    }));
+  };
+
+  // Remove item
+  const removeItem = (index) => {
+    const updatedItems = order.items.filter((_, i) => i !== index);
+    updateTotals(updatedItems);
+  };
+
+  // Update item details
+  const handleItemChange = (index, field, value) => {
+    const updatedItems = [...order.items];
+    updatedItems[index][field] =
+      field === "quantity" || field === "unitPrice"
+        ? parseFloat(value)
+        : value;
+
+    if (field === "productId") {
+      const selectedProduct = products.find((p) => p.id === parseInt(value));
+      updatedItems[index].unitPrice = selectedProduct
+        ? selectedProduct.unitPrice
+        : 0;
+    }
+
+    updatedItems[index].total =
+      updatedItems[index].quantity * updatedItems[index].unitPrice;
+
+    updateTotals(updatedItems);
+  };
+
+  // Update total order amount
+  const updateTotals = (items) => {
+    const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
+    setOrder((prev) => ({ ...prev, items, totalAmount }));
+  };
+
+  // Handle submit (create or update)
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (id) {
+        // Update
+        await axios.put(`${baseUrl}order-place/${id}`, order, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        toast.success("Order updated successfully!");
+      } else {
+        // Create
+        await axios.post(`${baseUrl}order-place`, order, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        toast.success("Order created successfully!");
+      }
+
+      setTimeout(() => navigate("/dashboard/orders"), 1200);
+
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to save order");
+    }
+  };
+
+  if (id && loadingOrder) {
+    return <p style={{ padding: 20 }}>Loading order...</p>;
+  }
+
+  return (
+    <div className="new">
+      <Sidebar />
+
+      <div className="newContainer">
+        <Navbar />
+
+        <div className="top">
+          <h1>{id ? "Update Order" : "Create New Order"}</h1>
+        </div>
+
+        <div className="bottom">
+          <div className="right">
+            <form onSubmit={handleSubmit}>
+              {/* Order Number */}
+              <div className="formInput">
+                <label>Order Number:</label>
+                <input
+                  type="text"
+                  value={order.orderNumber}
+                  onChange={(e) =>
+                    setOrder({ ...order, orderNumber: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              {/* Customer Name */}
+              <div className="formInput">
+                <label>Customer Name:</label>
+                <input
+                  type="text"
+                  value={order.customerName}
+                  onChange={(e) =>
+                    setOrder({ ...order, customerName: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              {/* Customer Phone */}
+              <div className="formInput">
+                <label>Phone:</label>
+                <input
+                  type="text"
+                  value={order.customerPhone}
+                  onChange={(e) =>
+                    setOrder({ ...order, customerPhone: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              {/* Delivery Address */}
+              <div className="formInput">
+                <label>Delivery Address:</label>
+                <input
+                  type="text"
+                  value={order.deliveryAddress}
+                  onChange={(e) =>
+                    setOrder({ ...order, deliveryAddress: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
+              {/* CART SECTION */}
+              <div className="cartContainer">
+                <h3>Order Items</h3>
+
+                {order.items.map((item, index) => (
+                  <div className="itemRow" key={index}>
+                    <select
+                      value={item.productId}
+                      onChange={(e) =>
+                        handleItemChange(index, "productId", e.target.value)
+                      }
+                      required
+                    >
+                      <option value="">Select product</option>
+                      {products.map((p) => (
+                        <option key={p.id} value={p.id}>
+                          {p.productName}
+                        </option>
+                      ))}
+                    </select>
+
+                    <input
+                      type="number"
+                      min="1"
+                      value={item.quantity}
+                      onChange={(e) =>
+                        handleItemChange(index, "quantity", e.target.value)
+                      }
+                    />
+
+                    <input type="number" value={item.unitPrice} readOnly />
+
+                    <span className="itemTotal">₦{item.total.toFixed(2)}</span>
+
+                    <button
+                      type="button"
+                      className="removeBtn"
+                      onClick={() => removeItem(index)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+
+                <button type="button" className="addItemBtn" onClick={addItem}>
+                  + Add Item
+                </button>
+              </div>
+
+              {/* TOTAL */}
+              <div className="totalBar">
+                Total Order Amount: <strong>₦{order.totalAmount.toFixed(2)}</strong>
+              </div>
+
+              <button type="submit">{id ? "Update Order" : "Create Order"}</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <ToastContainer />
+    </div>
+  );
+};
+
+export default AddOrder;

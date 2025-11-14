@@ -26,5 +26,7 @@ public class Product extends BaseEntity {
 
     private Double unitPrice;
 
+    private String categoryName;
+
     private Boolean isActive = true;
 }

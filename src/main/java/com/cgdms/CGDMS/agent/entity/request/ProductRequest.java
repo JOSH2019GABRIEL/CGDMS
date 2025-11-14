@@ -9,5 +9,6 @@ public class ProductRequest {
     private String productName;
     private Integer unitSizeG;
     private Double unitPrice;
+    private String categoryName;
     private Boolean isActive;
 }

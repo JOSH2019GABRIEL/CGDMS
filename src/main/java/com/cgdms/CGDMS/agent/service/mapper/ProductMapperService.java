@@ -14,7 +14,9 @@ public class ProductMapperService {
                 .productName(request.getProductName())
                 .unitSizeG(request.getUnitSizeG())
                 .unitPrice(request.getUnitPrice())
+                .categoryName(request.getCategoryName())
                 .isActive(request.getIsActive())
+                .archived(0)
                 .build();
     }
 
@@ -25,6 +27,7 @@ public class ProductMapperService {
         response.setProductName(product.getProductName());
         response.setUnitSizeG(product.getUnitSizeG());
         response.setUnitPrice(product.getUnitPrice());
+        response.setCategoryName(product.getCategoryName());
         response.setIsActive(product.getIsActive());
         return response;
     }

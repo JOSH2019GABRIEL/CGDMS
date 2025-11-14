@@ -23,11 +23,19 @@ public class FulfillmentEvent extends BaseEntity {
     private Order order;
 
     @Enumerated(EnumType.STRING)
-    private Order.Status statusFrom;
-
-    @Enumerated(EnumType.STRING)
-    private Order.Status statusTo;
+    private Order.Status status;
 
     @Column(columnDefinition = "TEXT")
     private String note;
+
+    private String email;
+    private String centerName;
+//    private String createdStatus;
+    private LocalDateTime createdTime;
+//    private String processingStatus;
+    private LocalDateTime processingTime;
+    private String dispatchStatus;
+    private LocalDateTime dispatchTime;
+//    private String fulfillmentStatus;
+    private LocalDateTime fulfillmentTime;
 }

@@ -19,6 +19,5 @@ public class OrderResponse {
     private Long fulfillmentCenterId;
     private LocalDateTime orderDate;
     private LocalDateTime fulfilledDate;
-    private LocalDateTime createdAt;
     private List<OrderItemResponse> items;
 }

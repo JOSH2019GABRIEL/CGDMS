@@ -1,0 +1,103 @@
+.cartContainer {
+  margin-top: 25px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+
+  h3 {
+    margin-bottom: 15px;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .itemRow {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
+
+    select,
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #bbb;
+      border-radius: 5px;
+    }
+
+    .itemTotal {
+      font-weight: bold;
+      color: #222;
+    }
+
+    .removeBtn {
+      background: #e53935;
+      color: white;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 13px;
+
+      &:hover {
+        background: #b71c1c;
+      }
+    }
+  }
+
+  .addItemBtn {
+    margin-top: 15px;
+    padding: 10px 16px;
+    background: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+
+    &:hover {
+      background: #0d47a1;
+    }
+  }
+}
+
+.totalBar {
+  margin-top: 20px;
+  background: #f3f7ff;
+  padding: 15px;
+  border: 1px solid #cddfff;
+  border-radius: 6px;
+  font-size: 17px;
+  font-weight: 600;
+  color: #0d47a1;
+}
+
+.submitBtn {
+  margin-top: 25px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  background: #2e8b57;
+  color: white;
+  font-size: 16px;
+  border-radius: 6px;
+  cursor: pointer;
+
+  &:hover {
+    background: #1b5e20;
+  }
+}
+
+/* Mobile Fix */
+@media (max-width: 768px) {
+  .itemRow {
+    grid-template-columns: 1fr 1fr;
+    grid-row-gap: 10px;
+  }
+
+  .totalBar {
+    font-size: 15px;
+  }
+}

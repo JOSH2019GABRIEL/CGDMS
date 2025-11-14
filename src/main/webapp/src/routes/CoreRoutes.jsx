@@ -19,6 +19,10 @@ import Cadre from "pages/cadre/Cadre";
 import AddNewCadre from "pages/cadre/AddNewCadre";
 import Task from "pages/addTask/Task";
 import AddNewTask from "pages/addTask/AddNewTask";
+import Product from "pages/fishManagement/product/Product";
+import AddProduct from "pages/fishManagement/product/AddProduct";
+import AddOrder from "pages/fishManagement/order/AddOrder";
+import Order from "pages/fishManagement/order/Order";
 
 export const CoreRoutes = (
   <>
@@ -73,11 +77,17 @@ export const CoreRoutes = (
     <Route path="/dashboard/cadre/:id" element={<AddNewCadre />} />
     <Route path="/dashboard/cadre/new" element={<AddNewCadre />} />
 
-    <Route
-            path="/dashboard/tasks"
-            element={<List Component={Task} path="/dashboard/task/new" />}
-          />
-          <Route path="/dashboard/task/new" element={<AddNewTask />} />
-          <Route path="/dashboard/task/:id" element={<AddNewTask />} />
+    <Route path="/dashboard/tasks" element={<List Component={Task} path="/dashboard/task/new" />} />
+    <Route path="/dashboard/task/new" element={<AddNewTask />} />
+    <Route path="/dashboard/task/:id" element={<AddNewTask />} />
+
+    <Route path="/dashboard/products" element={<List Component={Product} path="/dashboard/product/new" />} />
+    <Route path="/dashboard/product/new" element={<AddProduct />} />
+    <Route path="/dashboard/product/:id" element={<AddProduct />} />
+
+    <Route path="/dashboard/orders" element={<List Component={Order} path="/dashboard/order/new" />} />
+    <Route path="/dashboard/order/new" element={<AddOrder />} />
+    <Route path="/dashboard/order/:id" element={<AddOrder />} />
+  
   </>
 );
