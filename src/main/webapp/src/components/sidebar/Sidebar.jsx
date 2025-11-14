@@ -20,6 +20,8 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import InventoryIcon from "@mui/icons-material/Inventory";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
+import ProductionQuantityLimitsIcon from '@mui/icons-material/ProductionQuantityLimits';
 import OutdoorGrillIcon from '@mui/icons-material/OutdoorGrill';
 import { DarkModeContext } from "../../context/darkModeContext";
 import "./sidebar.scss";
@@ -447,6 +449,7 @@ const Sidebar = () => {
                     <span>Task</span>
                   </li>
                 </NavLink>
+                
                 <NavLink
                   to="/dashboard/cadre"
                   className={({ isActive }) => (isActive ? "active" : "")}
@@ -527,6 +530,26 @@ const Sidebar = () => {
                   <li>
                     <AddTaskIcon className="icon" />
                     <span>Task</span>
+                  </li>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/orders"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <AddShoppingCartIcon className="icon" />
+                    <span>Order</span>
+                  </li>
+                </NavLink>
+                <NavLink
+                  to="/dashboard/products"
+                  className={({ isActive }) => (isActive ? "active" : "")}
+                  style={{ textDecoration: "none" }}
+                >
+                  <li>
+                    <ProductionQuantityLimitsIcon className="icon" />
+                    <span>Product</span>
                   </li>
                 </NavLink>
                 <NavLink
