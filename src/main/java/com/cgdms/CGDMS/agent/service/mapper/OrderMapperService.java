@@ -1,11 +1,16 @@
 package com.cgdms.CGDMS.agent.service.mapper;
 
+import com.cgdms.CGDMS.agent.entity.FulfillmentEvent;
 import com.cgdms.CGDMS.agent.entity.Order;
 import com.cgdms.CGDMS.agent.entity.request.OrderRequest;
 import com.cgdms.CGDMS.agent.entity.response.OrderResponse;
+import com.cgdms.CGDMS.agent.repository.OrderRepository;
 import com.cgdms.CGDMS.common.AuthUtils;
+import com.cgdms.CGDMS.farm.Farm;
+import com.cgdms.CGDMS.farm.FarmRepository;
 import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,23 +19,27 @@ import java.util.Collections;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderMapperService {
 
-    @Autowired
-    private UserRepository agentRepository;
+    private final UserRepository agentRepository;
+    private final OrderRepository orderRepository;
+    private final OrderItemMapperService orderItemMapperService;
 
-    @Autowired
-    private OrderItemMapperService orderItemMapperService;
-
-    @Autowired
-    private AuthUtils authUtils;
+    private final AuthUtils authUtils;
+    private final FarmRepository farmRepository;
 
 
     public Order toOrder(OrderRequest request, User agentId) {
         User loggedInUser = authUtils.getCurrentUser();
+        Farm farm;
+
 
         var agent = agentRepository.findById(loggedInUser.getId())
                 .orElseThrow(() -> new RuntimeException("Agent not found with ID " + request.getAgentId()));
+
+        farm = farmRepository.findById(request.getFulfillmentCenterId())
+                .orElseThrow(()-> new RuntimeException("Farm not found with ID " + request.getFulfillmentCenterId()));
 
         Order order = Order.builder()
                 .orderNumber(request.getOrderNumber())
@@ -39,9 +48,10 @@ public class OrderMapperService {
                 .customerPhone(request.getCustomerPhone())
                 .deliveryAddress(request.getDeliveryAddress())
                 .status(Order.Status.PENDING_FULFILLMENT)
+                .email(request.getEmail())
                 .totalAmount(request.getTotalAmount())
                 .orderDate(LocalDateTime.now())
-                .createdAt(LocalDateTime.now())
+                .fulfillmentCenterId(farm)
                 .archived(0)
                 .build();
 
@@ -66,6 +76,7 @@ public class OrderMapperService {
         response.setTotalAmount(order.getTotalAmount());
         response.setTotalCommission(order.getTotalCommission());
         response.setStatus(order.getStatus());
+        response.setEmail(order.getEmail());
 
         // Fulfillment center could be null; defensively set only if present
         if (order.getFulfillmentCenterId() != null) {
@@ -90,4 +101,28 @@ public class OrderMapperService {
 
         return response;
     }
+
+    public FulfillmentEvent orderToFulfillmentEvent(OrderRequest request, Order order) {
+        if (request == null) return null;
+        Farm farm;
+
+//        order = orderRepository.findById(request.getId())
+//                .orElseThrow(() -> new RuntimeException("Order not found with ID " + request.getId()));
+
+        farm = farmRepository.findById(request.getFulfillmentCenterId())
+                .orElseThrow(() -> new RuntimeException("Order not found with ID " + request.getFulfillmentCenterId()));
+
+
+        return FulfillmentEvent.builder()
+                .order(order)
+                .orderNumber(order.getOrderNumber())
+                .note(null)
+                .email(order.getEmail())
+                .centerName(farm.getFarmName())
+                .status(Order.Status.PENDING_FULFILLMENT)
+                .createdTime(LocalDateTime.now())
+                .archived(0)
+                .build();
+    }
+
 }

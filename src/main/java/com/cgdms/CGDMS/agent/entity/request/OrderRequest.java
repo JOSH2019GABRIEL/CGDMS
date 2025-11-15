@@ -11,8 +11,11 @@ public class OrderRequest {
     private Integer agentId;
     private String customerName;
     private String customerPhone;
+    private Long fulfillmentCenterId;
     private String deliveryAddress;
     private List<OrderItemRequest> items;
     private Order.Status status;
     private Double totalAmount;
+    private String email;
+
 }

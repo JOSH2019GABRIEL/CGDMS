@@ -43,14 +43,14 @@ public class Order extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "center_id")
-    private FulfillmentEvent fulfillmentCenterId;
+    private Farm fulfillmentCenterId;
 
     private LocalDateTime orderDate = LocalDateTime.now();
     private LocalDateTime fulfilledDate;
-    private LocalDateTime createdAt = LocalDateTime.now();
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
+    private String email;
 
     public enum Status {
         PENDING_FULFILLMENT, PROCESSING, DISPATCHED, FULFILLED, CANCELLED

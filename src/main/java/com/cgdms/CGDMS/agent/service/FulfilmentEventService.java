@@ -96,7 +96,7 @@ public class FulfilmentEventService {
         );
     }
 
-    public PageResponse<FulfillmentEventResponse> findAllFulfilEventsByStatus (int page, int size, String status) {
+    public PageResponse<FulfillmentEventResponse> findAllFulfilEventsByStatus (int page, int size, Order.Status status) {
         User loggedInUser = authUtils.getCurrentUser();
         boolean isAdmin = authUtils.isAdmin();
         Long farmId = authUtils.getCurrentUserFarmId();
@@ -145,27 +145,24 @@ public class FulfilmentEventService {
         orderRepository.save(order);
         fulfillmentEventRepository.save(fulfillmentEvent);
 
-        Map<String, Object> variables = Map.of(
-                "agentName", order.getAgent().getUsername(),
-                "orderNumber", order.getOrderNumber(),
-                "customerName", order.getCustomerName(),
-                "customerPhone", order.getCustomerPhone(),
-                "deliveryAddress", order.getDeliveryAddress(),
-                "totalAmount", order.getTotalAmount(),
-                "orderDate", order.getOrderDate(),
-                "status", fulfillmentEvent.getStatus(),
-                "fulfilDate", fulfillmentEvent.getDispatchTime()
-
-                //TODO generate url for the order with the order id
-//                "orderDetailsUrl", "https://cgdms.com/orders/" + fulfillmentEvent.getOrder().getId()
-        );
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("agentName", order.getAgent() != null ? order.getAgent().getUsername() : "N/A");
+        variables.put("orderNumber", order.getOrderNumber());
+        variables.put("customerName", order.getCustomerName());
+        variables.put("customerPhone", order.getCustomerPhone());
+        variables.put("deliveryAddress", order.getDeliveryAddress());
+        variables.put("totalAmount", order.getTotalAmount());
+        variables.put("orderDate", order.getOrderDate());
+        variables.put("status", order.getStatus() != null ? "Order is been processed" : "N/A");
+        variables.put("processedDate", fulfillmentEvent.getFulfillmentTime());
+        variables.put("orderDetailsUrl", "https://cgdms.com/orders/" + order.getId());
 
         // Send to Agent
         try {
             emailServiceOrder.sendEmail(
                     fulfillmentEvent.getOrder().getAgent().getEmail(),
-                    "New Order Fulfilled - " + fulfillmentEvent.getOrder().getOrderNumber(),
-                    "fulfilment-email",
+                    "Order Processed - " + fulfillmentEvent.getOrder().getOrderNumber(),
+                    "fulfilment-processed-email",
                     variables
             );
         } catch (Exception e) {
@@ -185,27 +182,24 @@ public class FulfilmentEventService {
         fulfillmentEvent.setDispatchTime(LocalDateTime.now());
         fulfillmentEventRepository.save(fulfillmentEvent);
 
-        Map<String, Object> variables = Map.of(
-                "agentName", order.getAgent().getUsername(),
-                "orderNumber", order.getOrderNumber(),
-                "customerName", order.getCustomerName(),
-                "customerPhone", order.getCustomerPhone(),
-                "deliveryAddress", order.getDeliveryAddress(),
-                "totalAmount", order.getTotalAmount(),
-                "orderDate", order.getOrderDate(),
-                "status", fulfillmentEvent.getStatus(),
-                "fulfilDate", fulfillmentEvent.getDispatchTime()
-
-                //TODO generate url for the order with the order id
-//                "orderDetailsUrl", "https://cgdms.com/orders/" + fulfillmentEvent.getOrder().getId()
-        );
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("agentName", order.getAgent() != null ? order.getAgent().getUsername() : "N/A");
+        variables.put("orderNumber", order.getOrderNumber());
+        variables.put("customerName", order.getCustomerName());
+        variables.put("customerPhone", order.getCustomerPhone());
+        variables.put("deliveryAddress", order.getDeliveryAddress());
+        variables.put("totalAmount", order.getTotalAmount());
+        variables.put("orderDate", order.getOrderDate());
+        variables.put("status", order.getStatus() != null ? "Order is been dispatched" : "N/A");
+        variables.put("dispatchedDate", fulfillmentEvent.getFulfillmentTime());
+        variables.put("orderDetailsUrl", "https://cgdms.com/orders/" + order.getId());
 
         // Send to Agent
         try {
             emailServiceOrder.sendEmail(
                     fulfillmentEvent.getOrder().getAgent().getEmail(),
-                    "New Order Fulfilled - " + fulfillmentEvent.getOrder().getOrderNumber(),
-                    "fulfilment-email",
+                    "Order Dispatched - " + fulfillmentEvent.getOrder().getOrderNumber(),
+                    "fulfilment-dispatch-email",
                     variables
             );
         } catch (Exception e) {
@@ -230,26 +224,23 @@ public class FulfilmentEventService {
         fulfillmentEventRepository.save(fulfillmentEvent);
 
         //  Prepare template variables
-        Map<String, Object> variables = Map.of(
-                "agentName", order.getAgent().getUsername(),
-                "orderNumber", order.getOrderNumber(),
-                "customerName", order.getCustomerName(),
-                "customerPhone", order.getCustomerPhone(),
-                "deliveryAddress", order.getDeliveryAddress(),
-                "totalAmount", order.getTotalAmount(),
-                "orderDate", order.getOrderDate(),
-                "status", fulfillmentEvent.getOrder().getStatus().name(),
-                "fulfilDate", fulfillmentEvent.getOrder().getFulfilledDate()
-
-                //TODO generate url for the order with the order id
-//                "orderDetailsUrl", "https://cgdms.com/orders/" + fulfillmentEvent.getOrder().getId()
-        );
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("agentName", order.getAgent() != null ? order.getAgent().getUsername() : "N/A");
+        variables.put("orderNumber", order.getOrderNumber());
+        variables.put("customerName", order.getCustomerName());
+        variables.put("customerPhone", order.getCustomerPhone());
+        variables.put("deliveryAddress", order.getDeliveryAddress());
+        variables.put("totalAmount", order.getTotalAmount());
+        variables.put("orderDate", order.getOrderDate());
+        variables.put("status", order.getStatus() != null ? "Order has been delivered/completed" : "N/A");
+        variables.put("fulfilledDate", fulfillmentEvent.getFulfillmentTime());
+        variables.put("orderDetailsUrl", "https://cgdms.com/orders/" + order.getId());
 
         // Send to Agent
         try {
             emailServiceOrder.sendEmail(
                     fulfillmentEvent.getOrder().getAgent().getEmail(),
-                    "New Order Fulfilled - " + fulfillmentEvent.getOrder().getOrderNumber(),
+                    "Order Fulfilled - " + fulfillmentEvent.getOrder().getOrderNumber(),
                     "fulfilment-email",
                     variables
             );
@@ -275,27 +266,24 @@ public class FulfilmentEventService {
         fulfillmentEventRepository.save(fulfillmentEvent);
 
         //  Prepare template variables
-        Map<String, Object> variables = Map.of(
-                "agentName", order.getAgent().getUsername(),
-                "orderNumber", order.getOrderNumber(),
-                "customerName", order.getCustomerName(),
-                "customerPhone", order.getCustomerPhone(),
-                "deliveryAddress", order.getDeliveryAddress(),
-                "totalAmount", order.getTotalAmount(),
-                "orderDate", order.getOrderDate(),
-                "status", fulfillmentEvent.getOrder().getStatus().name(),
-                "fulfilDate", fulfillmentEvent.getOrder().getFulfilledDate()
-
-                //TODO generate url for the order with the order id
-//                "orderDetailsUrl", "https://cgdms.com/orders/" + fulfillmentEvent.getOrder().getId()
-        );
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("agentName", order.getAgent() != null ? order.getAgent().getUsername() : "N/A");
+        variables.put("orderNumber", order.getOrderNumber());
+        variables.put("customerName", order.getCustomerName());
+        variables.put("customerPhone", order.getCustomerPhone());
+        variables.put("deliveryAddress", order.getDeliveryAddress());
+        variables.put("totalAmount", order.getTotalAmount());
+        variables.put("orderDate", order.getOrderDate());
+        variables.put("status", order.getStatus() != null ? "Order has been cancelled" : "N/A");
+        variables.put("failedDate", fulfillmentEvent.getFulfillmentTime());
+        variables.put("orderDetailsUrl", "https://cgdms.com/orders/" + order.getId());
 
         // Send to Agent
         try {
             emailServiceOrder.sendEmail(
                     fulfillmentEvent.getOrder().getAgent().getEmail(),
-                    "New Order Failed - " + fulfillmentEvent.getOrder().getOrderNumber(),
-                    "fulfilment-failed-email",
+                    "Order cancelled - " + fulfillmentEvent.getOrder().getOrderNumber(),
+                    "fulfilment-cancel-email",
                     variables
             );
         } catch (Exception e) {

@@ -25,6 +25,7 @@ public class Farm extends FarmBaseEntity {
     private String farmName;
     private String location;
     private double sizeInHectares;
+    private String email;
 
     @ManyToOne
     @JoinColumn(name = "organization_id")

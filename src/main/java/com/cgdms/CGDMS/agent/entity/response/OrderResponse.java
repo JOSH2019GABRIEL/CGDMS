@@ -20,4 +20,5 @@ public class OrderResponse {
     private LocalDateTime orderDate;
     private LocalDateTime fulfilledDate;
     private List<OrderItemResponse> items;
+    private String email;
 }

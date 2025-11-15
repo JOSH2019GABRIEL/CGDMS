@@ -17,6 +17,7 @@ const AddOrder = () => {
 
   const [products, setProducts] = useState([]);
   const [loadingOrder, setLoadingOrder] = useState(true);
+  const [farms, setFarms] = useState([]);
 
   const [order, setOrder] = useState({
     id: "",
@@ -27,9 +28,32 @@ const AddOrder = () => {
     deliveryAddress: "",
     items: [],
     totalAmount: 0,
+    fulfillmentCenterId: "",
+    email: "",
   });
 
-  // Load Products
+  // Generate Order Number
+  const generateOrderId = () => {
+  const now = new Date();
+  const date =
+    String(now.getDate()).padStart(2, "0") +
+    String(now.getMonth() + 1).padStart(2, "0");
+
+  const random = Math.floor(Math.random() * 900 + 100);
+  return `ODR-${date}-${random}`;
+};
+
+
+  // Auto-generate order number on NEW order
+  useEffect(() => {
+    if (!id) {
+      setOrder((prev) => ({
+        ...prev,
+        orderNumber: generateOrderId(),
+      }));
+    }
+  }, [id]);
+
   useEffect(() => {
     const loadProducts = async () => {
       try {
@@ -43,6 +67,20 @@ const AddOrder = () => {
       }
     };
     loadProducts();
+  }, [token]);
+
+  useEffect(() => {
+    const fetchFarms = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}farms`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setFarms(response.data);
+      } catch (error) {
+        console.error("Error fetching farms:", error);
+      }
+    };
+    fetchFarms();
   }, [token]);
 
   // Load Order for Editing
@@ -110,9 +148,7 @@ const AddOrder = () => {
   const handleItemChange = (index, field, value) => {
     const updatedItems = [...order.items];
     updatedItems[index][field] =
-      field === "quantity" || field === "unitPrice"
-        ? parseFloat(value)
-        : value;
+      field === "quantity" || field === "unitPrice" ? parseFloat(value) : value;
 
     if (field === "productId") {
       const selectedProduct = products.find((p) => p.id === parseInt(value));
@@ -153,7 +189,6 @@ const AddOrder = () => {
       }
 
       setTimeout(() => navigate("/dashboard/orders"), 1200);
-
     } catch (error) {
       console.error(error);
       toast.error("Failed to save order");
@@ -163,6 +198,24 @@ const AddOrder = () => {
   if (id && loadingOrder) {
     return <p style={{ padding: 20 }}>Loading order...</p>;
   }
+
+//   const generateOrderId = () => {
+//     const timestamp = Date.now();
+//     const random = Math.floor(Math.random() * 1000)
+//       .toString()
+//       .padStart(3, "0");
+//     return `ODR-${timestamp}-${random}`;
+//   };
+
+//   // Auto-generate order number on new order
+//   useEffect(() => {
+//     if (!id) {
+//       setOrder((prev) => ({
+//         ...prev,
+//         orderNumber: generateOrderId(),
+//       }));
+//     }
+//   }, [id]);
 
   return (
     <div className="new">
@@ -230,6 +283,36 @@ const AddOrder = () => {
                 />
               </div>
 
+              <div className="formInput">
+                <label>Farm:</label>
+                <select
+                  name="fulfillmentCenterId"
+                  value={order.fulfillmentCenterId}
+                  onChange={(e) =>
+                    setOrder({ ...order, fulfillmentCenterId: e.target.value })
+                  }
+                >
+                  <option value="">-- Select Farm --</option>
+                  {farms.map((farm) => (
+                    <option key={farm.id} value={farm.id}>
+                      {farm.farmName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="formInput">
+                <label>Customer Email:</label>
+                <input
+                  type="email"
+                  value={order.email}
+                  onChange={(e) =>
+                    setOrder({ ...order, email: e.target.value })
+                  }
+                  required
+                />
+              </div>
+
               {/* CART SECTION */}
               <div className="cartContainer">
                 <h3>Order Items</h3>
@@ -281,10 +364,17 @@ const AddOrder = () => {
 
               {/* TOTAL */}
               <div className="totalBar">
-                Total Order Amount: <strong>₦{order.totalAmount.toFixed(2)}</strong>
+                Total Order Amount:{" "}
+                <strong>₦{order.totalAmount.toFixed(2)}</strong>
               </div>
+              {/* <div className="formInput">
+                <label>Customer Name:</label>
+                <input hidden />
+                </div> */}
 
-              <button type="submit">{id ? "Update Order" : "Create Order"}</button>
+              <button type="submit">
+                {id ? "Update Order" : "Create Order"}
+              </button>
             </form>
           </div>
         </div>

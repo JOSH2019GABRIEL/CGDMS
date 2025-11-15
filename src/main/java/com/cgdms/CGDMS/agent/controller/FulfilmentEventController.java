@@ -1,6 +1,7 @@
 package com.cgdms.CGDMS.agent.controller;
 
 
+import com.cgdms.CGDMS.agent.entity.Order;
 import com.cgdms.CGDMS.agent.entity.request.FulfillmentEventRequest;
 import com.cgdms.CGDMS.agent.entity.response.FulfillmentEventResponse;
 import com.cgdms.CGDMS.agent.service.FulfilmentEventService;
@@ -34,12 +35,17 @@ public class FulfilmentEventController {
 
     @GetMapping("/fulfil-status")
     public ResponseEntity<PageResponse<FulfillmentEventResponse>> findAllByStatus(
-            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
-            @RequestParam(name = "size", defaultValue = "10", required = false) int size,
-            String status
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size,
+            @RequestParam(name = "status", required = false) Order.Status status
     ) {
-        return ResponseEntity.ok(fulfilmentEventService.findAllFulfilEventsByStatus(page, size, status));
+        String statusStr = status != null ? status.name() : null; // handle null safely
+        return ResponseEntity.ok(
+                fulfilmentEventService.findAllFulfilEventsByStatus(page, size, status)
+        );
     }
+
+
 
     @GetMapping("/{id}")
     public ResponseEntity<FulfillmentEventResponse> getFulfillmentEventById(@PathVariable("id") Long eventId) {
@@ -58,12 +64,12 @@ public class FulfilmentEventController {
 
     @PutMapping("/{id}/fulfilled")
     public ResponseEntity<FulfillmentEventResponse> fulfilledFulfilmentEvent(@PathVariable Long id) {
-        return ResponseEntity.ok(fulfilmentEventService.updateFulfilmentToFailedStatus(id));
+        return ResponseEntity.ok(fulfilmentEventService.updateFulfilmentToFulfilledStatus(id));
     }
 
     @PutMapping("/{id}/failed")
     public ResponseEntity<FulfillmentEventResponse> failedFulfilmentEvent(@PathVariable Long id) {
-        return ResponseEntity.ok(fulfilmentEventService.updateFulfilmentToFulfilledStatus(id));
+        return ResponseEntity.ok(fulfilmentEventService.updateFulfilmentToFailedStatus(id));
     }
 
     @PutMapping("/archive/{id}")

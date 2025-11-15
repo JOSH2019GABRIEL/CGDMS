@@ -1,11 +1,13 @@
 package com.cgdms.CGDMS.agent.service;
 
+import com.cgdms.CGDMS.agent.entity.FulfillmentEvent;
 import com.cgdms.CGDMS.agent.entity.Order;
 import com.cgdms.CGDMS.agent.entity.OrderItem;
 import com.cgdms.CGDMS.agent.entity.Product;
 import com.cgdms.CGDMS.agent.entity.request.OrderItemRequest;
 import com.cgdms.CGDMS.agent.entity.request.OrderRequest;
 import com.cgdms.CGDMS.agent.entity.response.OrderResponse;
+import com.cgdms.CGDMS.agent.repository.FulfillmentEventRepository;
 import com.cgdms.CGDMS.agent.repository.OrderRepository;
 import com.cgdms.CGDMS.agent.repository.ProductRepository;
 import com.cgdms.CGDMS.agent.service.mapper.OrderItemMapperService;
@@ -46,6 +48,7 @@ public class OrderService {
     private final OrderItemMapperService orderItemMapperService;
     private final EmailServiceOrder emailServiceOrder;
     private final ProductRepository productRepository;
+    private final FulfillmentEventRepository fulfillmentEventRepository;
 
 
     /**
@@ -55,9 +58,13 @@ public class OrderService {
 
         User loggedInUser = authUtils.getCurrentUser();
 
-        // Create and save new order
+        // Save new order
         Order order = orderMapperService.toOrder(request, loggedInUser);
         order = orderRepository.save(order);
+
+        // Create fulfillment event linked to the saved order
+        FulfillmentEvent fulfillmentEvent = orderMapperService.orderToFulfillmentEvent(request, order);
+        fulfillmentEventRepository.save(fulfillmentEvent);
 
         OrderResponse response = orderMapperService.toOrderResponse(order);
 
@@ -70,7 +77,7 @@ public class OrderService {
         variables.put("deliveryAddress", order.getDeliveryAddress());
         variables.put("totalAmount", order.getTotalAmount());
         variables.put("orderDate", order.getOrderDate());
-        variables.put("status", order.getStatus() != null ? order.getStatus().name() : "N/A");
+        variables.put("status", order.getStatus() != null ? "Order submitted" : "N/A");
         variables.put("orderDetailsUrl", "https://cgdms.com/orders/" + order.getId());
 
         // Send email to Agent
@@ -89,10 +96,10 @@ public class OrderService {
 
         // Send email to Fulfillment Center
         try {
-            if (order.getFulfillmentCenterId() != null && order.getFulfillmentCenterId().getEmail() != null) {
+            if (order.getFulfillmentCenterId() != null && order.getFulfillmentCenterId().getId() != null) {
 
                 Map<String, Object> fcVariables = new HashMap<>(variables);
-                fcVariables.put("recipientName", order.getFulfillmentCenterId().getCenterName());
+                fcVariables.put("recipientName", order.getFulfillmentCenterId().getFarmName());
                 fcVariables.put("role", "Fulfillment Center");
 
                 emailServiceOrder.sendEmail(

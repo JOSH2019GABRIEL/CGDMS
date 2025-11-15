@@ -164,4 +164,67 @@
       }
     }
   }
+  .tabsContainer {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+
+  .tabButton {
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: #ddd;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+
+  .activeTab {
+    background: #2b7cff;
+    color: #fff;
+  }
+  .btn {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #2b7cff;
+  background: #2b7cff;
+  color: #fff;
+  cursor: pointer;
+}
+.btn.small { padding: 4px 8px; font-size: 0.85rem; }
+.btn.danger { background: #d9534f; border-color: #d43f3a; }
+
+.statusCell {
+  padding: 6px 10px;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  text-transform: capitalize;
+  font-size: 13px;
+  text-align: center;
+}
+
+/* Status Colors */
+.statuscell.pending_fulfillment {
+  background: #f1c40f; /* Yellow */
+}
+
+.statuscell.processing {
+  background: #3498db; /* Blue */
+}
+
+.statuscell.dispatched {
+  background: #9b59b6; /* Purple */
+}
+
+.statuscell.cancelled {
+  background: #e74c3c; /* Red */
+}
+
+.statuscell.fulfilled {
+  background: #2ecc71; /* Green */
+}
+
+
+}
+
 }
