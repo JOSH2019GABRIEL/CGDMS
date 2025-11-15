@@ -22,6 +22,7 @@ public class FulfillmentEvent extends BaseEntity {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
+    private String orderNumber;
     @Enumerated(EnumType.STRING)
     private Order.Status status;
 
@@ -30,12 +31,9 @@ public class FulfillmentEvent extends BaseEntity {
 
     private String email;
     private String centerName;
-//    private String createdStatus;
     private LocalDateTime createdTime;
-//    private String processingStatus;
     private LocalDateTime processingTime;
     private String dispatchStatus;
     private LocalDateTime dispatchTime;
-//    private String fulfillmentStatus;
     private LocalDateTime fulfillmentTime;
 }

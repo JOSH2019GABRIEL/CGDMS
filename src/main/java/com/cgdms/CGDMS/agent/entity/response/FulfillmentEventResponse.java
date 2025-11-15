@@ -20,10 +20,8 @@ public class FulfillmentEventResponse {
     private Order.Status status;
 
     private LocalDateTime createdTime;
-//    private String processingStatus;
     private LocalDateTime processingTime;
-//    private String dispatchStatus;
     private LocalDateTime dispatchTime;
-//    private String fulfillmentStatus;
     private LocalDateTime fulfillmentTime;
+    private String orderNumber;
 }

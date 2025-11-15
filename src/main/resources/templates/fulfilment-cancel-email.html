@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
     <meta charset="UTF-8" />
-    <title>Order Fulfilment Update</title>
+    <title>Order Cancelled</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,7 +18,7 @@
             overflow: hidden;
         }
         .header {
-            background-color: #c0392b;
+            background-color: #7f8c8d;
             color: white;
             padding: 20px;
             text-align: center;
@@ -37,7 +37,7 @@
         }
         .button {
             display: inline-block;
-            background-color: #c0392b;
+            background-color: #7f8c8d;
             color: #ffffff;
             padding: 12px 20px;
             margin-top: 20px;
@@ -56,19 +56,26 @@
 </head>
 <body>
 <div class="email-wrapper">
+    <!-- Header -->
     <div class="header">
-        <h1>Order Fulfilment Delay</h1>
+        <h1>Order Cancelled</h1>
     </div>
 
+    <!-- Content -->
     <div class="content">
         <p>Dear <span th:text="${agentName}">Agent Name</span>,</p>
 
         <p>
-            We regret to inform you that the fulfilment of your order
-            <strong th:text="${orderNumber}">#ORD12345</strong> has been
-            <strong>delayed or could not be completed</strong> at this time.
+            Your order <strong th:text="${orderNumber}">#ORD12345</strong>
+            has been <strong style="color:#c0392b;">cancelled</strong>.
         </p>
 
+        <p>
+            This cancellation was processed based on your request or due to certain requirements not being met.
+            Please review the details below.
+        </p>
+
+        <!-- Order Details -->
         <div class="order-details">
             <h3>Order Summary</h3>
             <p><strong>Customer:</strong> <span th:text="${customerName}">John Doe</span></p>
@@ -76,27 +83,24 @@
             <p><strong>Delivery Address:</strong> <span th:text="${deliveryAddress}">Abuja, Nigeria</span></p>
             <p><strong>Total Amount:</strong> ₦<span th:text="${totalAmount}">50,000</span></p>
             <p><strong>Order Date:</strong> <span th:text="${orderDate}">2025-11-10</span></p>
-            <p><strong>Fulfilment Status:</strong> <span th:text="${status}">Pending Dispatch</span></p>
+            <p><strong>Status:</strong> <span th:text="${status}">Cancelled</span></p>
+            <p><strong>Status:</strong> <span th:text="${failedDate}">2025-11-10</span></p>
         </div>
 
         <p>
-            The delay may be due to logistics constraints, inventory shortages, or other fulfillment center
-            issues. Our team is already addressing the situation to ensure your order is processed as soon as possible.
+            If this cancellation was unexpected or made in error, please contact support immediately
+            so we can assist you.
         </p>
+
+        <a th:href="${orderDetailsUrl}" class="button" target="_blank">View Order Details</a>
 
         <p>
-            You can check the latest update or contact support for more details using the link below:
+            Thank you for your continued commitment.<br/>
+            <strong>CGDMS Fulfilment Team</strong>
         </p>
-
-        <a th:href="${orderDetailsUrl}" class="button" target="_blank">View Order Status</a>
-
-        <p>
-            We sincerely apologize for the inconvenience and appreciate your patience.
-        </p>
-
-        <p>Warm regards,<br/><strong>CGDMS Fulfilment Team</strong></p>
     </div>
 
+    <!-- Footer -->
     <div class="footer">
         &copy; 2025 CGDMS. All rights reserved.<br />
         123 Your Street, Your City, Nigeria

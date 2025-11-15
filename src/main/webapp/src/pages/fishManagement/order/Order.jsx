@@ -71,23 +71,29 @@ const Order = () => {
     },
     { field: "totalAmount", headerName: "Amount (₦)", width: 150 },
     {
-      field: "status",
-      headerName: "Status",
-      width: 160,
-      renderCell: (params) => (
-        <div
-          className={`statusCell ${
-            params.value === "COMPLETED"
-              ? "Active"
-              : params.value === "PENDING"
-              ? "Pending"
-              : "Inactive"
-          }`}
-        >
-          {params.value}
+    field: "status",
+    headerName: "Status",
+    width: 160,
+    renderCell: (params) => {
+      const status = params.value;
+
+      const statusLabel = {
+        PENDING_FULFILLMENT: "Pending",
+        PROCESSING: "Processing",
+        DISPATCHED: "Dispatched",
+        CANCELLED: "Cancelled",
+        FULFILLED: "Order Completed",
+      }[status] || status;
+
+      const statusClass = status?.toLowerCase() || "";
+
+      return (
+        <div className={`statusCell ${statusClass}`}>
+          {statusLabel}
         </div>
-      ),
+      );
     },
+  },
 
     {
       field: "action",

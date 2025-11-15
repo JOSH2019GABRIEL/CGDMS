@@ -39,6 +39,7 @@ public class FulfillmentEventMapperService {
         return FulfillmentEventResponse.builder()
                 .id(event.getId())
                 .orderId(event.getOrder().getId())
+                .orderNumber(event.getOrder().getOrderNumber())
                 .note(event.getNote())
                 .email(event.getEmail())
                 .centerName(event.getCenterName())
