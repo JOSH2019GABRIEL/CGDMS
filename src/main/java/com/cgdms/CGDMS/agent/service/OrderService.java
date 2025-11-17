@@ -6,6 +6,7 @@ import com.cgdms.CGDMS.agent.entity.OrderItem;
 import com.cgdms.CGDMS.agent.entity.Product;
 import com.cgdms.CGDMS.agent.entity.request.OrderItemRequest;
 import com.cgdms.CGDMS.agent.entity.request.OrderRequest;
+import com.cgdms.CGDMS.agent.entity.response.FulfillmentEventResponse;
 import com.cgdms.CGDMS.agent.entity.response.OrderResponse;
 import com.cgdms.CGDMS.agent.repository.FulfillmentEventRepository;
 import com.cgdms.CGDMS.agent.repository.OrderRepository;
@@ -115,6 +116,59 @@ public class OrderService {
 
         return response;
     }
+
+
+    public OrderResponse updateOrderCancelledStatus(Long id) {
+        // Fetch Order
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+
+        // Retrieve associated fulfillment event
+        FulfillmentEvent fulfillmentEvent = fulfillmentEventRepository
+                .findByOrderId(order.getId())
+                .orElseThrow(() -> new EntityNotFoundException("Event not found"));
+
+        // Update statuses
+        order.setStatus(Order.Status.CANCELLED);
+        fulfillmentEvent.setStatus(Order.Status.CANCELLED); // Adjust if enum differs
+        fulfillmentEvent.setFulfillmentTime(LocalDateTime.now());
+
+        // Save updates
+        orderRepository.save(order);
+        fulfillmentEventRepository.save(fulfillmentEvent);
+
+        // Prepare email template variables
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("agentName", order.getAgent() != null ? order.getAgent().getUsername() : "N/A");
+        variables.put("orderNumber", order.getOrderNumber());
+        variables.put("customerName", order.getCustomerName());
+        variables.put("customerPhone", order.getCustomerPhone());
+        variables.put("deliveryAddress", order.getDeliveryAddress());
+        variables.put("totalAmount", order.getTotalAmount());
+        variables.put("orderDate", order.getOrderDate());
+        variables.put("status", "Order has been cancelled");
+        variables.put("failedDate", fulfillmentEvent.getFulfillmentTime());
+        variables.put("orderDetailsUrl", "https://cgdms.com/orders/" + order.getId());
+
+        // Send email to agent
+        try {
+            if (order.getAgent() != null && order.getAgent().getEmail() != null) {
+                emailServiceOrder.sendEmail(
+                        order.getAgent().getEmail(),
+                        "Order Cancelled - " + order.getOrderNumber(),
+                        "fulfilment-cancel-email",
+                        variables
+                );
+            } else {
+                log.warn("Order {} has no assigned agent or email.", order.getOrderNumber());
+            }
+        } catch (Exception e) {
+            log.error("Failed to send cancellation email to agent: {}", e.getMessage());
+        }
+
+        return orderMapperService.toOrderResponse(order);
+    }
+
 
     /**
      * Get all orders.

@@ -25,6 +25,12 @@ public class OrderController {
         return ResponseEntity.ok(orderService.createOrder(request));
     }
 
+    @PutMapping("/{id}/cancel")
+    public ResponseEntity<OrderResponse> cancelOrder(@PathVariable Long id) {
+        OrderResponse response = orderService.updateOrderCancelledStatus(id);
+        return ResponseEntity.ok(response);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<OrderResponse> updateOrder(@Valid @RequestBody OrderRequest request) {
         return ResponseEntity.ok(orderService.updateOrder(request.getId(), request));

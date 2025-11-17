@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 
 @Repository
 public interface FulfillmentEventRepository extends JpaRepository<FulfillmentEvent, Long> {
@@ -30,6 +32,9 @@ public interface FulfillmentEventRepository extends JpaRepository<FulfillmentEve
                     SELECT ff FROM FulfillmentEvent ff WHERE ff.archived = 0 AND ff.farm.id = :farmId AND ff.operatorUserId = :id AND ff.status = :status
                     """)
     Page<FulfillmentEvent> findAllNotArchivedForUsersAndStatus(Pageable pageable, Long farmId, Integer id, Order.Status status);
+
+    Optional<FulfillmentEvent> findByOrderId(Long orderId);
+
 
 //    List<FulfillmentEvent> findByOrder_OrderId(Integer orderId);
 }

@@ -199,24 +199,6 @@ const AddOrder = () => {
     return <p style={{ padding: 20 }}>Loading order...</p>;
   }
 
-//   const generateOrderId = () => {
-//     const timestamp = Date.now();
-//     const random = Math.floor(Math.random() * 1000)
-//       .toString()
-//       .padStart(3, "0");
-//     return `ODR-${timestamp}-${random}`;
-//   };
-
-//   // Auto-generate order number on new order
-//   useEffect(() => {
-//     if (!id) {
-//       setOrder((prev) => ({
-//         ...prev,
-//         orderNumber: generateOrderId(),
-//       }));
-//     }
-//   }, [id]);
-
   return (
     <div className="new">
       <Sidebar />

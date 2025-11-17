@@ -5,6 +5,14 @@ import { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { url as baseUrl } from "../../../api";
 import { toast } from "react-toastify";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Button,
+} from "@mui/material";
 
 const FulfilmentOrder = () => {
   const token = localStorage.getItem("token");
@@ -20,6 +28,8 @@ const FulfilmentOrder = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [centerFilter, setCenterFilter] = useState("");
   const [centers, setCenters] = useState([]);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
 
   const [counts, setCounts] = useState({
     ALL: 0,
@@ -75,7 +85,27 @@ const FulfilmentOrder = () => {
     return `${baseUrl}fulfillment/fulfil-status?page=${p}&size=${s}&status=${status}${q}${c}`;
   };
 
-  // ----------------------- FETCH COUNTS -----------------------
+  // Open confirmation dialog
+  const askConfirm = (id, action, label) => {
+    setPendingAction({ id, action, label });
+    setConfirmOpen(true);
+  };
+
+  // When user confirms
+  const handleConfirm = async () => {
+    if (pendingAction) {
+      await doAction(pendingAction.id, pendingAction.action);
+    }
+    setConfirmOpen(false);
+    setPendingAction(null);
+  };
+
+  // Cancel dialog
+  const handleCancel = () => {
+    setConfirmOpen(false);
+    setPendingAction(null);
+  };
+
   const fetchCounts = useCallback(async () => {
     try {
       const newCounts = { ...counts };
@@ -178,123 +208,129 @@ const FulfilmentOrder = () => {
 
   // ----------------------- COLUMNS -----------------------
   const columns = [
-  { field: "id", headerName: "ID", width: 80 },
-  { field: "orderNumber", headerName: "Order ID", width: 120 },
-  { field: "centerName", headerName: "Center", width: 180 },
-  { field: "email", headerName: "Customer Email", width: 200 },
+    { field: "id", headerName: "ID", width: 80 },
+    { field: "orderNumber", headerName: "Order ID", width: 120 },
+    { field: "centerName", headerName: "Center", width: 180 },
+    { field: "email", headerName: "Customer Email", width: 200 },
 
-  {
-    field: "status",
-    headerName: "Status",
-    width: 160,
-    renderCell: (params) => {
-      const status = params.value;
+    {
+      field: "status",
+      headerName: "Status",
+      width: 160,
+      renderCell: (params) => {
+        const status = params.value;
 
-      const statusLabel = {
-        PENDING_FULFILLMENT: "Pending",
-        PROCESSING: "Processing",
-        DISPATCHED: "Dispatched",
-        CANCELLED: "Cancelled",
-        FULFILLED: "Order Completed",
-      }[status] || status;
+        const statusLabel =
+          {
+            PENDING_FULFILLMENT: "Pending",
+            PROCESSING: "Processing",
+            DISPATCHED: "Dispatched",
+            CANCELLED: "Cancelled",
+            FULFILLED: "Order Completed",
+          }[status] || status;
 
-      const statusClass = status?.toLowerCase() || "";
+        const statusClass = status?.toLowerCase() || "";
 
-      return (
-        <div className={`statusCell ${statusClass}`}>
-          {statusLabel}
-        </div>
-      );
+        return <div className={`statusCell ${statusClass}`}>{statusLabel}</div>;
+      },
     },
-  },
 
-  {
-    field: "createdTime",
-    headerName: "Created",
-    width: 180,
-    renderCell: (params) =>
-      params.value ? new Date(params.value).toLocaleString() : "---",
-  },
-  {
-    field: "processingTime",
-    headerName: "Processing",
-    width: 180,
-    renderCell: (params) =>
-      params.value ? new Date(params.value).toLocaleString() : "---",
-  },
-  {
-    field: "dispatchTime",
-    headerName: "Dispatched",
-    width: 180,
-    renderCell: (params) =>
-      params.value ? new Date(params.value).toLocaleString() : "---",
-  },
-  {
-    field: "fulfillmentTime",
-    headerName: "Fulfilled",
-    width: 180,
-    renderCell: (params) =>
-      params.value ? new Date(params.value).toLocaleString() : "---",
-  },
+    {
+      field: "createdTime",
+      headerName: "Created",
+      width: 180,
+      renderCell: (params) =>
+        params.value ? new Date(params.value).toLocaleString() : "---",
+    },
+    {
+      field: "processingTime",
+      headerName: "Processing",
+      width: 180,
+      renderCell: (params) =>
+        params.value ? new Date(params.value).toLocaleString() : "---",
+    },
+    {
+      field: "dispatchTime",
+      headerName: "Dispatched",
+      width: 180,
+      renderCell: (params) =>
+        params.value ? new Date(params.value).toLocaleString() : "---",
+    },
+    {
+      field: "fulfillmentTime",
+      headerName: "Fulfilled",
+      width: 180,
+      renderCell: (params) =>
+        params.value ? new Date(params.value).toLocaleString() : "---",
+    },
 
-   {
-  field: "action",
-  headerName: "Action",
-  width: 250,
-  sortable: false,
-  renderCell: (params) => {
-    const id = params.row.id;
-    const status = params.row.status;
+    {
+      field: "action",
+      headerName: "Action",
+      width: 250,
+      sortable: false,
+      renderCell: (params) => {
+        const id = params.row.id;
+        const status = params.row.status;
 
-    const options = [];
+        const options = [];
 
-    if (status === "PENDING_FULFILLMENT")
-      options.push({ value: "processed", label: "Mark Processed" });
+        if (status === "PENDING_FULFILLMENT")
+          options.push({ value: "processed", label: "Mark Processed" });
 
-    if (status === "PROCESSING")
-      options.push({ value: "dispatched", label: "Mark Dispatched" });
+        if (status === "PROCESSING")
+          options.push({ value: "dispatched", label: "Mark Dispatched" });
 
-    if (status === "DISPATCHED")
-      options.push({ value: "fulfilled", label: "Mark Fulfilled" });
+        if (status === "DISPATCHED")
+          options.push({ value: "fulfilled", label: "Mark Fulfilled" });
 
-    // Failed (allowed unless completed/cancelled)
-    if (status !== "FULFILLED" && status !== "CANCELLED")
-      options.push({ value: "failed", label: "Mark Failed" });
+        if (status !== "FULFILLED" && status !== "CANCELLED")
+          options.push({ value: "failed", label: "Mark Failed" });
 
-    // Cancel Order (also using CANCELLED endpoint)
-    if (status !== "FULFILLED" && status !== "CANCELLED")
-      options.push({ value: "failed", label: "Cancel Order" });
+        if (status !== "FULFILLED" && status !== "CANCELLED")
+          options.push({ value: "cancelled", label: "Cancel Order" });
 
-    return (
-      <select
-        defaultValue=""
-        style={{
-          padding: "6px 8px",
-          borderRadius: 6,
-          border: "1px solid #ccc",
-          minWidth: 180,
-        }}
-        onChange={(e) => {
-          const action = e.target.value;
-          if (!action) return;
+        return (
+          <select
+            defaultValue=""
+            style={{
+              padding: "6px 8px",
+              borderRadius: 6,
+              border: "1px solid #ccc",
+              minWidth: 180,
+            }}
+            onChange={(e) => {
+              const action = e.target.value;
+              if (!action) return;
 
-          doAction(id, action);
-          e.target.value = "";
-        }}
-      >
-        <option value="" disabled>
-          Select Action
-        </option>
-        {options.map((opt) => (
-          <option key={opt.value} value={opt.value}>
-            {opt.label}
-          </option>
-        ))}
-      </select>
-    );
-  },
-},
+              const labelMap = {
+                processed: "Mark as Processed",
+                dispatched: "Mark as Dispatched",
+                fulfilled: "Mark as Fulfilled",
+                failed: "Mark as Failed",
+                cancelled: "Cancel Order",
+              };
 
+              const readable = labelMap[action] || action;
+
+              // SHOW CONFIRM POPUP
+              askConfirm(id, action, readable);
+
+              e.target.value = "";
+            }}
+          >
+            <option value="" disabled>
+              Select Action
+            </option>
+            {options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        );
+      },
+    },
   ];
 
   // ----------------------- TAB CLICK -----------------------
@@ -410,6 +446,22 @@ const FulfilmentOrder = () => {
         rowsPerPageOptions={[5, 10, 20]}
         autoHeight
       />
+      <Dialog open={confirmOpen} onClose={handleCancel}>
+        <DialogTitle>Confirm Action</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to <strong>{pendingAction?.label}</strong>?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirm} color="primary" variant="contained">
+            Yes, Continue
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
