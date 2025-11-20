@@ -74,23 +74,63 @@
   color: #0d47a1;
 }
 
-// .submitBtn {
-//   margin-top: 25px;
-//   width: 100%;
-//   padding: 12px;
-//   border: none;
-//   background: #2e8b57;
-//   color: white;
-//   font-size: 16px;
-//   border-radius: 6px;
-//   cursor: pointer;
+.formInput {
+  display: flex;
+  flex: 6;
+  flex-direction: column;
+  margin-bottom: 10px;
+  width: 100%;
 
-//   &:hover {
-//     background: #1b5e20;
-//   }
-// }
+  label {
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #444;
+    font-size: 14px;
+  }
 
-/* Mobile Fix */
+  input,
+  select,
+  textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    outline: none;
+    transition: all 0.25s ease-in-out;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    border-color: #1976d2;
+    box-shadow: 0 0 6px rgba(25, 118, 210, 0.25);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+}
+
+/* Smooth button styling */
+button[type="submit"] {
+  background: #1976d2;
+  padding: 12px 24px;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.25s ease-in-out;
+}
+
+button[type="submit"]:hover {
+  background: #125a9c;
+}
+
+
 @media (max-width: 768px) {
   .itemRow {
     grid-template-columns: 1fr 1fr;

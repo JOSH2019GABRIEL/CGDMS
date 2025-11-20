@@ -5,6 +5,7 @@ import java.util.List;
 
 @Data
 public class CommissionSchemeResponse {
+    private Long id;
     private Long commissionSchemeId;
     private String schemeName;
     private String description;

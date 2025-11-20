@@ -24,6 +24,8 @@ import AddProduct from "pages/fishManagement/product/AddProduct";
 import AddOrder from "pages/fishManagement/order/AddOrder";
 import Order from "pages/fishManagement/order/Order";
 import FulfilmentOrder from "pages/fishManagement/fulfilment/FulfilmentOrder";
+import Scheme from "pages/fishManagement/commissionscheme/Scheme";
+import AddScheme from "pages/fishManagement/commissionscheme/AddScheme";
 
 export const CoreRoutes = (
   <>
@@ -91,8 +93,10 @@ export const CoreRoutes = (
     <Route path="/dashboard/order/:id" element={<AddOrder />} />
 
         <Route path="/dashboard/fulfilments" element={<List Component={FulfilmentOrder} />} />
-    {/* <Route path="/dashboard/order/new" element={<AddOrder />} />
-    <Route path="/dashboard/order/:id" element={<AddOrder />} /> */}
+
+    <Route path="/dashboard/schemes" element={<List Component={Scheme} path="/dashboard/scheme/new" />} />
+    <Route path="/dashboard/scheme/new" element={<AddScheme />} />
+    <Route path="/dashboard/scheme/:id" element={<AddScheme />} />
   
   </>
 );

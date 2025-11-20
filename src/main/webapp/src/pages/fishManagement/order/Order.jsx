@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import NotInterestedIcon from "@mui/icons-material/NotInterested";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 
 // MUI Dialog
 import {
@@ -28,7 +28,6 @@ const Order = () => {
   const [rowCount, setRowCount] = useState(0);
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-
 
   // -------------------- MODAL STATES --------------------
   const [openDialog, setOpenDialog] = useState(false);
@@ -91,27 +90,25 @@ const Order = () => {
   };
 
   // -------------------- CANCEL ORDER --------------------
- const handleCancelOrder = async () => {
-  try {
-    await axios.put(
-      `${baseUrl}order-place/${selectedId}/cancel`,
-      {},
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
+  const handleCancelOrder = async () => {
+    try {
+      await axios.put(
+        `${baseUrl}order-place/${selectedId}/cancel`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    setOrderList(orderList.filter((o) => o.id !== selectedId));
-    toast.success("Order cancelled successfully!");
+      setOrderList(orderList.filter((o) => o.id !== selectedId));
+      toast.success("Order cancelled successfully!");
 
-    setTimeout(() => navigate("/dashboard/orders"), 1000);
-
-  } catch (error) {
-    console.error("Error cancelling order:", error);
-    toast.error("Failed to cancel order.");
-  } finally {
-    closeDialog();
-  }
-};
-
+      setTimeout(() => navigate("/dashboard/orders"), 1000);
+    } catch (error) {
+      console.error("Error cancelling order:", error);
+      toast.error("Failed to cancel order.");
+    } finally {
+      closeDialog();
+    }
+  };
 
   // -------------------- COLUMNS --------------------
   const columns = [
@@ -183,8 +180,7 @@ const Order = () => {
                 className="deleteButton"
                 onClick={() => openConfirmDialog("cancel", id)}
               >
-                <NotInterestedIcon />
-              </div>
+<CancelOutlinedIcon style={{ color: "#d32f2f" }} />              </div>
             )}
           </div>
         );

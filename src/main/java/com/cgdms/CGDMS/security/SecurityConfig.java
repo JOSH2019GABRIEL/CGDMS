@@ -43,7 +43,7 @@ public class SecurityConfig {
                                                 "/api/v1/**",
                                                 "/api/v1/index.html",
                                                 "/api/v1/static/**",
-//                                                "/api/v1/favicon.ico",
+                                                "/api/v1/favicon.ico",
                                                 "/",                        // Root path
                                                 "/index.html",              // Frontend entry point
                                                 "/static/**",               // Static assets

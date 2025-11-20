@@ -55,18 +55,13 @@ public class ProductService {
 
 
     public PageResponse<ProductResponse> findAllProducts(int page, int size) {
-        User loggedInUser = authUtils.getCurrentUser();
-        boolean isAdmin = authUtils.isAdmin();
         Long farmId = authUtils.getCurrentUserFarmId();
-
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
 
-        Page<Product> products = isAdmin ? productRepository.findAllNotArchived(pageable, farmId) : productRepository.findAllNotArchivedForUsers(pageable, farmId, loggedInUser.getId());
-
+        Page<Product> products =  productRepository.findAllNotArchived(pageable, farmId);
         List<ProductResponse> responses = products.stream()
                 .map(mapper::toProductResponse)
                 .toList();
-
         return new PageResponse<>(
                 responses,
                 products.getNumber(),

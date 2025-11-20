@@ -16,13 +16,12 @@ const AddOrder = () => {
   const { id } = useParams();
 
   const [products, setProducts] = useState([]);
-  const [loadingOrder, setLoadingOrder] = useState(true);
   const [farms, setFarms] = useState([]);
+  const [loadingOrder, setLoadingOrder] = useState(true);
 
   const [order, setOrder] = useState({
     id: "",
     orderNumber: "",
-    agentId: "",
     customerName: "",
     customerPhone: "",
     deliveryAddress: "",
@@ -32,28 +31,23 @@ const AddOrder = () => {
     email: "",
   });
 
-  // Generate Order Number
+  // Auto-generate order number
   const generateOrderId = () => {
-  const now = new Date();
-  const date =
-    String(now.getDate()).padStart(2, "0") +
-    String(now.getMonth() + 1).padStart(2, "0");
+    const now = new Date();
+    const date =
+      String(now.getDate()).padStart(2, "0") +
+      String(now.getMonth() + 1).padStart(2, "0");
+    const random = Math.floor(Math.random() * 900 + 100);
+    return `ODR-${date}-${random}`;
+  };
 
-  const random = Math.floor(Math.random() * 900 + 100);
-  return `ODR-${date}-${random}`;
-};
-
-
-  // Auto-generate order number on NEW order
   useEffect(() => {
     if (!id) {
-      setOrder((prev) => ({
-        ...prev,
-        orderNumber: generateOrderId(),
-      }));
+      setOrder((prev) => ({ ...prev, orderNumber: generateOrderId() }));
     }
   }, [id]);
 
+  // Load products
   useEffect(() => {
     const loadProducts = async () => {
       try {
@@ -62,13 +56,15 @@ const AddOrder = () => {
         });
 
         setProducts(res.data.content || res.data);
-      } catch (error) {
+      } catch {
         toast.error("Unable to load products");
       }
     };
+
     loadProducts();
   }, [token]);
 
+  // Load farms
   useEffect(() => {
     const fetchFarms = async () => {
       try {
@@ -83,11 +79,10 @@ const AddOrder = () => {
     fetchFarms();
   }, [token]);
 
-  // Load Order for Editing
+  // Load EXISTING ORDER for edit
   useEffect(() => {
-    if (!id) return; // If creating new, skip
-
-    if (products.length === 0) return; // Wait until products are loaded
+    if (!id) return;
+    if (products.length === 0) return; // wait until products arrive
 
     const fetchOrder = async () => {
       try {
@@ -97,37 +92,36 @@ const AddOrder = () => {
 
         const data = response.data;
 
-        // Recalculate items based on products
-        const updatedItems = data.items.map((item) => {
-          const product = products.find((p) => p.id === item.productId);
-
-          const unitPrice = product ? product.unitPrice : item.unitPrice;
-          const total = item.quantity * unitPrice;
+        // Convert backend items → UI items
+        const formattedItems = data.items.map((item) => {
+          const product = products.find((p) => p.id === item.product.id);
 
           return {
-            ...item,
-            unitPrice,
-            total,
+            orderItemId: item.orderItemId,
+            productId: item.product.id,
+            quantity: item.quantity,
+            unitPrice: product ? product.unitPrice : item.unitPrice,
+            total: item.quantity * (product ? product.unitPrice : item.unitPrice),
           };
         });
 
         setOrder({
           ...data,
-          items: updatedItems,
-          totalAmount: updatedItems.reduce((s, i) => s + i.total, 0),
+          items: formattedItems,
+          totalAmount: formattedItems.reduce((s, i) => s + i.total, 0),
         });
 
         setLoadingOrder(false);
       } catch (error) {
         toast.error("Could not load order");
-        console.error("Error fetching order:", error);
+        console.error("Error:", error);
       }
     };
 
     fetchOrder();
   }, [id, token, products]);
 
-  // Add a new item row
+  // Add new line
   const addItem = () => {
     setOrder((prev) => ({
       ...prev,
@@ -140,49 +134,59 @@ const AddOrder = () => {
 
   // Remove item
   const removeItem = (index) => {
-    const updatedItems = order.items.filter((_, i) => i !== index);
-    updateTotals(updatedItems);
+    const updated = order.items.filter((_, i) => i !== index);
+    updateTotals(updated);
   };
 
-  // Update item details
+  // Handle item change
   const handleItemChange = (index, field, value) => {
-    const updatedItems = [...order.items];
-    updatedItems[index][field] =
-      field === "quantity" || field === "unitPrice" ? parseFloat(value) : value;
+    const updated = [...order.items];
+
+    updated[index][field] =
+      field === "quantity" ? parseInt(value) : value;
 
     if (field === "productId") {
       const selectedProduct = products.find((p) => p.id === parseInt(value));
-      updatedItems[index].unitPrice = selectedProduct
-        ? selectedProduct.unitPrice
-        : 0;
+      updated[index].unitPrice = selectedProduct ? selectedProduct.unitPrice : 0;
     }
 
-    updatedItems[index].total =
-      updatedItems[index].quantity * updatedItems[index].unitPrice;
+    updated[index].total =
+      updated[index].quantity * updated[index].unitPrice;
 
-    updateTotals(updatedItems);
+    updateTotals(updated);
   };
 
-  // Update total order amount
   const updateTotals = (items) => {
-    const totalAmount = items.reduce((sum, item) => sum + item.total, 0);
-    setOrder((prev) => ({ ...prev, items, totalAmount }));
+    const totalAmount = items.reduce((sum, val) => sum + val.total, 0);
+
+    setOrder((prev) => ({
+      ...prev,
+      items,
+      totalAmount,
+    }));
   };
 
-  // Handle submit (create or update)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const payload = {
+      ...order,
+      items: order.items.map((it) => ({
+        orderItemId: it.orderItemId,
+        productId: parseInt(it.productId),
+        quantity: it.quantity,
+        unitPrice: it.unitPrice,
+      })),
+    };
+
     try {
       if (id) {
-        // Update
-        await axios.put(`${baseUrl}order-place/${id}`, order, {
+        await axios.put(`${baseUrl}order-place/${id}`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Order updated successfully!");
       } else {
-        // Create
-        await axios.post(`${baseUrl}order-place`, order, {
+        await axios.post(`${baseUrl}order-place`, payload, {
           headers: { Authorization: `Bearer ${token}` },
         });
         toast.success("Order created successfully!");
@@ -213,62 +217,54 @@ const AddOrder = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
-              {/* Order Number */}
+              {/* BASIC FIELDS */}
               <div className="formInput">
-                <label>Order Number:</label>
+                <label>Order Number</label>
                 <input
-                  type="text"
                   value={order.orderNumber}
                   onChange={(e) =>
                     setOrder({ ...order, orderNumber: e.target.value })
                   }
-                  required
                 />
               </div>
 
-              {/* Customer Name */}
               <div className="formInput">
-                <label>Customer Name:</label>
+                <label>Customer Name</label>
                 <input
-                  type="text"
                   value={order.customerName}
+                  placeholder="Customer's name"
                   onChange={(e) =>
                     setOrder({ ...order, customerName: e.target.value })
                   }
-                  required
                 />
               </div>
 
-              {/* Customer Phone */}
               <div className="formInput">
-                <label>Phone:</label>
+                <label>Phone</label>
                 <input
-                  type="text"
                   value={order.customerPhone}
+                  maxLength={11}
+                  placeholder="Telephone number"
                   onChange={(e) =>
                     setOrder({ ...order, customerPhone: e.target.value })
                   }
-                  required
                 />
               </div>
 
-              {/* Delivery Address */}
               <div className="formInput">
-                <label>Delivery Address:</label>
-                <input
-                  type="text"
+                <label>Delivery Address</label>
+                <textarea
                   value={order.deliveryAddress}
+                  placeholder="Customer's Address"
                   onChange={(e) =>
                     setOrder({ ...order, deliveryAddress: e.target.value })
                   }
-                  required
                 />
               </div>
 
               <div className="formInput">
-                <label>Farm:</label>
+                <label>Farm</label>
                 <select
-                  name="fulfillmentCenterId"
                   value={order.fulfillmentCenterId}
                   onChange={(e) =>
                     setOrder({ ...order, fulfillmentCenterId: e.target.value })
@@ -284,18 +280,17 @@ const AddOrder = () => {
               </div>
 
               <div className="formInput">
-                <label>Customer Email:</label>
+                <label>Email</label>
                 <input
                   type="email"
                   value={order.email}
                   onChange={(e) =>
                     setOrder({ ...order, email: e.target.value })
                   }
-                  required
                 />
               </div>
 
-              {/* CART SECTION */}
+              {/* CART */}
               <div className="cartContainer">
                 <h3>Order Items</h3>
 
@@ -306,7 +301,6 @@ const AddOrder = () => {
                       onChange={(e) =>
                         handleItemChange(index, "productId", e.target.value)
                       }
-                      required
                     >
                       <option value="">Select product</option>
                       {products.map((p) => (
@@ -327,7 +321,9 @@ const AddOrder = () => {
 
                     <input type="number" value={item.unitPrice} readOnly />
 
-                    <span className="itemTotal">₦{item.total.toFixed(2)}</span>
+                    <span className="itemTotal">
+                      ₦{item.total.toFixed(2)}
+                    </span>
 
                     <button
                       type="button"
@@ -344,19 +340,12 @@ const AddOrder = () => {
                 </button>
               </div>
 
-              {/* TOTAL */}
               <div className="totalBar">
                 Total Order Amount:{" "}
                 <strong>₦{order.totalAmount.toFixed(2)}</strong>
               </div>
-              {/* <div className="formInput">
-                <label>Customer Name:</label>
-                <input hidden />
-                </div> */}
 
-              <button type="submit">
-                {id ? "Update Order" : "Create Order"}
-              </button>
+              <button type="submit">{id ? "Update Order" : "Create Order"}</button>
             </form>
           </div>
         </div>
