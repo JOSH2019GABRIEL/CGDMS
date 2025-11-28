@@ -26,6 +26,7 @@ import Order from "pages/fishManagement/order/Order";
 import FulfilmentOrder from "pages/fishManagement/fulfilment/FulfilmentOrder";
 import Scheme from "pages/fishManagement/commissionscheme/Scheme";
 import AddScheme from "pages/fishManagement/commissionscheme/AddScheme";
+import AgentDashboard from "pages/fishManagement/agentdashboard/AgentDashboard";
 
 export const CoreRoutes = (
   <>
@@ -33,6 +34,9 @@ export const CoreRoutes = (
     <Route path="/forgot-password" element={<ForgetPassword />} />
     <Route path="/dashboard/logout" element={<Logout />} />
     <Route path="/dashboard" element={<Home />} />
+
+    <Route path="/agent-dashboard" element={<AgentDashboard />} />
+
 
     <Route
       path="/dashboard/users"

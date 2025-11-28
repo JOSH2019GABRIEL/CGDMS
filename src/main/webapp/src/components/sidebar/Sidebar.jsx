@@ -24,6 +24,7 @@ import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import ProductionQuantityLimitsIcon from "@mui/icons-material/ProductionQuantityLimits";
 import OutdoorGrillIcon from "@mui/icons-material/OutdoorGrill";
 import SellIcon from "@mui/icons-material/Sell";
+import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import { DarkModeContext } from "../../context/darkModeContext";
 import "./sidebar.scss";
 import { Dashboard } from "@mui/icons-material";
@@ -42,6 +43,8 @@ const Sidebar = () => {
     setExpanded(isExpanded ? panel : false);
   };
 
+  const dashboardPath = isAgent ? "/agent-dashboard" : "/dashboard";
+
   // const handleChange = (panel) => () => {
   //   setExpanded((prevExpanded) => (prevExpanded === panel ? false : panel));
   // };
@@ -50,7 +53,7 @@ const Sidebar = () => {
     <div className="sidebar">
       <div className="top">
         <NavLink
-          to="/dashboard"
+          to={dashboardPath}
           className="logo-NavLink"
           style={{ textDecoration: "none" }}
         >
@@ -68,7 +71,7 @@ const Sidebar = () => {
     {/* DASHBOARD — visible to USER or ADMIN but NOT AGENT */}
     {(isUser || isAdmin) && (
       <NavLink
-        to="/dashboard"
+        to={dashboardPath}
         className={({ isActive }) => (isActive ? "" : "active")}
         style={{ textDecoration: "none" }}
       >
@@ -517,6 +520,14 @@ const Sidebar = () => {
                     <span>Cadre</span>
                   </li>
                 </NavLink>
+
+                <NavLink to="/dashboard/schemes" style={{ textDecoration: "none" }}>
+                  <li>
+                    <MonetizationOnIcon className="icon" />
+                    <span>Commission Scheme</span>
+                  </li>
+                </NavLink>
+
                 <NavLink to="/dashboard/plots" style={{ textDecoration: "none" }}>
                   <li>
                     <AgricultureIcon className="icon" />

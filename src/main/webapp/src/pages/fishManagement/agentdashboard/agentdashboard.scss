@@ -1,0 +1,74 @@
+.dashboardLayout {
+  display: flex;
+  width: 100%;
+}
+
+.dashboardContainer {
+  flex: 6;
+}
+
+.dashboard {
+  padding: 20px;
+}
+
+.statsCards {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 50px;
+
+  // Ensure cards take more width
+  .card {
+    flex: 1 1 300px; // grow, shrink, base width
+    min-width: 250px; // prevent cards from being too small
+  }
+}
+
+.card {
+  padding: 20px;
+  border-radius: 12px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 140px; // slightly taller to fit numbers better
+
+  h3 {
+    margin-bottom: 10px;
+    font-size: 18px;
+  }
+
+  span {
+    font-size: 36px; // bigger number font
+    font-weight: bold;
+  }
+}
+
+.blueCard {
+  background: #1976d2;
+}
+
+.greenCard {
+  background: #2e7d32;
+}
+
+.orangeCard {
+  background: #ef6c00;
+}
+
+.redCard {
+  background: #c62828;
+}
+
+.chartsContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.chartBox {
+  flex: 1;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  min-width: 400px;
+}

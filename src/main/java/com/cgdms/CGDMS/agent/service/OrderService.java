@@ -8,6 +8,7 @@ import com.cgdms.CGDMS.agent.entity.request.OrderItemRequest;
 import com.cgdms.CGDMS.agent.entity.request.OrderRequest;
 import com.cgdms.CGDMS.agent.entity.response.FulfillmentEventResponse;
 import com.cgdms.CGDMS.agent.entity.response.OrderResponse;
+import com.cgdms.CGDMS.agent.entity.response.OrderStatsResponse;
 import com.cgdms.CGDMS.agent.repository.FulfillmentEventRepository;
 import com.cgdms.CGDMS.agent.repository.OrderRepository;
 import com.cgdms.CGDMS.agent.repository.ProductRepository;
@@ -331,5 +332,17 @@ public class OrderService {
         );
     }
 
+
+    public OrderStatsResponse getStats() {
+        User loggedInUser = authUtils.getCurrentUser();
+        Integer userId = loggedInUser.getId();
+
+        long total = orderRepository.countByUserId(userId);
+        long completed = orderRepository.countByUserIdAndStatus(userId, Order.Status.FULFILLED.name());
+        long cancelled = orderRepository.countByUserIdAndStatus(userId, Order.Status.CANCELLED.name());
+        long inProgress = orderRepository.countByUserIdAndStatus(userId, Order.Status.PROCESSING.name());
+
+        return new OrderStatsResponse(total, completed, cancelled, inProgress);
+    }
 
 }

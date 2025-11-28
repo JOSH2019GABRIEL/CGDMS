@@ -3,6 +3,7 @@ package com.cgdms.CGDMS.agent.controller;
 
 import com.cgdms.CGDMS.agent.entity.request.OrderRequest;
 import com.cgdms.CGDMS.agent.entity.response.OrderResponse;
+import com.cgdms.CGDMS.agent.entity.response.OrderStatsResponse;
 import com.cgdms.CGDMS.agent.service.OrderService;
 import com.cgdms.CGDMS.common.PageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,5 +66,13 @@ public class OrderController {
         orderService.deleteOrderSoft(id);
         return ResponseEntity.ok("Order delete successfully");
     }
+
+    @GetMapping("/order-stats")
+    public ResponseEntity<OrderStatsResponse> getOrderStats(){
+        return ResponseEntity.ok(orderService.getStats());
+    }
+
+
+
 
 }
