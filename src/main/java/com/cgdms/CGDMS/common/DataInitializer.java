@@ -3,6 +3,8 @@ package com.cgdms.CGDMS.common;
 import com.cgdms.CGDMS.cadre.Cadre;
 import com.cgdms.CGDMS.cadre.CadreRepository;
 import com.cgdms.CGDMS.cadre.PaymentType;
+import com.cgdms.CGDMS.organization.Organization;
+import com.cgdms.CGDMS.organization.OrganizationRepository;
 import com.cgdms.CGDMS.role.Role;
 import com.cgdms.CGDMS.role.RoleRepository;
 import com.cgdms.CGDMS.user.User;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Configuration
@@ -31,9 +34,12 @@ public class DataInitializer implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
     private final CadreRepository cadreRepository;
+    private final OrganizationRepository organizationRepository;
 
     @Override
     public void run(String... args) throws Exception {
+
+
 
         Farm defaultFarm = farmRepository.findByFarmName("Demo Farm")
                 .orElseGet(() -> farmRepository.save(Farm.builder()
@@ -48,7 +54,21 @@ public class DataInitializer implements CommandLineRunner {
                         .archived(0)
                         .build()));
 
-        // ✅ Create default roles if not exist
+        Organization defaultOrganization = organizationRepository.findByName("Default Orga")
+                .orElseGet(()-> organizationRepository.save(Organization.builder()
+                        .name("Default Orga")
+                        .contactPhone("000000000")
+//                        .farms(Collections.singletonList(defaultFarm))
+                        .farm(defaultFarm)
+                        .address("default Address")
+                        .contactEmail("default@email.com")
+                        .operatorUserId(1)
+                        .archived(0)
+                        .createdBy(1)
+                        .createdDate(LocalDateTime.now())
+                        .build()));
+
+        // Create default roles if not exist
         Role adminRole = roleRepository.findByName("ROLE_ADMIN")
                 .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_ADMIN")
                         .createdBy(0)
@@ -60,7 +80,7 @@ public class DataInitializer implements CommandLineRunner {
                         .archived(0)
                         .build()));
 
-        // ✅ Create default roles if not exist
+        // Create default roles if not exist
         Role agentRole = roleRepository.findByName("ROLE_AGENT")
                 .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_AGENT")
                         .createdBy(0)

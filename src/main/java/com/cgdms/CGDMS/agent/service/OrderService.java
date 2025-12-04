@@ -31,6 +31,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -341,8 +342,45 @@ public class OrderService {
         long completed = orderRepository.countByUserIdAndStatus(userId, Order.Status.FULFILLED.name());
         long cancelled = orderRepository.countByUserIdAndStatus(userId, Order.Status.CANCELLED.name());
         long inProgress = orderRepository.countByUserIdAndStatus(userId, Order.Status.PROCESSING.name());
+        double totalCommission = orderRepository.getAgentCommission(userId);
+        double totalBuy = orderRepository.getAgentBuy(userId);
 
-        return new OrderStatsResponse(total, completed, cancelled, inProgress);
+        return new OrderStatsResponse(total, completed, cancelled, inProgress, totalCommission, totalBuy);
     }
+
+
+    public PageResponse<OrderMapperService.PerAgentReportResponse> getPerAgentReport(
+            int page, int size, Integer agentId, LocalDate start, LocalDate end, String status) {
+
+        LocalDateTime startDate = start.atStartOfDay();
+        LocalDateTime endDate = end.atTime(23, 59, 59);
+
+        // Fetch summary & top SKUs
+        OrderMapperService.SummaryDTO summary = orderRepository.getSummary(agentId, startDate, endDate, status);
+        List<OrderMapperService.TopSkuDTO> topSkus = orderRepository.getTopSkus(agentId, startDate, endDate, status);
+
+        // Fetch paginated orders
+        Pageable pageable = PageRequest.of(page, size, Sort.by("order_date").descending());
+        Page<OrderMapperService.OrderTableDTO> ordersPage = orderRepository.getOrders(agentId, startDate, endDate, status, pageable);
+
+        // Wrap in PerAgentReportResponse
+        OrderMapperService.PerAgentReportResponse response = new OrderMapperService.PerAgentReportResponse(
+                summary, topSkus, ordersPage.getContent()
+        );
+
+        // Return as a single-element PageResponse
+        return new PageResponse<>(
+                List.of(response), // wrap in list
+                ordersPage.getNumber(),
+                ordersPage.getSize(),
+                ordersPage.getTotalElements(),
+                ordersPage.getTotalPages(),
+                ordersPage.isFirst(),
+                ordersPage.isLast()
+        );
+    }
+
+
+
 
 }

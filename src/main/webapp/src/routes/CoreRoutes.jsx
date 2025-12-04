@@ -27,6 +27,8 @@ import FulfilmentOrder from "pages/fishManagement/fulfilment/FulfilmentOrder";
 import Scheme from "pages/fishManagement/commissionscheme/Scheme";
 import AddScheme from "pages/fishManagement/commissionscheme/AddScheme";
 import AgentDashboard from "pages/fishManagement/agentdashboard/AgentDashboard";
+import PerAgentReport from "pages/reports/common/PerAgentReport";
+import GlobalReport from "pages/reports/peragentreport/GlobalReport";
 
 export const CoreRoutes = (
   <>
@@ -101,6 +103,12 @@ export const CoreRoutes = (
     <Route path="/dashboard/schemes" element={<List Component={Scheme} path="/dashboard/scheme/new" />} />
     <Route path="/dashboard/scheme/new" element={<AddScheme />} />
     <Route path="/dashboard/scheme/:id" element={<AddScheme />} />
+
+    <Route path="/dashboard/reports/per-agent" element={<PerAgentReport />}
+    />
+
+    <Route path="/dashboard/reports/global" element={<GlobalReport />}
+    />
   
   </>
 );

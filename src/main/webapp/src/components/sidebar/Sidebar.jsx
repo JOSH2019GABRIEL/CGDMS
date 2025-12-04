@@ -45,10 +45,6 @@ const Sidebar = () => {
 
   const dashboardPath = isAgent ? "/agent-dashboard" : "/dashboard";
 
-  // const handleChange = (panel) => () => {
-  //   setExpanded((prevExpanded) => (prevExpanded === panel ? false : panel));
-  // };
-
   return (
     <div className="sidebar">
       <div className="top">
@@ -68,7 +64,6 @@ const Sidebar = () => {
       <hr />
       <div className="center">
   <ul>
-    {/* DASHBOARD — visible to USER or ADMIN but NOT AGENT */}
     {(isUser || isAdmin) && (
       <NavLink
         to={dashboardPath}
@@ -183,6 +178,16 @@ const Sidebar = () => {
               </li>
             </NavLink>
 
+             <NavLink
+              to="/dashboard/smoking-plants"
+              style={{ textDecoration: "none" }}
+            >
+              <li>
+                <OutdoorGrillIcon className="icon" />
+                <span>Smoking Plant</span>
+              </li>
+            </NavLink>
+
             <NavLink
               to="/dashboard/fish-sales"
               style={{ textDecoration: "none" }}
@@ -193,15 +198,7 @@ const Sidebar = () => {
               </li>
             </NavLink>
 
-            <NavLink
-              to="/dashboard/smoking-plants"
-              style={{ textDecoration: "none" }}
-            >
-              <li>
-                <OutdoorGrillIcon className="icon" />
-                <span>Smoking Plant</span>
-              </li>
-            </NavLink>
+           
           </AccordionDetails>
         </Accordion>
 
@@ -502,6 +499,21 @@ const Sidebar = () => {
               </AccordionSummary>
 
               <AccordionDetails sx={{ padding: 0 }}>
+                
+                  <NavLink to="/dashboard/reports/per-agent" style={{ textDecoration: "none" }}>
+                  <li>
+                    <AddTaskIcon className="icon" />
+                    <span>Per Agent</span>
+                  </li>
+                </NavLink>
+
+                {/* <NavLink to="/dashboard/reports/global" style={{ textDecoration: "none" }}>
+                  <li>
+                    <AddTaskIcon className="icon" />
+                    <span>Global Report</span>
+                  </li>
+                </NavLink>
+                 */}
                 <NavLink to="/dashboard/tasks" style={{ textDecoration: "none" }}>
                   <li>
                     <AddTaskIcon className="icon" />

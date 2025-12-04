@@ -40,6 +40,14 @@ public class UserController {
         return ResponseEntity.ok(userService.findAllStaff(page, size));
     }
 
+    @GetMapping("/agents")
+    public ResponseEntity<PageResponse<UserResponse>> findAllAgents(
+            @RequestParam(name = "page", defaultValue = "0", required = false) int page,
+            @RequestParam(name = "size", defaultValue = "10", required = false) int size
+    ) {
+        return ResponseEntity.ok(userService.findAllAgent(page, size));
+    }
+
     @GetMapping("/{staff-id}")
     public ResponseEntity<UserResponse> getStaff(@PathVariable("staff-id") Integer staffId) {
         return ResponseEntity.ok(userService.findById(staffId));

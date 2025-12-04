@@ -76,23 +76,40 @@ application:
       activation-url: "http://localhost:1300/active-account"
 
 
+
+#render application yml
+#spring.application.name=CGDMS
 #server:
-#  port: 9191
+#  tomcat:
+#    max-threads: 200
+#    accept-count: 100
+#  port: ${PORT:9090}
+#  address: 0.0.0.0
 #  servlet:
 #    context-path: /api/v1/
-#
-#
 #spring:
+#  application:
+#    name: CGDMS
+#  #  profiles:
+#  #    active: prod   # ✅ Correct placement
+#  web:
+#    resources:
+#      static-locations: classpath:/static/
 #  mvc:
 #    pathmatch:
 #      matching-strategy: ant_path_matcher
-#    servlet:
-#      path=/api/v1:
+#
 #  datasource:
-#    url: jdbc:postgresql://localhost:5432/cgdms
-#    username: postgres
-#    password: admin
+#    url: jdbc:postgresql://farmmamagement-farmmanagement.g.aivencloud.com:28330/cgdms
+#    username: avnadmin
+#    password: AVNS_9t-QISuZuZBqX_kMJeW
 #    driver-class-name: org.postgresql.Driver
+#    hikari:
+#      maximum-pool-size: 100
+#      idle-timeout: 30000
+#      max-lifetime: 600000
+#      connection-timeout: 30000
+#
 #  jpa:
 #    hibernate:
 #      ddl-auto: update
@@ -102,9 +119,11 @@ application:
 #        format_sql: true
 #    database: postgresql
 #    database-platform: org.hibernate.dialect.PostgreSQLDialect
+#
 #  servlet:
 #    multipart:
 #      max-file-size: 50MB
+#
 #  mail:
 #    host: localhost
 #    port: 1025
@@ -134,55 +153,3 @@ application:
 #  mailing:
 #    frontend:
 #      activation-url: "http://localhost:1300/active-account"
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#spring:
-#  datasource:
-#  url: jdbc:postgresql://localhost:5432/cgdms
-#  username: cgdms
-#  password: change_me
-#jpa:
-#hibernate:
-#ddl-auto: update
-#properties:
-#hibernate:
-#format_sql: true
-#jackson:
-#serialization:
-#WRITE_DATES_AS_TIMESTAMPS: false
-#
-#
-#server:
-#port: 8080
-
-
-#app:
-#jwt:
-#issuer: cgdms
-#secret: "please-change-this-to-256-bit-random"
-#access-token-minutes: 30
-#refresh-token-days: 7

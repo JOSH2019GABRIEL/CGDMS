@@ -267,4 +267,27 @@ public class UserService {
         return userRepository.findAllCount(farmId);
     }
 
+    public PageResponse<UserResponse> findAllAgent(int page, int size) {
+        User loggedInUser = authUtils.getCurrentUser();
+        boolean isAdmin = authUtils.isAdmin();
+        Long farmId = authUtils.getCurrentUserFarmId();
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdDate").descending());
+
+        Page<User> agents = userRepository.findAllAgent(pageable, farmId);
+
+        List<UserResponse> userResponses = agents.stream()
+                .map(userMapperService::toUserResponse)
+                .toList();
+
+        return new PageResponse<>(
+                userResponses,
+                agents.getNumber(),
+                agents.getSize(),
+                agents.getTotalElements(),
+                agents.getTotalPages(),
+                agents.isFirst(),
+                agents.isLast()
+        );
+    }
 }

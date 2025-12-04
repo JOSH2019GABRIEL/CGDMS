@@ -38,16 +38,20 @@ const Login = () => {
 
       const { token, fullName, farmName, roles, organization } = response.data;
 
-      // ✅ Store securely in localStorage
       localStorage.setItem("token", token);
       if (fullName) localStorage.setItem("fullName", fullName);
       if (farmName) localStorage.setItem("farmName", farmName);
       if (roles) localStorage.setItem("roles", roles);
       if (organization) localStorage.setItem("organization", organization);
-      
+      const isAdmin = roles.includes("ROLE_ADMIN");
+      const isAgent = roles.includes("ROLE_AGENT");
+      const isUser = roles.includes("ROLE_USER");
+
+      const dashboardPath = isAgent ? "/agent-dashboard" : "/dashboard";
+
       toast.success("Login successful 🎉");
 
-      setTimeout(() => navigate("/dashboard"), 1500);
+      setTimeout(() => navigate(dashboardPath), 1500);
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Login failed. Try again ❌"
@@ -74,7 +78,8 @@ const Login = () => {
 
         <div className="info-box">
           <Info className="info-icon" />
-          Try demo: <strong>admin@system.com</strong> / <strong>Admin123</strong>
+          Try demo: <strong>admin@system.com</strong> /{" "}
+          <strong>Admin123</strong>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>

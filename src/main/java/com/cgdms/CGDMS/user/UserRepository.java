@@ -37,4 +37,12 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             """
     )
     Page<User> findAllNotArchivedForUsers(Pageable pageable, Long farmId, Integer id);
+
+    @Query( value = """
+            SELECT users
+            FROM User users
+            WHERE users.archived = 0 and users.farm.id = :farmId AND users.role.name ilike '%AGENT%'
+            """
+    )
+    Page<User> findAllAgent(Pageable pageable, Long farmId);
 }

@@ -11,11 +11,15 @@ import com.cgdms.CGDMS.farm.FarmRepository;
 import com.cgdms.CGDMS.user.User;
 import com.cgdms.CGDMS.user.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +61,13 @@ public class OrderMapperService {
 
         if (request.getItems() != null) {
             var items = request.getItems().stream()
-                    .map(req -> orderItemMapperService.toOrderItem(req, order))
+                    .map(req -> {
+                        try {
+                            return orderItemMapperService.toOrderItem(req, order);
+                        } catch (BadRequestException e) {
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .collect(Collectors.toList());
             order.setItems(items);
         }
@@ -124,5 +134,27 @@ public class OrderMapperService {
                 .archived(0)
                 .build();
     }
+
+    public record SummaryDTO(Long totalOrders, Long totalUnits, Double totalSales, Double totalCommission, Double averageValue) {}
+
+    public record TopSkuDTO(String sku, Long totalUnits, Double value) {}
+
+//    public record OrderTableDTO(Long orderId, String customer, Timestamp date, Integer units, Double amount, Double commission) {}
+
+    public interface OrderTableDTO {
+        Long getOrderId();
+        String getCustomer();
+        LocalDateTime getDate();
+        Integer getUnits();
+        Double getAmount();
+        Double getCommission();
+    }
+
+
+    public record PerAgentReportResponse(
+            SummaryDTO summary,
+            List<TopSkuDTO> topSkus,
+            List<OrderTableDTO> orders
+    ) {}
 
 }
