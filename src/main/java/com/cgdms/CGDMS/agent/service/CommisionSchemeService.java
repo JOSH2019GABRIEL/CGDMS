@@ -172,4 +172,27 @@ public class CommisionSchemeService {
             }
         }
     }
+
+    // apply commision
+    public Double applyCommission(Long productId, Integer quantity, double totalPrice) throws BadRequestException {
+        if (productId == null || quantity == null) {
+            throw new BadRequestException("Product ID and quantity cannot be null");
+        }
+        CommissionSchemeRule rule = ruleRepository
+                .findRuleForProductAndQty(productId, quantity)
+                .orElseThrow(() -> new BadRequestException(
+                        "No commission rule found for product " + productId + " and qty " + quantity
+                ));
+
+        double commissionAmount;
+        if (rule.getCommissionType() == CommissionSchemeRule.CommissionType.PERCENTAGE) {
+            commissionAmount = (totalPrice * rule.getCommissionValue()) / 100;
+        } else if (rule.getCommissionType() == CommissionSchemeRule.CommissionType.PER_UNIT) {
+            commissionAmount = rule.getCommissionValue() * quantity;
+        } else {
+            throw new BadRequestException("Unknown commission type");
+        }
+        return commissionAmount;
+    }
+
 }

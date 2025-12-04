@@ -10,4 +10,6 @@ public class OrderStatsResponse {
     private long completedOrders;
     private long cancelledOrders;
     private long inProgressOrders;
+    private double totalCommission;
+    private double totalBuy;
 }

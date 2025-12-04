@@ -5,22 +5,23 @@ import com.cgdms.CGDMS.agent.entity.OrderItem;
 import com.cgdms.CGDMS.agent.entity.request.OrderItemRequest;
 import com.cgdms.CGDMS.agent.entity.response.OrderItemResponse;
 import com.cgdms.CGDMS.agent.repository.ProductRepository;
+import com.cgdms.CGDMS.agent.service.CommisionSchemeService;
+import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderItemMapperService {
 
-    @Autowired
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
+    private final ProductMapperService productMapperService;
+    private final CommisionSchemeService commisionSchemeService;
 
-    @Autowired
-    private ProductMapperService productMapperService;
 
-    public OrderItem toOrderItem(OrderItemRequest request, Order order) {
+    public OrderItem toOrderItem(OrderItemRequest request, Order order) throws BadRequestException {
         var product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found with ID " + request.getProductId()));
 
@@ -32,6 +33,7 @@ public class OrderItemMapperService {
                 .quantity(request.getQuantity())
                 .unitPrice(request.getUnitPrice())
                 .lineTotal(lineTotal)
+                .commissionAmount(commisionSchemeService.applyCommission(product.getId(), request.getQuantity(), lineTotal))
                 .archived(0)
                 .build();
     }

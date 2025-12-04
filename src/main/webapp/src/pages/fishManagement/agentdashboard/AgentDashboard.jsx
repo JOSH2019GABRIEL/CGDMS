@@ -29,6 +29,8 @@ const AgentDashboard = () => {
     completedOrders: 0,
     cancelledOrders: 0,
     inProgressOrders: 0,
+    totalCommission: 0,
+    totalBuy: 0,
   });
 
   const COLORS = ["#4caf50", "#f44336", "#ff9800"];
@@ -81,6 +83,17 @@ const AgentDashboard = () => {
             <div className="card redCard">
               <h3>Cancelled</h3>
               <span>{stats.cancelledOrders}</span>
+            </div>
+
+
+            <div className="card orangeCard">
+              <h3>Total Order Earned</h3>
+              <span>{stats.totalBuy}</span>
+            </div>
+
+            <div className="card orangeCard">
+              <h3>Total Commission Earned</h3>
+              <span>{stats.totalCommission}</span>
             </div>
           </div>
           
