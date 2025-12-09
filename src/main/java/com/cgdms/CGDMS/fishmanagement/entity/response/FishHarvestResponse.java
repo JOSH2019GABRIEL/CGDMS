@@ -12,7 +12,7 @@ public class FishHarvestResponse {
 
     private Long id;
     private String pondName;
-    private Long batchNumber;
+//    private Long batchNumber;
 
     private LocalDate harvestDate;
     private String harvestOfficer;
@@ -23,4 +23,5 @@ public class FishHarvestResponse {
     private Double totalWeightKg;
     private Double mortalityDuringHarvest;
     private String gradingCategory;
+    private String harvestBatchId;
 }

@@ -28,6 +28,7 @@ public class FishPostHarvestMapperService {
                 .destinationBatchNo(request.getDestinationBatchNo())
                 .transferDate(request.getTransferDate())
                 .harvest(fishHarvest)
+                .postHarvestBatchId(request.getPostHarvestBatchId())
                 .archived(0)
                 .build();
     }
@@ -40,7 +41,8 @@ public class FishPostHarvestMapperService {
                 .quantityToSmokingKg(postHarvest.getQuantityToSmokingKg())
                 .destinationBatchNo(postHarvest.getDestinationBatchNo())
                 .transferDate(postHarvest.getTransferDate())
-                .harvestId(postHarvest.getHarvest() != null ? postHarvest.getHarvest().getId() : null)
+                .harvestId(postHarvest.getHarvest() != null ? postHarvest.getHarvest().getHarvestBatchId() : null)
+                .postHarvestBatchId(postHarvest.getPostHarvestBatchId())
                 .build();
     }
 }

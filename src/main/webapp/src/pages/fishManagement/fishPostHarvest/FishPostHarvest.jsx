@@ -59,6 +59,8 @@ const FishPostHarvest = () => {
   // Define DataGrid columns
   const columns = [
     { field: "id", headerName: "ID", width: 80 },
+    { field: "postHarvestBatchId", headerName: "Batch ID", width: 160 },
+    { field: "harvestId", headerName: "Harvest Batch ID", width: 160 },
     { field: "destinationType", headerName: "Destination Type", width: 160 },
     { field: "quantityToLiveSaleKg", headerName: "Quantity To Live Sale (kg)", width: 180 },
     { field: "quantityToSmokingKg", headerName: "Quantity To Smoking (kg)", width: 180 },

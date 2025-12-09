@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../api";
 import { useNavigate, useParams } from "react-router-dom";
+import { generateReadableBatchId } from "../../pages/util/generateReadableBatchId";
 
 const AddFishHarvest = () => {
   const [fishHarvest, setFishHarvest] = useState({
@@ -21,6 +22,7 @@ const AddFishHarvest = () => {
     totalWeightKg: "",
     mortalityDuringHarvest: "",
     gradingCategory: "",
+    harvestBatchId: "",
   });
 
   const [batches, setBatches] = useState([]);
@@ -86,6 +88,15 @@ const AddFishHarvest = () => {
     }));
   };
 
+  useEffect(() => {
+    if (!id) {
+      setFishHarvest((prev) => ({
+        ...prev,
+        harvestBatchId: generateReadableBatchId("HRV")
+      }));
+    }
+  }, [id]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -136,27 +147,23 @@ const AddFishHarvest = () => {
                   <option value="">-- Select Pond --</option>
                   {ponds.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.name}
+                      {p.name} - Available ({p.availableFingerlin})
                     </option>
                   ))}
                 </select>
               </div>
 
               <div className="formInput">
-                <label>Batch:</label>
-                <select
+                <label>Batch ID:</label>
+                <input
+                  type="text"
                   name="batchId"
-                  value={fishHarvest.batchId || ""}
+                  value={fishHarvest.harvestBatchId || ""}
                   onChange={handleChange}
-                  required
-                >
-                  <option value="">-- Select Batch --</option>
-                  {batches.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.stockDate} / {b.source} - {b.id}
-                    </option>
-                  ))}
-                </select>
+                  placeholder="Auto-generated"
+                  readOnly
+                  style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
+                />
               </div>
 
               <div className="formInput">
@@ -192,7 +199,7 @@ const AddFishHarvest = () => {
               </div>
 
               <div className="formInput">
-                <label>Average Weight (kg):</label>
+                <label>Average Weight (g):</label>
                 <input
                   type="number"
                   name="averageWeightKg"
@@ -204,7 +211,7 @@ const AddFishHarvest = () => {
               </div>
 
               <div className="formInput">
-                <label>Total Weight (kg):</label>
+                <label>Total Weight (g):</label>
                 <input
                   type="number"
                   name="totalWeightKg"

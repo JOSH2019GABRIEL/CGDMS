@@ -38,7 +38,7 @@ public class SmokingPlantTransferMapperService {
 
         return SmokingPlantTransferResponse.builder()
                 .id(entity.getId())
-                .postHarvestId(entity.getPostHarvestDestination() != null ? entity.getPostHarvestDestination().getId() : null)
+                .postHarvestId(entity.getPostHarvestDestination() != null ? entity.getPostHarvestDestination().getPostHarvestBatchId() : null)
                 .smokingBatchId(entity.getSmokingBatchId())
                 .quantityReceivedKg(entity.getQuantityReceivedKg())
                 .processingLossKg(entity.getProcessingLossKg())

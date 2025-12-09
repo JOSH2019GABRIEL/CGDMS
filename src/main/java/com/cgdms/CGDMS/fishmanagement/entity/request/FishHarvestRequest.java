@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class FishHarvestRequest {
 
     private Long id;
-    private Long batchId;
+//    private Long batchId;
     private Long pondId;
 
     private LocalDate harvestDate;
@@ -22,4 +22,6 @@ public class FishHarvestRequest {
     private Double totalWeightKg;
     private Double mortalityDuringHarvest;
     private String gradingCategory;
+    private String harvestBatchId;
+
 }

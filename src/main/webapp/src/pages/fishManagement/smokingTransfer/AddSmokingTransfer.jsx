@@ -162,7 +162,7 @@ const AddSmokingTransfer = () => {
 
               {/* Quantity Received */}
               <div className="formInput">
-                <label>Quantity Received (Kg):</label>
+                <label>Quantity Received (g):</label>
                 <input
                   type="number"
                   name="quantityReceivedKg"
@@ -176,7 +176,7 @@ const AddSmokingTransfer = () => {
 
               {/* Processing Loss */}
               <div className="formInput">
-                <label>Processing Loss (Kg):</label>
+                <label>Processing Loss (g):</label>
                 <input
                   type="number"
                   name="processingLossKg"
@@ -190,7 +190,7 @@ const AddSmokingTransfer = () => {
 
               {/* Smoked Output */}
               <div className="formInput">
-                <label>Smoked Output (Kg):</label>
+                <label>Smoked Output (g):</label>
                 <input
                   type="number"
                   name="smokedOutputKg"
@@ -240,7 +240,7 @@ const AddSmokingTransfer = () => {
                   <option value="">-- Select Post-Harvest --</option>
                   {postHarvests.map((ph) => (
                     <option key={ph.id} value={ph.id}>
-                      {ph.destinationBatchNo} - {ph.destinationType} (ID: {ph.id})
+                      {ph.postHarvestBatchId} - {ph.destinationType} (ID: {ph.id})
                     </option>
                   ))}
                 </select>

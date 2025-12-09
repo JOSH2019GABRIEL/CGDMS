@@ -8,7 +8,7 @@ import lombok.Data;
 public class SmokingPlantTransferResponse {
 
     private Long id;
-    private Long postHarvestId;
+    private String postHarvestId;
     private String smokingBatchId;
     private Double quantityReceivedKg;
     private Double processingLossKg;

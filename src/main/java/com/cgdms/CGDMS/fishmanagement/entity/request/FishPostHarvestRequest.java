@@ -14,5 +14,6 @@ public class FishPostHarvestRequest {
     private String destinationBatchNo;
     private LocalDate transferDate;
     private Long harvestId;
+    private String postHarvestBatchId;
 
 }

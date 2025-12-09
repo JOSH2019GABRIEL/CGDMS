@@ -23,12 +23,8 @@ public class FishHarvestMapperService {
         Pond pond = pondRepository.findById(request.getPondId())
                 .orElseThrow(() -> new RuntimeException("Pond not found with ID: " + request.getPondId()));
 
-        Batch batch = batchRepository.findById(request.getBatchId())
-                .orElseThrow(() -> new RuntimeException("Batch not found with ID: " + request.getBatchId()));
-
         return FishHarvest.builder()
                 .pond(pond)
-                .batch(batch)
                 .harvestDate(request.getHarvestDate())
                 .harvestOfficer(request.getHarvestOfficer())
                 .productionCycle(request.getProductionCycle())
@@ -37,6 +33,7 @@ public class FishHarvestMapperService {
                 .totalWeightKg(request.getTotalWeightKg())
                 .mortalityDuringHarvest(request.getMortalityDuringHarvest())
                 .gradingCategory(request.getGradingCategory())
+                .harvestBatchId(request.getHarvestBatchId())
                 .archived(0)
                 .build();
     }
@@ -45,7 +42,6 @@ public class FishHarvestMapperService {
         return FishHarvestResponse.builder()
                 .id(harvest.getId())
                 .pondName(harvest.getPond().getName())
-                .batchNumber(harvest.getBatch().getId())
                 .harvestDate(harvest.getHarvestDate())
                 .harvestOfficer(harvest.getHarvestOfficer())
                 .productionCycle(harvest.getProductionCycle())
@@ -54,6 +50,7 @@ public class FishHarvestMapperService {
                 .totalWeightKg(harvest.getTotalWeightKg())
                 .mortalityDuringHarvest(harvest.getMortalityDuringHarvest())
                 .gradingCategory(harvest.getGradingCategory())
+                .harvestBatchId(harvest.getHarvestBatchId())
                 .build();
     }
 }

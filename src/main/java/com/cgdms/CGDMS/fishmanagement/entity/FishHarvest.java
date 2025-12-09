@@ -20,11 +20,6 @@ import java.time.LocalDate;
 @Table(name = "fish-harvests")
 public class FishHarvest extends BaseEntity {
 
-
-    @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "batch_id", nullable = false)
-    private Batch batch;
-
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "pond_id", nullable = false)
     private Pond pond;
@@ -52,4 +47,7 @@ public class FishHarvest extends BaseEntity {
 
     @Column(name = "grading_category", length = 50)
     private String gradingCategory;
+
+    @Column(name = "harvest_batch_id")
+    private String harvestBatchId;
 }

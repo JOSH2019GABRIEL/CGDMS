@@ -48,16 +48,22 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 
     @Query(
-            value = "SELECT COUNT(*) FROM orders WHERE agent_id = :userId",
+            value = "SELECT COUNT(*) FROM orders WHERE archived = 0 AND agent_id = :userId",
             nativeQuery = true
     )
     long countByUserId(@Param("userId") Integer userId);
 
     @Query(
-            value = "SELECT COUNT(*) FROM orders WHERE agent_id = :userId AND status = :status",
+            value = "SELECT COUNT(*) FROM orders WHERE archived = 0 AND agent_id = :userId AND status = :status",
             nativeQuery = true
     )
     long countByUserIdAndStatus(@Param("userId") Integer userId, @Param("status") String status);
+
+    @Query(
+            value = "SELECT COUNT(*) FROM orders WHERE archived = 0 AND agent_id = :userId AND status IN :statuses",
+            nativeQuery = true)
+    long countInStatuses(@Param("userId") Integer userId, @Param("statuses") List<String> statuses);
+
 //
 //    List<Order> findByStatusAndAgent_AgentId(String status, Integer agentId);
 
@@ -136,12 +142,26 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 
     @Query(value = """   
-            SELECT SUM(oi.commissionAmount) FROM OrderItem oi WHERE oi.archived = 0 AND oi.operatorUserId = :userId
+            SELECT SUM(oi.commissionAmount) FROM OrderItem oi LEFT JOIN Order o ON o.id = oi.order.id 
+            WHERE oi.archived = 0 AND oi.operatorUserId = :userId
             """)
     double getAgentCommission(@Param("userId") Integer userId);
 
     @Query(value = """   
-            SELECT SUM(oi.lineTotal) FROM OrderItem oi WHERE oi.archived = 0 AND oi.operatorUserId = :userId
+            SELECT SUM(oi.lineTotal) FROM OrderItem oi LEFT JOIN Order o ON o.id = oi.order.id 
+            WHERE oi.archived = 0 AND o.archived = 0 AND oi.operatorUserId = :userId
             """)
     double getAgentBuy(@Param("userId") Integer userId);
+
+    @Query(value = """
+        SELECT COALESCE(SUM(oi.commission_amount), 0) 
+        FROM order_items oi
+        LEFT JOIN orders o ON o.id = oi.order_id
+        WHERE oi.archived = 0 
+       AND o.status = 'FULFILLED'
+          AND oi.operator_user_id = :userId
+          AND EXTRACT(MONTH FROM o.order_date) = EXTRACT(MONTH FROM CURRENT_DATE)
+          AND EXTRACT(YEAR FROM o.order_date) = EXTRACT(YEAR FROM CURRENT_DATE)
+        """, nativeQuery = true)
+    double getCurrentMonthCommission(@Param("userId") Integer userId);
 }

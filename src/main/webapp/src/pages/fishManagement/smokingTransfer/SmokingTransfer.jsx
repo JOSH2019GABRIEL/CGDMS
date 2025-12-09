@@ -58,9 +58,11 @@ const SmokingTransfer = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "smokingBatchId", headerName: "Smoking Batch ID", width: 160 },
-    { field: "quantityReceivedKg", headerName: "Quantity Received (Kg)", width: 180 },
-    { field: "processingLossKg", headerName: "Processing Loss (Kg)", width: 180 },
-    { field: "smokedOutputKg", headerName: "Smoked Output (Kg)", width: 170 },
+    { field: "postHarvestId", headerName: "Post Harvest Batch ID", width: 180 },
+     { field: "quantityReceivedKg", headerName: "Quantity Received (g)", width: 180 },
+    
+    { field: "processingLossKg", headerName: "Processing Loss (g)", width: 180 },
+    { field: "smokedOutputKg", headerName: "Smoked Output (g)", width: 170 },
     { field: "qcInspectionStatus", headerName: "Quality Control Status", width: 200 },
     {
       field: "action",

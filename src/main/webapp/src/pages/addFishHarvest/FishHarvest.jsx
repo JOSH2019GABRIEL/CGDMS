@@ -60,13 +60,11 @@ const FishHarvest = () => {
   const columns = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "harvestDate", headerName: "Harvest Date", width: 150 },
-    { field: "harvestOfficer", headerName: "Harvest Officer", width: 180 },
-    { field: "pondId", headerName: "Pond ID", width: 120 },
-    { field: "batchId", headerName: "Batch ID", width: 120 },
+    { field: "harvestBatchId", headerName: "Batch ID", width: 120 },
     { field: "productionCycle", headerName: "Cycle", width: 130 },
     { field: "totalFishHarvested", headerName: "Total Fish", width: 150 },
-    { field: "averageWeightKg", headerName: "Avg Weight (kg)", width: 150 },
-    { field: "totalWeightKg", headerName: "Total Weight (kg)", width: 160 },
+    { field: "averageWeightKg", headerName: "Avg Weight (g)", width: 150 },
+    { field: "totalWeightKg", headerName: "Total Weight (g)", width: 160 },
     {
       field: "mortalityDuringHarvest",
       headerName: "Mortality (kg)",

@@ -8,6 +8,7 @@ import com.cgdms.CGDMS.fishmanagement.service.FishHarvestService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +22,7 @@ public class FishHarvestController {
     private final FishHarvestService fishHarvestService;
 
     @PostMapping
-    public ResponseEntity<FishHarvestRequest> saveFishHarvest(@Valid @RequestBody FishHarvestRequest request) {
+    public ResponseEntity<FishHarvestRequest> saveFishHarvest(@Valid @RequestBody FishHarvestRequest request) throws BadRequestException {
         return ResponseEntity.ok(fishHarvestService.saveFishHarvest(request));
     }
 

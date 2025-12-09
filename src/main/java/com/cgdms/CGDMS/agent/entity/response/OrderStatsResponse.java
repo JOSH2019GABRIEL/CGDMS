@@ -12,4 +12,5 @@ public class OrderStatsResponse {
     private long inProgressOrders;
     private double totalCommission;
     private double totalBuy;
+    private double totalEarningInCurrentMonth;
 }

@@ -36,4 +36,7 @@ public class PostHarvest extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "harvest_id", nullable = false)
     private FishHarvest harvest;
+
+    @Column(name = "post_harvest_batch_id")
+    private String postHarvestBatchId;
 }

@@ -7,6 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { url as baseUrl } from "../../../api";
 import { useNavigate, useParams } from "react-router-dom";
+import { generateReadableBatchId } from "../../../pages/util/generateReadableBatchId";
 
 const AddFishPostHarvest = () => {
   const { id } = useParams();
@@ -22,6 +23,7 @@ const AddFishPostHarvest = () => {
     destinationBatchNo: "",
     transferDate: "",
     harvestId: "",
+    postHarvestBatchId: "", 
   });
 
   // ✅ Fetch all harvests for dropdown
@@ -70,6 +72,15 @@ const AddFishPostHarvest = () => {
     }));
   };
 
+  useEffect(() => {
+      if (!id) {
+        setPostHarvest((prev) => ({
+          ...prev,
+          postHarvestBatchId: generateReadableBatchId("FPH")
+        }));
+      }
+    }, [id]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -108,6 +119,20 @@ const AddFishPostHarvest = () => {
         <div className="bottom">
           <div className="right">
             <form onSubmit={handleSubmit}>
+
+              <div className="formInput">
+                <label>Batch ID:</label>
+                <input
+                  type="text"
+                  name="postHarvestBatchId"
+                  value={postHarvest.postHarvestBatchId || ""}
+                  onChange={handleChange}
+                  placeholder="Auto-generated"
+                  readOnly
+                  style={{ backgroundColor: '#f5f5f5', cursor: 'not-allowed' }}
+                />
+              </div>
+
              <div className="formInput">
                 <label>Destination Type:</label>
                 <select
@@ -125,7 +150,7 @@ const AddFishPostHarvest = () => {
               </div>
               
               <div className="formInput">
-                <label>Quantity to Live Sale (Kg):</label>
+                <label>Quantity to Live Sale (g):</label>
                 <input
                   type="number"
                   name="quantityToLiveSaleKg"
@@ -137,7 +162,7 @@ const AddFishPostHarvest = () => {
               </div>
 
               <div className="formInput">
-                <label>Quantity to Smoking (Kg):</label>
+                <label>Quantity to Smoking (g):</label>
                 <input
                   type="number"
                   name="quantityToSmokingKg"
@@ -182,10 +207,14 @@ const AddFishPostHarvest = () => {
                   <option value="">-- Select Harvest --</option>
                   {harvests.map((h) => (
                     <option key={h.id} value={h.id}>
-                      {h.harvestDate} - {h.harvestOfficer} (ID: {h.id})
+                      {h.harvestBatchId} - (ID: {h.id})
                     </option>
                   ))}
                 </select>
+              </div>
+
+              <div className="formInput">
+                <input hidden/>
               </div>
 
               <button type="submit">{id ? "Update" : "Save"}</button>

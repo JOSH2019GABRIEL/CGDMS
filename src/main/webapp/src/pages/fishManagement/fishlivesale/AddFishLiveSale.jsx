@@ -137,7 +137,7 @@ const AddFishLiveSale = () => {
                   <option value="">-- Select Post-Harvest --</option>
                   {postHarvestList.map((ph) => (
                     <option key={ph.id} value={ph.id}>
-                      {ph.destinationType} (Batch: {ph.destinationBatchNo})
+                      {ph.postHarvestBatchId} - Available To smoke {ph.quantityToSmokingKg} Available LiveSales - {ph.quantityToLiveSaleKg}
                     </option>
                   ))}
                 </select>
@@ -157,21 +157,21 @@ const AddFishLiveSale = () => {
               </div>
 
               <div className="formInput">
-                <label>Sale Price per Kg (₦):</label>
+                <label>Sale Price per g (₦):</label>
                 <input
                   type="number"
                   name="salePricePerKg"
                   value={liveSale.salePricePerKg || ""}
                   onChange={handleChange}
                   step="0.01"
-                  placeholder="Enter price per kg"
+                  placeholder="Enter price per g"
                   required
                 />
               </div>
 
               {/* Quantity Sale */}
               <div className="formInput">
-                <label>Quantity Sale (Kg):</label>
+                <label>Quantity Sale (g):</label>
                 <input
                   type="number"
                   name="quantitySale"

@@ -16,6 +16,7 @@ public class FishPostHarvestResponse {
     private Double quantityToSmokingKg;
     private String destinationBatchNo;
     private LocalDate transferDate;
-    private Long harvestId;
+    private String harvestId;
+    private String postHarvestBatchId;
 
 }

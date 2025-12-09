@@ -341,11 +341,21 @@ public class OrderService {
         long total = orderRepository.countByUserId(userId);
         long completed = orderRepository.countByUserIdAndStatus(userId, Order.Status.FULFILLED.name());
         long cancelled = orderRepository.countByUserIdAndStatus(userId, Order.Status.CANCELLED.name());
-        long inProgress = orderRepository.countByUserIdAndStatus(userId, Order.Status.PROCESSING.name());
+        long inProgress = orderRepository.countInStatuses(
+                userId,
+                List.of(
+                        Order.Status.PROCESSING.name(),
+                        Order.Status.DISPATCHED.name(),
+                        Order.Status.PENDING_FULFILLMENT.name()
+                )
+        );
+
+//        long inProgress = orderRepository.countByUserIdAndStatus(userId, (Order.Status.PROCESSING.name() || Order.Status.DISPATCHED.name() || Order.Status.PENDING_FULFILLMENT.name());
         double totalCommission = orderRepository.getAgentCommission(userId);
         double totalBuy = orderRepository.getAgentBuy(userId);
+        double totalEarningInCurrentMonth = orderRepository.getCurrentMonthCommission(userId);
 
-        return new OrderStatsResponse(total, completed, cancelled, inProgress, totalCommission, totalBuy);
+        return new OrderStatsResponse(total, completed, cancelled, inProgress, totalCommission, totalBuy, totalEarningInCurrentMonth);
     }
 
 

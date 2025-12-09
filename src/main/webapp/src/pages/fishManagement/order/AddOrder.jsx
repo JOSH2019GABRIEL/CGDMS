@@ -29,6 +29,7 @@ const AddOrder = () => {
     totalAmount: 0,
     fulfillmentCenterId: "",
     email: "",
+    category: "",
   });
 
   // Auto-generate order number
@@ -252,6 +253,21 @@ const AddOrder = () => {
               </div>
 
               <div className="formInput">
+                <label>Fish Category:</label>
+                <select
+                  name="category"
+                  value={order.category || ""}
+                  onChange={(e) =>
+                    setOrder({ ...order, category: e.target.value })}
+                  required
+                >
+                  <option value="">-- Select Category --</option>
+                  <option value="Live">Live</option>
+                  <option value="Processed">Processed</option>
+                </select>
+              </div>
+
+              <div className="formInput">
                 <label>Delivery Address</label>
                 <textarea
                   value={order.deliveryAddress}
@@ -287,6 +303,12 @@ const AddOrder = () => {
                   onChange={(e) =>
                     setOrder({ ...order, email: e.target.value })
                   }
+                />
+              </div>
+
+              
+              <div className="formInput">
+                <input hidden
                 />
               </div>
 

@@ -13,7 +13,9 @@ import com.cgdms.CGDMS.pond.Pond;
 import com.cgdms.CGDMS.pond.PondRepository;
 import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -33,48 +35,55 @@ public class FishHarvestService {
     private final AuthUtils authUtils;
 
 
-    public FishHarvestRequest saveFishHarvest(FishHarvestRequest fishHarvestRequest) {
-        FishHarvest fishHarvest;
-        Batch batch;
-        Pond pond;
+    @Transactional
+    public FishHarvestRequest saveFishHarvest(FishHarvestRequest req) throws BadRequestException {
 
+        FishHarvest harvest;
+        Pond pond = pondRepository.findById(req.getPondId())
+                .orElseThrow(() -> new EntityNotFoundException("Pond not found"));
 
-        if (fishHarvestRequest.getId() != null) {
-            //update existing
-            fishHarvest = fishHarvestRepository.findById(fishHarvestRequest.getId())
+        if (req.getId() != null) {
+
+            harvest = fishHarvestRepository.findById(req.getId())
                     .orElseThrow(() -> new EntityNotFoundException("FishHarvest not found"));
+            pond.setAvailableFingerlin(
+                    pond.getAvailableFingerlin() - req.getTotalFishHarvested()
+            );
 
-            batch = batchRepository.findById(fishHarvestRequest.getBatchId())
-                    .orElseThrow(() -> new EntityNotFoundException("Batch not found"));
+            // Update the harvest record
+            harvest.setHarvestDate(req.getHarvestDate());
+            harvest.setHarvestOfficer(req.getHarvestOfficer());
+            harvest.setProductionCycle(harvest.getProductionCycle()); // Keep unchanged
+            harvest.setTotalFishHarvested(req.getTotalFishHarvested());
+            harvest.setAverageWeightKg(req.getAverageWeightKg());
+            harvest.setTotalWeightKg(req.getTotalWeightKg());
+            harvest.setMortalityDuringHarvest(req.getMortalityDuringHarvest());
+            harvest.setGradingCategory(harvest.getGradingCategory());
+            harvest.setArchived(0);
+            harvest.setPond(pond);
 
-            pond = pondRepository.findById(fishHarvestRequest.getPondId())
-                    .orElseThrow(() -> new EntityNotFoundException("Pond not found"));
+        }
+        else {
 
+            harvest = mapper.toHarvest(req);
 
-            fishHarvest.setHarvestDate(fishHarvestRequest.getHarvestDate());
-            fishHarvest.setHarvestOfficer(null);
-            fishHarvest.setProductionCycle(fishHarvest.getProductionCycle());
-            fishHarvest.setTotalFishHarvested(fishHarvest.getTotalFishHarvested());
-            fishHarvest.setAverageWeightKg(fishHarvestRequest.getAverageWeightKg());
-            fishHarvest.setTotalWeightKg(fishHarvestRequest.getTotalWeightKg());
-            fishHarvest.setMortalityDuringHarvest(fishHarvestRequest.getMortalityDuringHarvest());
-            fishHarvest.setGradingCategory(fishHarvest.getGradingCategory());
-            fishHarvest.setArchived(0);
+            // Deduct harvested fish from pond
+            int remaining = pond.getAvailableFingerlin() - req.getTotalFishHarvested();
 
-            if (fishHarvestRequest.getPondId() != null) {
-                fishHarvest.setPond(pond);
+            if (remaining < 0) {
+                throw new BadRequestException("Harvest exceeds available fingerlings in pond." + pond.getAvailableFingerlin() + " and trying to harvest: " + req.getTotalFishHarvested());
             }
-            if (fishHarvestRequest.getBatchId() != null) {
-                fishHarvest.setBatch(batch);
-            }
 
-
-        } else {
-            fishHarvest = mapper.toHarvest(fishHarvestRequest);
+            pond.setAvailableFingerlin(remaining);
+            harvest.setPond(pond);
+            harvest.setArchived(0);
         }
 
-        fishHarvestRepository.save(fishHarvest);
-        return fishHarvestRequest;
+        // Save pond & harvest
+        pondRepository.save(pond);
+        fishHarvestRepository.save(harvest);
+
+        return req;
     }
 
 
