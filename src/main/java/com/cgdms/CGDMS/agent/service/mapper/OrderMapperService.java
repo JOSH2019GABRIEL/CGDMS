@@ -55,6 +55,7 @@ public class OrderMapperService {
                 .email(request.getEmail())
                 .totalAmount(request.getTotalAmount())
                 .orderDate(LocalDateTime.now())
+                .category(request.getCategory())
                 .fulfillmentCenterId(farm)
                 .archived(0)
                 .build();
@@ -87,6 +88,7 @@ public class OrderMapperService {
         response.setTotalCommission(order.getTotalCommission());
         response.setStatus(order.getStatus());
         response.setEmail(order.getEmail());
+        response.setCategory(order.getCategory());
 
         // Fulfillment center could be null; defensively set only if present
         if (order.getFulfillmentCenterId() != null) {

@@ -19,6 +19,7 @@ public class NominalLossMapperService {
                 .value(request.getValue())
                 .rate(request.getRate())
                 .description(request.getDescription())
+                .category(request.getCategory())
                 .archived(0)
                 .build();
     }
@@ -27,9 +28,10 @@ public class NominalLossMapperService {
 
         return NominalLossResponse.builder()
                 .value(response.getValue())
-                .rate(response.getRate())
+                .rate(response.getRate().name())
                 .description(response.getDescription())
                 .id(response.getId())
+                .category(response.getCategory())
                 .build();
     }
 

@@ -51,6 +51,7 @@ public class Order extends BaseEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items;
     private String email;
+    private String category;
 
     public enum Status {
         PENDING_FULFILLMENT, PROCESSING, DISPATCHED, FULFILLED, CANCELLED

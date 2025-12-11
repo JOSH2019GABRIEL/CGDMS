@@ -251,6 +251,7 @@ public class OrderService {
         order.setCustomerPhone(dto.getCustomerPhone());
         order.setDeliveryAddress(dto.getDeliveryAddress());
         order.setTotalAmount(dto.getTotalAmount());
+        order.setCategory(dto.getCategory());
 
         // Remove existing items
         order.getItems().clear();

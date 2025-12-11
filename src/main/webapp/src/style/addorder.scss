@@ -114,6 +114,56 @@
   }
 }
 
+.modalOrderContainer {
+  padding: 10px 0;
+
+  .section {
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e5e5;
+
+    h3 {
+      margin-bottom: 8px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 4px 0;
+      font-size: 14px;
+    }
+  }
+
+  .modalItems {
+    background: #fafafa;
+    border-radius: 6px;
+    padding: 10px;
+
+    .modalItemRow {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed #ddd;
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .modalTotal {
+    margin-top: 14px;
+
+    h2 {
+      text-align: right;
+      font-size: 20px;
+      color: #2b7cff;
+      font-weight: 700;
+    }
+  }
+}
+
+
 /* Smooth button styling */
 button[type="submit"] {
   background: #1976d2;
@@ -141,3 +191,5 @@ button[type="submit"]:hover {
     font-size: 15px;
   }
 }
+
+

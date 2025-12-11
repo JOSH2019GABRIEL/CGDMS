@@ -22,6 +22,7 @@ public class NominalLoss extends BaseEntity {
 
     private Double value;
     private String description;
+    private String category;
 
     @Enumerated(EnumType.STRING)
     private Rate rate;

@@ -4,6 +4,16 @@
   background-color: #f7f8fa;
   min-height: 100vh;
 
+  .inputError {
+    border: 1px solid red !important;
+  }
+
+  .errorText {
+    color: red;
+    font-size: 12px;
+    margin-top: 3px;
+  }
+
   .newContainer {
     flex: 6;
     padding: 2rem;

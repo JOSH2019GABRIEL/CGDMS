@@ -35,7 +35,7 @@ public class NominalLossController {
         return ResponseEntity.ok(nominalLossService.getNominalLoss(id));
     }
 
-    @PutMapping("/archived/{id}")
+    @PutMapping("/archive/{id}")
     public ResponseEntity<?> archiveNominalLoss(@PathVariable("id") Long id) {
         nominalLossService.deleteNominalLoss(id);
         return ResponseEntity.ok("Nominal Loss deleted successfully");

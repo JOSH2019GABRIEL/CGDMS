@@ -37,6 +37,7 @@ public class NominalLossService {
         nominalLoss.setRate(request.getRate());
         nominalLoss.setValue(request.getValue());
         nominalLoss.setDescription(request.getDescription());
+        nominalLoss.setCategory(request.getCategory());
 
         } else {
             nominalLoss = mapper.toEntity(request);
@@ -79,7 +80,7 @@ public class NominalLossService {
     public void deleteNominalLoss(Long id) {
         NominalLoss nominalLoss = nominalLossRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Nominal Loss not found: " +id));
-        nominalLoss.setArchived(0);
+        nominalLoss.setArchived(1);
         nominalLossRepository.save(nominalLoss);
     }
 

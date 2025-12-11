@@ -1,4 +1,3 @@
-// FulfilmentOrder.js
 import "../../../style/organization.scss";
 import { DataGrid } from "@mui/x-data-grid";
 import { useState, useEffect, useCallback } from "react";
@@ -9,9 +8,9 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   Button,
+  CircularProgress,
 } from "@mui/material";
 
 const FulfilmentOrder = () => {
@@ -27,9 +26,6 @@ const FulfilmentOrder = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [centerFilter, setCenterFilter] = useState("");
-  const [centers, setCenters] = useState([]);
-  const [confirmOpen, setConfirmOpen] = useState(false);
-  const [pendingAction, setPendingAction] = useState(null);
 
   const [counts, setCounts] = useState({
     ALL: 0,
@@ -37,38 +33,23 @@ const FulfilmentOrder = () => {
     PROCESSING: 0,
     DISPATCHED: 0,
     FULFILLED: 0,
+    CANCELLED: 0,
   });
-
-  const tabs = [
-    { key: "PENDING_FULFILLMENT", label: "Pending" },
-    { key: "PROCESSING", label: "Processing" },
-    { key: "DISPATCHED", label: "Dispatched" },
-    { key: "FULFILLED", label: "Fulfilled" },
-    { key: "CANCELLED", label: "Cancelled" },
-    { key: "ALL", label: "All" },
-  ];
 
   const authHeaders = { headers: { Authorization: `Bearer ${token}` } };
 
-  // ----------------------- LOAD CENTERS -----------------------
-  useEffect(() => {
-    const loadCenters = async () => {
-      try {
-        const res = await axios.get(`${baseUrl}centers`, authHeaders);
-        setCenters(res.data || []);
-      } catch {
-        try {
-          const res = await axios.get(`${baseUrl}farms`, authHeaders);
-          setCenters(res.data || []);
-        } catch {
-          console.warn("No centers or farms endpoint available.");
-        }
-      }
-    };
-    loadCenters();
-  }, []);
+  // ========= MODAL STATES =========
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [modalOrder, setModalOrder] = useState(null);
+  const [modalAction, setModalAction] = useState(null);
+  const [modalRecordId, setModalRecordId] = useState(null);
 
-  // ----------------------- URL BUILDER -----------------------
+  // NEW STATES
+  const [postHarvestList, setPostHarvestList] = useState([]);
+  const [selectedPostHarvestId, setSelectedPostHarvestId] = useState("");
+  const [processedQuantity, setProcessedQuantity] = useState("");
+
   const buildUrl = (status, pageArg, sizeArg, search, center) => {
     const p = pageArg ?? page;
     const s = sizeArg ?? pageSize;
@@ -76,58 +57,27 @@ const FulfilmentOrder = () => {
     const q = search ? `&search=${encodeURIComponent(search)}` : "";
     const c = center ? `&center=${encodeURIComponent(center)}` : "";
 
-    // ALL === main listing (all statuses)
     if (status === "ALL") {
       return `${baseUrl}fulfillment?page=${p}&size=${s}${q}${c}`;
     }
 
-    // Any specific STATUS (PENDING_FULFILLMENT, PROCESSING, etc.)
     return `${baseUrl}fulfillment/fulfil-status?page=${p}&size=${s}&status=${status}${q}${c}`;
-  };
-
-  // Open confirmation dialog
-  const askConfirm = (id, action, label) => {
-    setPendingAction({ id, action, label });
-    setConfirmOpen(true);
-  };
-
-  // When user confirms
-  const handleConfirm = async () => {
-    if (pendingAction) {
-      await doAction(pendingAction.id, pendingAction.action);
-    }
-    setConfirmOpen(false);
-    setPendingAction(null);
-  };
-
-  // Cancel dialog
-  const handleCancel = () => {
-    setConfirmOpen(false);
-    setPendingAction(null);
   };
 
   const fetchCounts = useCallback(async () => {
     try {
       const newCounts = { ...counts };
 
-      // Get total count for ALL
       const allRes = await axios.get(
         `${baseUrl}fulfillment?page=0&size=1`,
         authHeaders
       );
       newCounts.ALL = allRes.data?.totalElements ?? 0;
 
-      // Get counts for each status
-      const statusKeys = [
-        "PENDING_FULFILLMENT",
-        "PROCESSING",
-        "DISPATCHED",
-        "FULFILLED",
-        "CANCELLED",
-      ];
+      const keys = Object.keys(newCounts).filter((k) => k !== "ALL");
 
       const results = await Promise.all(
-        statusKeys.map((k) =>
+        keys.map((k) =>
           axios
             .get(
               `${baseUrl}fulfillment/fulfil-status?page=0&size=1&status=${k}`,
@@ -138,9 +88,7 @@ const FulfilmentOrder = () => {
         )
       );
 
-      results.forEach((r) => {
-        newCounts[r.k] = r.total;
-      });
+      results.forEach((r) => (newCounts[r.k] = r.total));
 
       setCounts(newCounts);
     } catch (err) {
@@ -148,24 +96,21 @@ const FulfilmentOrder = () => {
     }
   }, [token]);
 
-  // ----------------------- FETCH RECORDS -----------------------
   const fetchRecords = useCallback(
     async (
       pageArg = page,
-      pageSizeArg = pageSize,
+      sizeArg = pageSize,
       statusArg = activeTab,
       search = searchTerm,
       center = centerFilter
     ) => {
       setLoading(true);
       try {
-        const url = buildUrl(statusArg, pageArg, pageSizeArg, search, center);
-
-        console.log("Fetching URL:", url); // Debug log
+        const url = buildUrl(statusArg, pageArg, sizeArg, search, center);
 
         const response = await axios.get(url, authHeaders);
-
         const { content = [], totalElements = 0 } = response.data || {};
+
         const rows = content.map((rec, idx) => ({
           id: rec.id ?? idx,
           ...rec,
@@ -174,7 +119,6 @@ const FulfilmentOrder = () => {
         setRecords(rows);
         setRowCount(totalElements);
       } catch (err) {
-        console.error("Error fetching fulfillment records:", err);
         toast.error("Failed to load records");
       } finally {
         setLoading(false);
@@ -183,58 +127,75 @@ const FulfilmentOrder = () => {
     [page, pageSize, activeTab, searchTerm, centerFilter, token]
   );
 
-  // ----------------------- INITIAL LOAD & DEPENDENCIES -----------------------
   useEffect(() => {
     fetchRecords(0, pageSize, activeTab, searchTerm, centerFilter);
     fetchCounts();
   }, [activeTab, searchTerm, centerFilter, pageSize]);
 
-  // ----------------------- ACTION BUTTON HANDLERS -----------------------
-  const doAction = async (id, endpoint) => {
+  useEffect(() => {
+    const fetchPostHarvests = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}fish-post-harvest`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setPostHarvestList(response.data.content || response.data);
+      } catch (error) {
+        console.error("Error fetching post-harvest list:", error);
+        toast.error("Could not load post-harvest list.");
+      }
+    };
+    fetchPostHarvests();
+  }, [token]);
+
+  const openOrderModal = async (fulfillmentId, action, orderId) => {
+    setModalOrder(null);
+    setModalLoading(true);
+    setModalOpen(true);
+
+    setModalAction(action);
+    setModalRecordId(fulfillmentId);
+
+    // Reset modal fields
+    setSelectedPostHarvestId("");
+    setProcessedQuantity("");
+
     try {
-      await axios.put(
-        `${baseUrl}fulfillment/${id}/${endpoint}`,
-        {},
+      const res = await axios.get(
+        `${baseUrl}order-place/${orderId}`,
         authHeaders
       );
-      toast.success(`Updated: ${endpoint}`);
-      fetchRecords();
-      fetchCounts();
-    } catch (err) {
-      console.error("Action failed", err);
-      toast.error("Action failed");
+      setModalOrder(res.data);
+    } catch (error) {
+      toast.error("Failed to load order details.");
+    } finally {
+      setModalLoading(false);
     }
   };
 
-  // ----------------------- COLUMNS -----------------------
+  const executeAction = async () => {
+    try {
+      await axios.put(
+        `${baseUrl}fulfillment/${modalRecordId}/${modalAction}`,
+        {},
+        authHeaders
+      );
+      toast.success("Order updated successfully");
+      setModalOpen(false);
+      fetchRecords();
+      fetchCounts();
+    } catch (err) {
+      toast.error("Failed to update order");
+    }
+  };
+
+  // -----------------------------------------
+  //                COLUMNS
+  // -----------------------------------------
   const columns = [
     { field: "id", headerName: "ID", width: 80 },
-    { field: "orderNumber", headerName: "Order ID", width: 120 },
-    { field: "centerName", headerName: "Center", width: 180 },
+    { field: "orderNumber", headerName: "Order Number", width: 150 },
+    { field: "centerName", headerName: "Center", width: 160 },
     { field: "email", headerName: "Customer Email", width: 200 },
-
-    {
-      field: "status",
-      headerName: "Status",
-      width: 160,
-      renderCell: (params) => {
-        const status = params.value;
-
-        const statusLabel =
-          {
-            PENDING_FULFILLMENT: "Pending",
-            PROCESSING: "Processing",
-            DISPATCHED: "Dispatched",
-            CANCELLED: "Cancelled",
-            FULFILLED: "Order Completed",
-          }[status] || status;
-
-        const statusClass = status?.toLowerCase() || "";
-
-        return <div className={`statusCell ${statusClass}`}>{statusLabel}</div>;
-      },
-    },
-
     {
       field: "createdTime",
       headerName: "Created",
@@ -265,66 +226,68 @@ const FulfilmentOrder = () => {
     },
 
     {
+      field: "status",
+      headerName: "Status",
+      width: 150,
+      renderCell: (params) => {
+        const map = {
+          PENDING_FULFILLMENT: "Pending",
+          PROCESSING: "Processing",
+          DISPATCHED: "Dispatched",
+          FULFILLED: "Completed",
+          CANCELLED: "Cancelled",
+        };
+
+        return (
+          <span className={`statusCell ${params.value?.toLowerCase()}`}>
+            {map[params.value] || params.value}
+          </span>
+        );
+      },
+    },
+
+    {
       field: "action",
       headerName: "Action",
-      width: 250,
-      sortable: false,
+      width: 260,
       renderCell: (params) => {
-        const id = params.row.id;
-        const status = params.row.status;
+        const row = params.row;
 
         const options = [];
 
-        if (status === "PENDING_FULFILLMENT")
+        if (row.status === "PENDING_FULFILLMENT")
           options.push({ value: "processed", label: "Mark Processed" });
 
-        if (status === "PROCESSING")
+        if (row.status === "PROCESSING")
           options.push({ value: "dispatched", label: "Mark Dispatched" });
 
-        if (status === "DISPATCHED")
+        if (row.status === "DISPATCHED")
           options.push({ value: "fulfilled", label: "Mark Fulfilled" });
 
-        if (status !== "FULFILLED" && status !== "CANCELLED")
+        if (row.status !== "FULFILLED" && row.status !== "CANCELLED") {
           options.push({ value: "failed", label: "Mark Failed" });
-
-        if (status !== "FULFILLED" && status !== "CANCELLED")
           options.push({ value: "cancelled", label: "Cancel Order" });
+        }
 
         return (
           <select
             defaultValue=""
-            style={{
-              padding: "6px 8px",
-              borderRadius: 6,
-              border: "1px solid #ccc",
-              minWidth: 180,
-            }}
             onChange={(e) => {
               const action = e.target.value;
               if (!action) return;
 
-              const labelMap = {
-                processed: "Mark as Processed",
-                dispatched: "Mark as Dispatched",
-                fulfilled: "Mark as Fulfilled",
-                failed: "Mark as Failed",
-                cancelled: "Cancel Order",
-              };
-
-              const readable = labelMap[action] || action;
-
-              // SHOW CONFIRM POPUP
-              askConfirm(id, action, readable);
+              openOrderModal(row.id, action, row.orderId);
 
               e.target.value = "";
             }}
+            style={{ padding: "6px 8px", minWidth: 180 }}
           >
             <option value="" disabled>
               Select Action
             </option>
-            {options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
+            {options.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
               </option>
             ))}
           </select>
@@ -333,20 +296,14 @@ const FulfilmentOrder = () => {
     },
   ];
 
-  // ----------------------- TAB CLICK -----------------------
-  const handleTabClick = (key) => {
-    setActiveTab(key);
-    setPage(0);
-    // Explicitly pass the new tab key to fetch records
-    fetchRecords(0, pageSize, key, searchTerm, centerFilter);
-  };
-
-  // ----------------------- UI RENDER -----------------------
+  // -----------------------------------------
+  //                 RENDER UI
+  // -----------------------------------------
   return (
     <div className="datatable">
       <div className="datatableTitle">Fulfillment Orders</div>
 
-      {/* Search + Filters */}
+      {/* SEARCH BAR */}
       <div
         style={{
           display: "flex",
@@ -357,7 +314,7 @@ const FulfilmentOrder = () => {
       >
         <input
           type="text"
-          placeholder="Search by order id, email, center..."
+          placeholder="Search by order, email, center..."
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);
@@ -365,22 +322,6 @@ const FulfilmentOrder = () => {
           }}
           style={{ padding: 8, minWidth: 260 }}
         />
-
-        <select
-          value={centerFilter}
-          onChange={(e) => {
-            setCenterFilter(e.target.value);
-            setPage(0);
-          }}
-          style={{ padding: 8 }}
-        >
-          <option value="">All centers</option>
-          {/* {centers.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.centerName || c.farmName || c.name}
-            </option>
-          ))} */}
-        </select>
 
         <button
           onClick={() => {
@@ -395,15 +336,22 @@ const FulfilmentOrder = () => {
         </button>
       </div>
 
-      {/* Tabs */}
-      <div
-        className="tabsContainer"
-        style={{ display: "flex", gap: 10, marginBottom: 12 }}
-      >
-        {tabs.map((t) => (
+      {/* TABS */}
+      <div style={{ display: "flex", gap: 10, marginBottom: 10 }}>
+        {[
+          { key: "PENDING_FULFILLMENT", label: "Pending" },
+          { key: "PROCESSING", label: "Processing" },
+          { key: "DISPATCHED", label: "Dispatched" },
+          { key: "FULFILLED", label: "Completed" },
+          { key: "CANCELLED", label: "Cancelled" },
+          { key: "ALL", label: "All" },
+        ].map((t) => (
           <button
             key={t.key}
-            onClick={() => handleTabClick(t.key)}
+            onClick={() => {
+              setActiveTab(t.key);
+              setPage(0);
+            }}
             className={`tabButton ${activeTab === t.key ? "activeTab" : ""}`}
             style={{
               padding: "8px 12px",
@@ -415,15 +363,12 @@ const FulfilmentOrder = () => {
               cursor: "pointer",
             }}
           >
-            {t.label}{" "}
-            <span style={{ marginLeft: 8, opacity: 0.9, fontWeight: 700 }}>
-              ({counts[t.key] ?? 0})
-            </span>
+            {t.label} ({counts[t.key]})
           </button>
         ))}
       </div>
 
-      {/* DataGrid */}
+      {/* DATAGRID */}
       <DataGrid
         className="datagrid"
         rows={records}
@@ -438,15 +383,184 @@ const FulfilmentOrder = () => {
           setPage(newPage);
           fetchRecords(newPage, pageSize, activeTab, searchTerm, centerFilter);
         }}
-        onPageSizeChange={(newPageSize) => {
-          setPageSize(newPageSize);
+        onPageSizeChange={(newSize) => {
+          setPageSize(newSize);
           setPage(0);
-          fetchRecords(0, newPageSize, activeTab, searchTerm, centerFilter);
+          fetchRecords(0, newSize, activeTab, searchTerm, centerFilter);
         }}
         rowsPerPageOptions={[5, 10, 20]}
         autoHeight
       />
-      <Dialog open={confirmOpen} onClose={handleCancel}>
+
+      {/* ORDER INFO MODAL */}
+      <Dialog
+        open={modalOpen}
+        onClose={() => !modalLoading && setModalOpen(false)}
+        maxWidth="sm"
+        fullWidth
+        sx={{
+          "& .MuiDialog-paper": {
+            borderRadius: "12px",
+            padding: "4px 6px",
+            animation: "fadeIn .25s ease-in-out",
+          },
+        }}
+      >
+        <DialogTitle
+          sx={{
+            fontWeight: 700,
+            fontSize: "1.25rem",
+            paddingBottom: 1,
+          }}
+        >
+          {modalAction === "processed" && "Process Order"}
+          {modalAction === "dispatched" && "Dispatch Order"}
+          {modalAction === "fulfilled" && "Fulfill Order"}
+        </DialogTitle>
+
+        <DialogContent dividers sx={{ paddingX: 2, paddingY: 3 }}>
+          {modalLoading ? (
+            <div style={{ textAlign: "center", padding: 40 }}>
+              <CircularProgress />
+            </div>
+          ) : modalOrder ? (
+            <>
+              {/* ORDER INFO */}
+              <div style={{ marginBottom: 20 }}>
+                <div style={{ fontSize: 16, fontWeight: 600 }}>
+                  Order #{modalOrder.orderNumber}
+                </div>
+                <div>{modalOrder.customerName}</div>
+                <div>{modalOrder.email}</div>
+                <div style={{ color: "#555" }}>
+                  {modalOrder.deliveryAddress}
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 600 }}>
+                  Category: {modalOrder.category}
+                </div>
+              </div>
+
+              {/* ITEMS */}
+              <div
+                style={{
+                  background: "#f9f9f9",
+                  padding: 12,
+                  borderRadius: 8,
+                  marginBottom: 20,
+                }}
+              >
+                <strong>Items</strong>
+                <ul style={{ marginTop: 8, paddingLeft: 20 }}>
+                  {modalOrder.items.map((item) => (
+                    <li key={item.orderItemId}>
+                      {item.product.productName} — {item.quantity} @ ₦
+                      {item.unitPrice}
+                    </li>
+                  ))}
+                </ul>
+
+                <h3 style={{ marginTop: 10 }}>
+                  Total: ₦{modalOrder.totalAmount.toFixed(2)}
+                </h3>
+              </div>
+
+              {/* PROCESSING SECTION */}
+              {modalAction === "processed" && (
+                <>
+                  <h3 style={{ marginBottom: 10 }}>Processing Information</h3>
+
+                  {/* POST HARVEST SELECT */}
+                  <div style={{ marginBottom: 18 }}>
+                    <label style={{ fontWeight: 600 }}>
+                      Post-Harvest Batch
+                    </label>
+                    <select
+                      value={selectedPostHarvestId}
+                      onChange={(e) => setSelectedPostHarvestId(e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: 12,
+                        marginTop: 6,
+                        borderRadius: 6,
+                        border: "1px solid #ccc",
+                      }}
+                    >
+                      <option value="">-- Select Batch --</option>
+                      {postHarvestList.map((ph) => (
+                        <option key={ph.id} value={ph.id}>
+                          {ph.postHarvestBatchId} — Smoking:{" "}
+                          {ph.quantityToSmokingKg}— LiveSale:{" "}
+                          {ph.quantityToLiveSaleKg}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* PROCESSED QUANTITY */}
+                  <div style={{ marginBottom: 18 }}>
+                    <label style={{ fontWeight: 600 }}>Number Processed</label>
+                    <input
+                      type="number"
+                      value={processedQuantity}
+                      onChange={(e) => setProcessedQuantity(e.target.value)}
+                      placeholder="Enter amount processed"
+                      style={{
+                        width: "100%",
+                        padding: 12,
+                        marginTop: 6,
+                        borderRadius: 6,
+                        border: "1px solid #ccc",
+                      }}
+                    />
+                  </div>
+                </>
+              )}
+            </>
+          ) : (
+            <p>No order details found.</p>
+          )}
+        </DialogContent>
+
+        <DialogActions
+          sx={{
+            padding: "12px 20px",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button onClick={() => setModalOpen(false)}>Close</Button>
+
+          {!modalLoading && modalOrder && (
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "#2b7cff",
+                paddingX: 3,
+                "&:hover": { backgroundColor: "#1a5ed8" },
+              }}
+              onClick={() => {
+                if (modalAction === "processed") {
+                  if (!selectedPostHarvestId) {
+                    toast.error("Select a post-harvest batch");
+                    return;
+                  }
+                  if (!processedQuantity || processedQuantity <= 0) {
+                    toast.error("Enter valid quantity");
+                    return;
+                  }
+                }
+
+                executeAction();
+                setModalOpen(false);
+              }}
+            >
+              Confirm
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
+
+      {/* <Dialog open={confirmOpen} onClose={handleCancel}>
         <DialogTitle>Confirm Action</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -462,6 +576,16 @@ const FulfilmentOrder = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <OrderInfoModal
+        open={orderModalOpen}
+        order={selectedOrder}
+        onClose={() => setOrderModalOpen(false)}
+        onConfirm={() => {
+          setOrderModalOpen(false);
+          doAction(selectedOrder.id, "processed");
+        }}
+      /> */}
     </div>
   );
 };

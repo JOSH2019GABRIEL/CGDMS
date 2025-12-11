@@ -23,6 +23,8 @@ import FishLiveSale from "pages/fishManagement/fishlivesale/FishLiveSale";
 import AddFishLiveSale from "pages/fishManagement/fishlivesale/AddFishLiveSale";
 import SmokingTransfer from "pages/fishManagement/smokingTransfer/SmokingTransfer";
 import AddSmokingTransfer from "pages/fishManagement/smokingTransfer/AddSmokingTransfer";
+import NominalLoss from "pages/fishManagement/nominalLoss/NominalLoss";
+import AddNominalLoss from "pages/fishManagement/nominalLoss/AddNominalLoss";
 
 
 export const AquacultureRoutes = (
@@ -71,6 +73,10 @@ export const AquacultureRoutes = (
     <Route path="/dashboard/smoking-plants" element={<List Component={SmokingTransfer} path="/dashboard/smoking-plant/new" />} />
     <Route path="/dashboard/smoking-plant/new" element={<AddSmokingTransfer />} />
     <Route path="/dashboard/smoking-plant/:id" element={<AddSmokingTransfer />} />
+
+    <Route path="/dashboard/nominal-loss" element={<List Component={NominalLoss} path="/dashboard/nominal-loss/new" />} />
+    <Route path="/dashboard/nominal-loss/new" element={<AddNominalLoss />} />
+    <Route path="/dashboard/nominal-loss/:id" element={<AddNominalLoss />} />
 
   
   </>

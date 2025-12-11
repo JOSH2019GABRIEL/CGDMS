@@ -551,7 +551,7 @@ const Sidebar = () => {
                  */}
 
                  <NavLink
-                  to="/dashboard/norminal"
+                  to="/dashboard/nominal-loss"
                   style={{ textDecoration: "none" }}
                 >
                   <li>

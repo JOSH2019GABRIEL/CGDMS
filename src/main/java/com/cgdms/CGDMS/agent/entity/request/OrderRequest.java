@@ -17,5 +17,6 @@ public class OrderRequest {
     private Order.Status status;
     private Double totalAmount;
     private String email;
+    private String category;
 
 }

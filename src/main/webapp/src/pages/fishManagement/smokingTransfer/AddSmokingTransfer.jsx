@@ -14,6 +14,7 @@ const AddSmokingTransfer = () => {
   const token = localStorage.getItem("token");
 
   const [postHarvests, setPostHarvests] = useState([]);
+  const [nominal, setNominal] = useState([]);
 
   const [smokingTransfer, setSmokingTransfer] = useState({
     id: "",
@@ -54,6 +55,21 @@ const AddSmokingTransfer = () => {
   }, [id]);
 
   useEffect(() => {
+    const fetchNominalLoss = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}nominal-loss`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setNominal(response.data.content || response.data);
+      } catch (error) {
+        console.error("Error fetching post-harvest list:", error);
+        toast.error("Could not load post-harvest list.");
+      }
+    };
+    fetchNominalLoss();
+  }, [token]);
+
+  useEffect(() => {
     const fetchPostHarvests = async () => {
       try {
         const response = await axios.get(`${baseUrl}fish-post-harvest`, {
@@ -89,29 +105,38 @@ const AddSmokingTransfer = () => {
   }, [id, token]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    setSmokingTransfer((prevState) => {
-      const updated = { ...prevState, [name]: value };
+  setSmokingTransfer((prevState) => {
+    const updated = { ...prevState, [name]: value };
 
-      if (name === "quantityReceivedKg" || name === "processingLossKg") {
-        const received = parseFloat(
-          name === "quantityReceivedKg" ? value : prevState.quantityReceivedKg
-        );
-        const loss = parseFloat(
-          name === "processingLossKg" ? value : prevState.processingLossKg
-        );
+    // Convert inputs to numbers safely
+    const received = parseFloat(
+      name === "quantityReceivedKg" ? value : prevState.quantityReceivedKg
+    );
 
-        if (!isNaN(received) && !isNaN(loss)) {
-          updated.smokedOutputKg = Math.max(received - loss, 0).toFixed(2);
-        } else {
-          updated.smokedOutputKg = "";
-        }
-      }
+    const loss = parseFloat(
+      name === "processingLossKg" ? value : prevState.processingLossKg
+    );
 
-      return updated;
-    });
-  };
+    // Update smoked output kg
+    if (!isNaN(received) && !isNaN(loss)) {
+      updated.smokedOutputKg = Math.max((loss / received) * 100, 0).toFixed(2);
+    } else {
+      updated.smokedOutputKg = "";
+    }
+
+    if (!isNaN(received) && received > 0 && !isNaN(loss)) {
+      const percent = ((loss / received) * 100).toFixed(2);
+      updated.processingLossPercentage = percent;
+    } else {
+      updated.processingLossPercentage = "";
+    }
+
+    return updated;
+  });
+};
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -175,17 +200,22 @@ const AddSmokingTransfer = () => {
               </div>
 
               {/* Processing Loss */}
+
               <div className="formInput">
-                <label>Processing Loss (g):</label>
-                <input
-                  type="number"
+                <label>Processing Loss (%):</label>
+                <select
                   name="processingLossKg"
                   value={smokingTransfer.processingLossKg || ""}
                   onChange={handleChange}
-                  step="0.01"
-                  placeholder="Enter processing loss"
                   required
-                />
+                >
+                  <option value="">-- Select Processing Loss --</option>
+                  {nominal.map((no) => (
+                    <option key={no.id} value={no.value}>
+                      {no.value}% for {no.category} {no.rate}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Smoked Output */}
@@ -240,7 +270,7 @@ const AddSmokingTransfer = () => {
                   <option value="">-- Select Post-Harvest --</option>
                   {postHarvests.map((ph) => (
                     <option key={ph.id} value={ph.id}>
-                      {ph.postHarvestBatchId} - {ph.destinationType} (ID: {ph.id})
+                      {ph.postHarvestBatchId} - {ph.destinationType} (Qty To Smoke: {ph.quantityToSmokingKg})
                     </option>
                   ))}
                 </select>

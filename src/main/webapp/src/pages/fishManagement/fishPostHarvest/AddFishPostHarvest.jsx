@@ -207,7 +207,7 @@ const AddFishPostHarvest = () => {
                   <option value="">-- Select Harvest --</option>
                   {harvests.map((h) => (
                     <option key={h.id} value={h.id}>
-                      {h.harvestBatchId} - (ID: {h.id})
+                      {h.harvestBatchId} - (Total Harvested: {h.totalFishHarvested})
                     </option>
                   ))}
                 </select>

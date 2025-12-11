@@ -12,6 +12,7 @@ public class NominalLossRequest {
     private NominalLoss.Rate rate;
     private String description;
     private Double value;
+    private String category;
 
 
 }

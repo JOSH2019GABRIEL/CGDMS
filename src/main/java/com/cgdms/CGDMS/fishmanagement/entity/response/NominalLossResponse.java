@@ -9,7 +9,8 @@ import lombok.Data;
 public class NominalLossResponse {
 
     private Long id;
-    private NominalLoss.Rate rate;
+    private String rate;
     private String description;
+    private String category;
     private Double value;
 }
