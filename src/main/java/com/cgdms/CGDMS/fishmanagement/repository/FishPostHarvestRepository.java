@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface FishPostHarvestRepository extends JpaRepository<PostHarvest, Long> {
 
@@ -19,4 +21,22 @@ public interface FishPostHarvestRepository extends JpaRepository<PostHarvest, Lo
                     SELECT ph FROM PostHarvest ph WHERE ph.archived = 0 and ph.farm.id = :farmId AND ph.operatorUserId = :id
                     """)
     Page<PostHarvest> findAllNotArchivedForUsers(Pageable pageable, Long farmId, Integer id);
+
+    @Query("""
+    SELECT p FROM PostHarvest p
+    WHERE p.archived = 0
+      AND p.farm.id = :farmId
+      AND p.postHarvestBatchId = :postHarvestId
+""")
+    Optional<PostHarvest> findByPostHarvestId(String postHarvestId, Long farmId);
+
+//    @Query("""
+//    SELECT ph
+//    FROM PostHarvest ph
+//    WHERE ph.archived = 0
+//      AND ph.farm.id = :farmId
+//      AND ph.postHarvestBatchId = :postHarvestId
+//""")
+//    PostHarvest findByPostHarvestId(String postHarvestId, Long farmId);
+
 }

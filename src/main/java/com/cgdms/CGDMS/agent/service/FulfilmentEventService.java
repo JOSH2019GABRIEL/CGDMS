@@ -10,8 +10,11 @@ import com.cgdms.CGDMS.agent.service.mapper.FulfillmentEventMapperService;
 import com.cgdms.CGDMS.common.AuthUtils;
 import com.cgdms.CGDMS.common.PageResponse;
 import com.cgdms.CGDMS.email.EmailServiceOrder;
+import com.cgdms.CGDMS.fishmanagement.entity.PostHarvest;
+import com.cgdms.CGDMS.fishmanagement.repository.FishPostHarvestRepository;
 import com.cgdms.CGDMS.user.User;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +39,7 @@ public class FulfilmentEventService {
     private final FulfillmentEventRepository eventRepository;
     private final OrderRepository orderRepository;
     private final FulfillmentEventRepository fulfillmentEventRepository;
+    private final FishPostHarvestRepository fishPostHarvestRepository;
 
 
     public FulfillmentEventRequest saveFulfilment(FulfillmentEventRequest request) {
@@ -132,44 +136,125 @@ public class FulfilmentEventService {
         fulfillmentEventRepository.save(event);
     }
 
-    public FulfillmentEventResponse updateFulfilmentToProcessingStatus (Long id) {
+    @Transactional
+    public FulfillmentEventResponse updateFulfilmentToProcessingStatus(Long id, String processingType, int processedQty, String postHarvestId) {
+
+        // Fetch event
         FulfillmentEvent fulfillmentEvent = fulfillmentEventRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Event not found"));
 
+        // Fetch related order
         Order order = orderRepository.findById(fulfillmentEvent.getOrder().getId())
                 .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+
+        // Update order status
         order.setStatus(Order.Status.PROCESSING);
 
+        // Fetch post-harvest batch
+        System.out.println("Got here_____ " +postHarvestId);
+        PostHarvest postHarvest = fishPostHarvestRepository
+                .findByPostHarvestId(postHarvestId, fulfillmentEvent.getFarm().getId())
+                .orElseThrow(() -> new EntityNotFoundException("Post harvest not found"));
+
+
+        if (processedQty <= 0) {
+            throw new IllegalArgumentException("Processed quantity must be greater than 0");
+        }
+
+        switch (processingType) {
+
+            case "quantityToSmokingKg": {
+
+                if (processedQty > postHarvest.getQuantityToSmokingKg()) {
+                    throw new IllegalArgumentException(
+                            "Processed quantity exceeds available Smoking quantity (" +
+                                    postHarvest.getQuantityToSmokingKg() + ")"
+                    );
+                }
+
+                postHarvest.setQuantityToSmokingKg(
+                        postHarvest.getQuantityToSmokingKg() - processedQty
+                );
+                break;
+            }
+
+            case "quantityToLiveSaleKg": {
+
+                if (processedQty > postHarvest.getQuantityToLiveSaleKg()) {
+                    throw new IllegalArgumentException(
+                            "Processed quantity exceeds available LiveSale quantity (" +
+                                    postHarvest.getQuantityToLiveSaleKg() + ")"
+                    );
+                }
+
+                postHarvest.setQuantityToLiveSaleKg(
+                        postHarvest.getQuantityToLiveSaleKg() - processedQty
+                );
+                break;
+            }
+
+            default:
+                throw new IllegalArgumentException("Invalid processing type: " + processingType);
+        }
+
+        // Save the updated inventory
+        fishPostHarvestRepository.save(postHarvest);
+
+
+        // Update fulfillment event
         fulfillmentEvent.setStatus(Order.Status.PROCESSING);
         fulfillmentEvent.setProcessingTime(LocalDateTime.now());
+        fulfillmentEvent.setCategory(order.getCategory());
+        fulfillmentEvent.setPostHarvestId(postHarvestId);
+        fulfillmentEvent.setProcessedNumber(processedQty);
+
+        // Save everything
         orderRepository.save(order);
         fulfillmentEventRepository.save(fulfillmentEvent);
 
+
+        // Build email content
         Map<String, Object> variables = new HashMap<>();
-        variables.put("agentName", order.getAgent() != null ? order.getAgent().getUsername() : "N/A");
+        variables.put("agentName",
+                order.getAgent() != null ? order.getAgent().getUsername() : "N/A");
+
         variables.put("orderNumber", order.getOrderNumber());
         variables.put("customerName", order.getCustomerName());
         variables.put("customerPhone", order.getCustomerPhone());
         variables.put("deliveryAddress", order.getDeliveryAddress());
         variables.put("totalAmount", order.getTotalAmount());
         variables.put("orderDate", order.getOrderDate());
-        variables.put("status", order.getStatus() != null ? "Order is been processed" : "N/A");
-        variables.put("processedDate", fulfillmentEvent.getFulfillmentTime());
+
+        variables.put("status", "Order is being processed");
+        variables.put("processedDate", fulfillmentEvent.getProcessingTime());
+        variables.put("processingType", processingType);
+        variables.put("processedQty", processedQty);
+
         variables.put("orderDetailsUrl", "https://cgdms.com/orders/" + order.getId());
 
-        // Send to Agent
+
+        // Send email to agent
         try {
-            emailServiceOrder.sendEmail(
-                    fulfillmentEvent.getOrder().getAgent().getEmail(),
-                    "Order Processed - " + fulfillmentEvent.getOrder().getOrderNumber(),
-                    "fulfilment-processed-email",
-                    variables
-            );
+            String agentEmail = order.getAgent() != null ? order.getAgent().getEmail() : null;
+
+            if (agentEmail != null) {
+                emailServiceOrder.sendEmail(
+                        agentEmail,
+                        "Order Processed - " + order.getOrderNumber(),
+                        "fulfilment-processed-email",
+                        variables
+                );
+            } else {
+                log.warn("Order {} has no assigned agent email.", order.getId());
+            }
         } catch (Exception e) {
-            log.error("Failed to send order email to agent {}: {}", fulfillmentEvent.getOrder().getAgent().getEmail(), e.getMessage());
+            log.error("Failed to send processing email for order {}: {}",
+                    order.getId(), e.getMessage());
         }
+
         return mapper.toFulfillmentEventResponse(fulfillmentEvent);
     }
+
 
     public FulfillmentEventResponse updateFulfilmentToDispatchStatus (Long id) {
         FulfillmentEvent fulfillmentEvent = fulfillmentEventRepository.findById(id)

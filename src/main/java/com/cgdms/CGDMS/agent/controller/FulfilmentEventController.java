@@ -53,8 +53,8 @@ public class FulfilmentEventController {
     }
 
     @PutMapping("/{id}/processed")
-    public ResponseEntity<FulfillmentEventResponse> processFulfilmentEvent(@PathVariable Long id) {
-        return ResponseEntity.ok(fulfilmentEventService.updateFulfilmentToProcessingStatus(id));
+    public ResponseEntity<FulfillmentEventResponse> processFulfilmentEvent(@PathVariable Long id, String processingType, int processedQty, String postHarvestId) {
+        return ResponseEntity.ok(fulfilmentEventService.updateFulfilmentToProcessingStatus(id, processingType, processedQty, postHarvestId));
     }
 
     @PutMapping("/{id}/dispatched")

@@ -36,4 +36,8 @@ public class FulfillmentEvent extends BaseEntity {
     private String dispatchStatus;
     private LocalDateTime dispatchTime;
     private LocalDateTime fulfillmentTime;
+
+    private String postHarvestId;
+    private Integer processedNumber;
+    private String category;
 }

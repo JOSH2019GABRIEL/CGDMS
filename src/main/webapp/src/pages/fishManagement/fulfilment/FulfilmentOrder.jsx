@@ -38,17 +38,23 @@ const FulfilmentOrder = () => {
 
   const authHeaders = { headers: { Authorization: `Bearer ${token}` } };
 
-  // ========= MODAL STATES =========
   const [modalOpen, setModalOpen] = useState(false);
   const [modalLoading, setModalLoading] = useState(false);
   const [modalOrder, setModalOrder] = useState(null);
   const [modalAction, setModalAction] = useState(null);
   const [modalRecordId, setModalRecordId] = useState(null);
 
-  // NEW STATES
   const [postHarvestList, setPostHarvestList] = useState([]);
   const [selectedPostHarvestId, setSelectedPostHarvestId] = useState("");
   const [processedQuantity, setProcessedQuantity] = useState("");
+  const [processingType, setProcessingType] = useState("");
+
+  // NEW: inline errors state
+  const [errors, setErrors] = useState({
+    postHarvest: "",
+    processingType: "",
+    processedQuantity: "",
+  });
 
   const buildUrl = (status, pageArg, sizeArg, search, center) => {
     const p = pageArg ?? page;
@@ -158,6 +164,8 @@ const FulfilmentOrder = () => {
     // Reset modal fields
     setSelectedPostHarvestId("");
     setProcessedQuantity("");
+    setProcessingType("");
+    setErrors({ postHarvest: "", processingType: "", processedQuantity: "" });
 
     try {
       const res = await axios.get(
@@ -174,23 +182,168 @@ const FulfilmentOrder = () => {
 
   const executeAction = async () => {
     try {
-      await axios.put(
-        `${baseUrl}fulfillment/${modalRecordId}/${modalAction}`,
-        {},
-        authHeaders
-      );
+      let url = "";
+
+      switch (modalAction) {
+        case "processed": {
+          const params = new URLSearchParams({
+            processingType,
+            processedQty: processedQuantity,
+            postHarvestId: selectedPostHarvestId,
+          });
+
+          url = `${baseUrl}fulfillment/${modalRecordId}/processed?${params.toString()}`;
+          break;
+        }
+
+        // 🔹 DISPATCH
+        case "dispatched":
+        case "dispatch":
+          url = `${baseUrl}fulfillment/${modalRecordId}/dispatched`;
+          break;
+
+        // 🔹 FULFILL
+        case "fulfilled":
+        case "fulfill":
+          url = `${baseUrl}fulfillment/${modalRecordId}/fulfilled`;
+          break;
+
+        // 🔹 CANCEL
+        case "cancelled":
+        case "cancel":
+          url = `${baseUrl}fulfillment/${modalRecordId}/cancelled`;
+          break;
+
+        // 🔹 FAILED (maps to cancelled unless backend has separate endpoint)
+        case "failed":
+          url = `${baseUrl}fulfillment/${modalRecordId}/cancelled`;
+          break;
+
+        // 🔹 PROCESSING (manual)
+        case "processing":
+          url = `${baseUrl}fulfillment/${modalRecordId}/processing`;
+          break;
+
+        default:
+          throw new Error(`Unknown action: ${modalAction}`);
+      }
+
+      console.log("Calling URL:", url);
+
+      await axios.put(url, {}, authHeaders);
+
       toast.success("Order updated successfully");
       setModalOpen(false);
       fetchRecords();
       fetchCounts();
     } catch (err) {
-      toast.error("Failed to update order");
+      toast.error(err.response?.data?.message || "Failed to update order");
     }
   };
 
-  // -----------------------------------------
-  //                COLUMNS
-  // -----------------------------------------
+  // const executeAction = async () => {
+  //   try {
+  //     await axios.put(
+  //       `${baseUrl}fulfillment/${modalRecordId}/${modalAction}`,
+  //       {},
+  //       authHeaders
+  //     );
+  //     toast.success("Order updated successfully");
+  //     setModalOpen(false);
+  //     fetchRecords();
+  //     fetchCounts();
+  //   } catch (err) {
+  //     toast.error("Failed to update order");
+  //   }
+  // };
+
+  // ---------- Validation helpers ----------
+  const validateProcessing = () => {
+    // full validation, sets errors and shows toast for first failing rule
+    const temp = { postHarvest: "", processingType: "", processedQuantity: "" };
+    let ok = true;
+
+    if (!selectedPostHarvestId) {
+      temp.postHarvest = "Post-harvest batch is required.";
+      ok = false;
+    }
+
+    if (!processingType) {
+      temp.processingType = "Processing type is required.";
+      ok = false;
+    }
+
+    const qty = Number(processedQuantity);
+
+    if (!qty || qty <= 0) {
+      temp.processedQuantity = "Enter a quantity greater than 0.";
+      ok = false;
+    }
+
+    const ph = postHarvestList.find(
+      (p) => p.id.toString() === selectedPostHarvestId.toString()
+    );
+
+    if (!ph && selectedPostHarvestId) {
+      temp.postHarvest = "Selected post-harvest batch is invalid.";
+      ok = false;
+    }
+
+    if (ph && processingType === "quantityToSmokingKg" && ok) {
+      if (qty > Number(ph.quantityToSmokingKg)) {
+        temp.processedQuantity = `Cannot exceed Smoking Qty: ${ph.quantityToSmokingKg}`;
+        ok = false;
+      }
+    }
+
+    if (ph && processingType === "quantityToLiveSaleKg" && ok) {
+      if (qty > Number(ph.quantityToLiveSaleKg)) {
+        temp.processedQuantity = `Cannot exceed LiveSale Qty: ${ph.quantityToLiveSaleKg}`;
+        ok = false;
+      }
+    }
+
+    setErrors(temp);
+
+    // show toast for first error so user also gets toast feedback immediately
+    if (!ok) {
+      const firstError =
+        temp.postHarvest || temp.processingType || temp.processedQuantity;
+      if (firstError) toast.error(firstError);
+    }
+
+    return ok;
+  };
+
+  const checkValidSilent = () => {
+    // same checks as validateProcessing but without setting errors or toast
+    if (modalAction !== "processed") return true; // no validation needed for other actions
+
+    if (!selectedPostHarvestId) return false;
+    if (!processingType) return false;
+
+    const qty = Number(processedQuantity);
+    if (!qty || qty <= 0) return false;
+
+    const ph = postHarvestList.find(
+      (p) => p.id.toString() === selectedPostHarvestId.toString()
+    );
+    if (!ph) return false;
+
+    if (
+      processingType === "quantityToSmokingKg" &&
+      qty > Number(ph.quantityToSmokingKg)
+    )
+      return false;
+    if (
+      processingType === "quantityToLiveSaleKg" &&
+      qty > Number(ph.quantityToLiveSaleKg)
+    )
+      return false;
+
+    return true;
+  };
+
   const columns = [
     { field: "id", headerName: "ID", width: 80 },
     { field: "orderNumber", headerName: "Order Number", width: 150 },
@@ -435,9 +588,6 @@ const FulfilmentOrder = () => {
                 <div style={{ color: "#555" }}>
                   {modalOrder.deliveryAddress}
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 600 }}>
-                  Category: {modalOrder.category}
-                </div>
               </div>
 
               {/* ITEMS */}
@@ -454,7 +604,7 @@ const FulfilmentOrder = () => {
                   {modalOrder.items.map((item) => (
                     <li key={item.orderItemId}>
                       {item.product.productName} — {item.quantity} @ ₦
-                      {item.unitPrice}
+                      {item.unitPrice} ----- Category: {modalOrder.category}
                     </li>
                   ))}
                 </ul>
@@ -464,19 +614,22 @@ const FulfilmentOrder = () => {
                 </h3>
               </div>
 
-              {/* PROCESSING SECTION */}
+              {/* PROCESS SECTION */}
               {modalAction === "processed" && (
                 <>
                   <h3 style={{ marginBottom: 10 }}>Processing Information</h3>
 
-                  {/* POST HARVEST SELECT */}
+                  {/* POST HARVEST */}
                   <div style={{ marginBottom: 18 }}>
                     <label style={{ fontWeight: 600 }}>
                       Post-Harvest Batch
                     </label>
                     <select
                       value={selectedPostHarvestId}
-                      onChange={(e) => setSelectedPostHarvestId(e.target.value)}
+                      onChange={(e) => {
+                        setSelectedPostHarvestId(e.target.value);
+                        setErrors((prev) => ({ ...prev, postHarvest: "" }));
+                      }}
                       style={{
                         width: "100%",
                         padding: 12,
@@ -487,22 +640,63 @@ const FulfilmentOrder = () => {
                     >
                       <option value="">-- Select Batch --</option>
                       {postHarvestList.map((ph) => (
-                        <option key={ph.id} value={ph.id}>
+                        <option key={ph.id} value={ph.postHarvestBatchId}>
                           {ph.postHarvestBatchId} — Smoking:{" "}
-                          {ph.quantityToSmokingKg}— LiveSale:{" "}
+                          {ph.quantityToSmokingKg} — LiveSale:{" "}
                           {ph.quantityToLiveSaleKg}
                         </option>
                       ))}
                     </select>
+
+                    {errors.postHarvest && (
+                      <p style={{ color: "red", marginTop: 4 }}>
+                        {errors.postHarvest}
+                      </p>
+                    )}
                   </div>
 
-                  {/* PROCESSED QUANTITY */}
+                  {/* PROCESSING TYPE */}
+                  <div style={{ marginBottom: 18 }}>
+                    <label style={{ fontWeight: 600 }}>Processing Type</label>
+                    <select
+                      value={processingType}
+                      onChange={(e) => {
+                        setProcessingType(e.target.value);
+                        setErrors((prev) => ({ ...prev, processingType: "" }));
+                      }}
+                      style={{
+                        width: "100%",
+                        padding: 12,
+                        marginTop: 6,
+                        borderRadius: 6,
+                        border: "1px solid #ccc",
+                      }}
+                    >
+                      <option value="">-- Select Type --</option>
+                      <option value="quantityToSmokingKg">Smoked</option>
+                      <option value="quantityToLiveSaleKg">Lived</option>
+                    </select>
+
+                    {errors.processingType && (
+                      <p style={{ color: "red", marginTop: 4 }}>
+                        {errors.processingType}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* QUANTITY */}
                   <div style={{ marginBottom: 18 }}>
                     <label style={{ fontWeight: 600 }}>Number Processed</label>
                     <input
                       type="number"
                       value={processedQuantity}
-                      onChange={(e) => setProcessedQuantity(e.target.value)}
+                      onChange={(e) => {
+                        setProcessedQuantity(e.target.value);
+                        setErrors((prev) => ({
+                          ...prev,
+                          processedQuantity: "",
+                        }));
+                      }}
                       placeholder="Enter amount processed"
                       style={{
                         width: "100%",
@@ -512,6 +706,12 @@ const FulfilmentOrder = () => {
                         border: "1px solid #ccc",
                       }}
                     />
+
+                    {errors.processedQuantity && (
+                      <p style={{ color: "red", marginTop: 4 }}>
+                        {errors.processedQuantity}
+                      </p>
+                    )}
                   </div>
                 </>
               )}
@@ -539,18 +739,54 @@ const FulfilmentOrder = () => {
                 "&:hover": { backgroundColor: "#1a5ed8" },
               }}
               onClick={() => {
+                // 🔴 VALIDATE ONLY FOR PROCESSED
                 if (modalAction === "processed") {
-                  if (!selectedPostHarvestId) {
-                    toast.error("Select a post-harvest batch");
-                    return;
-                  }
-                  if (!processedQuantity || processedQuantity <= 0) {
-                    toast.error("Enter valid quantity");
-                    return;
-                  }
+                  const newErrors = {};
+
+                  if (!selectedPostHarvestId)
+                    newErrors.postHarvest =
+                      "Please select a post-harvest batch.";
+
+                  if (!processingType)
+                    newErrors.processingType =
+                      "Please select a processing type.";
+
+                  const qty = Number(processedQuantity);
+
+                  if (!qty || qty <= 0)
+                    newErrors.processedQuantity = "Enter a valid quantity.";
+
+                  const ph = postHarvestList.find(
+                    (p) => p.id.toString() === selectedPostHarvestId.toString()
+                  );
+
+                  if (
+                    ph &&
+                    processingType === "quantityToSmokingKg" &&
+                    qty > ph.quantityToSmokingKg
+                  )
+                    newErrors.processedQuantity = `Processed quantity cannot exceed Smoking Qty (${ph.quantityToSmokingKg}).`;
+
+                  if (
+                    ph &&
+                    processingType === "quantityToLiveSaleKg" &&
+                    qty > ph.quantityToLiveSaleKg
+                  )
+                    newErrors.processedQuantity = `Processed quantity cannot exceed LiveSale Qty (${ph.quantityToLiveSaleKg}).`;
+
+                  // SET ERRORS
+                  setErrors(newErrors);
+
+                  // TOAST ERRORS
+                  Object.values(newErrors).forEach((err) => toast.error(err));
+
+                  // ❌ STOP HERE IF ANY ERROR
+                  if (Object.keys(newErrors).length > 0) return;
                 }
 
+                // ✅ ALL OTHER ACTIONS COME STRAIGHT HERE
                 executeAction();
+
                 setModalOpen(false);
               }}
             >
@@ -559,33 +795,6 @@ const FulfilmentOrder = () => {
           )}
         </DialogActions>
       </Dialog>
-
-      {/* <Dialog open={confirmOpen} onClose={handleCancel}>
-        <DialogTitle>Confirm Action</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to <strong>{pendingAction?.label}</strong>?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancel} color="inherit">
-            Cancel
-          </Button>
-          <Button onClick={handleConfirm} color="primary" variant="contained">
-            Yes, Continue
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      <OrderInfoModal
-        open={orderModalOpen}
-        order={selectedOrder}
-        onClose={() => setOrderModalOpen(false)}
-        onConfirm={() => {
-          setOrderModalOpen(false);
-          doAction(selectedOrder.id, "processed");
-        }}
-      /> */}
     </div>
   );
 };
