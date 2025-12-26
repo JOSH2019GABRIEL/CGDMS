@@ -64,9 +64,6 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             nativeQuery = true)
     long countInStatuses(@Param("userId") Integer userId, @Param("statuses") List<String> statuses);
 
-//
-//    List<Order> findByStatusAndAgent_AgentId(String status, Integer agentId);
-
     // Summary
     @Query(value = """
             SELECT
@@ -77,15 +74,15 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             AVG(o.total_amount) AS averageValue
         FROM orders o
         LEFT JOIN order_items oi ON oi.order_id = o.id
-    WHERE (:status IS NULL OR o.status = :status)
+    WHERE status IN (:statuses)
       AND o.order_date::date BETWEEN :start AND :end
-      AND (:agentId IS NULL OR o.agent_id = :agentId)
+      AND o.agent_id IN (:agentIds) AND o.archived = 0
     """, nativeQuery = true)
     OrderMapperService.SummaryDTO getSummary(
-            @Param("agentId") Integer agentId,
+            @Param("agentIds") List<Integer> agentIds,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end,
-            @Param("status") String status);
+            @Param("statuses") List<String> statuses);
 
     // Top SKUs
     @Query(value = """
@@ -96,49 +93,52 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
     FROM order_items oi
     JOIN orders o ON o.id = oi.order_id
     JOIN products p ON p.id = oi.product_id
-    WHERE (:status IS NULL OR o.status = :status)
+    WHERE status IN (:statuses)
       AND o.order_date::date BETWEEN :start AND :end
-      AND (:agentId IS NULL OR o.agent_id = :agentId)
+      AND o.agent_id IN (:agentIds) AND o.archived = 0
     GROUP BY p.product_name
     ORDER BY totalUnits DESC
-    LIMIT 10
     """, nativeQuery = true)
     List<OrderMapperService.TopSkuDTO> getTopSkus(
-            @Param("agentId") Integer agentId,
+            @Param("agentIds") List<Integer> agentIds,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end,
-            @Param("status") String status);
+            @Param("statuses") List<String> statuses);
 
     // Paginated Orders
-    @Query(value = """
-    SELECT 
-        o.id AS orderId,
-        o.customer_name AS customer,
-        o.order_date AS date,
-        oi.quantity AS units,
-        o.total_amount AS amount,
-        o.total_commission AS commission
-    FROM orders o
-    LEFT JOIN order_items oi ON oi.order_id = o.id
-    WHERE (:status IS NULL OR o.status = :status)
-      AND o.order_date::date BETWEEN :start AND :end
-      AND (:agentId IS NULL OR o.agent_id = :agentId)
-    ORDER BY o.order_date DESC
-    """,
+    @Query(
+            value = """
+        SELECT 
+            o.id AS orderId,
+            o.customer_name AS customer,
+            o.order_date AS date,
+            oi.quantity AS units,
+            oi.line_total AS amount,
+            o.total_commission AS commission
+        FROM orders o
+        LEFT JOIN order_items oi ON oi.order_id = o.id
+        WHERE o.status IN (:statuses)
+          AND o.order_date::date BETWEEN :start AND :end
+          AND o.agent_id IN (:agentIds) AND o.archived = 0
+        ORDER BY o.order_date DESC
+        """,
             countQuery = """
-    SELECT COUNT(*)
-    FROM orders o
-    WHERE (:status IS NULL OR o.status = :status)
-      AND o.order_date::date BETWEEN :start AND :end
-      AND (:agentId IS NULL OR o.agent_id = :agentId)
-    """,
-            nativeQuery = true)
+        SELECT COUNT(*)
+        FROM orders o
+        WHERE o.status IN (:statuses)
+          AND o.order_date::date BETWEEN :start AND :end
+          AND o.agent_id IN (:agentIds) AND o.archived = 0
+        """,
+            nativeQuery = true
+    )
     Page<OrderMapperService.OrderTableDTO> getOrders(
-            @Param("agentId") Integer agentId,
+            @Param("agentIds") List<Integer> agentIds,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end,
-            @Param("status") String status,
-            Pageable pageable);
+            @Param("statuses") List<String> statuses,
+            Pageable pageable
+    );
+
 
 
     @Query(value = """   
@@ -164,4 +164,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
           AND EXTRACT(YEAR FROM o.order_date) = EXTRACT(YEAR FROM CURRENT_DATE)
         """, nativeQuery = true)
     double getCurrentMonthCommission(@Param("userId") Integer userId);
+
+    @Query("""
+            SELECT u.id
+                FROM User u
+                LEFT JOIN Role r ON u.role.id = r.id
+                WHERE r.name = 'ROLE_AGENT' AND u.farm.id = :farmId
+            """)
+    List<Integer> getAllAgentId(Long farmId);
 }

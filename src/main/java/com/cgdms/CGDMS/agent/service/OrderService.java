@@ -365,14 +365,36 @@ public class OrderService {
 
         LocalDateTime startDate = start.atStartOfDay();
         LocalDateTime endDate = end.atTime(23, 59, 59);
+        Long farmId = authUtils.getCurrentUserFarmId();
 
+        List<Integer> agentIds;
+        if (agentId == null || agentId == 0) {
+            // ALL agents
+            agentIds = orderRepository.getAllAgentId(farmId);
+        } else {
+            // Single agent
+            agentIds = List.of(agentId);
+
+        }
+        List<String> statuses;
+        if ("ALL".equalsIgnoreCase(status)) {
+            statuses = List.of(
+                    Order.Status.PROCESSING.name(),
+                    Order.Status.DISPATCHED.name(),
+                    Order.Status.PENDING_FULFILLMENT.name(),
+                    Order.Status.CANCELLED.name(),
+                    Order.Status.FULFILLED.name()
+            );
+        } else {
+            statuses = List.of(status);
+        }
         // Fetch summary & top SKUs
-        OrderMapperService.SummaryDTO summary = orderRepository.getSummary(agentId, startDate, endDate, status);
-        List<OrderMapperService.TopSkuDTO> topSkus = orderRepository.getTopSkus(agentId, startDate, endDate, status);
+        OrderMapperService.SummaryDTO summary = orderRepository.getSummary(agentIds, startDate, endDate, statuses);
+        List<OrderMapperService.TopSkuDTO> topSkus = orderRepository.getTopSkus(agentIds, startDate, endDate, statuses);
 
         // Fetch paginated orders
         Pageable pageable = PageRequest.of(page, size, Sort.by("order_date").descending());
-        Page<OrderMapperService.OrderTableDTO> ordersPage = orderRepository.getOrders(agentId, startDate, endDate, status, pageable);
+        Page<OrderMapperService.OrderTableDTO> ordersPage = orderRepository.getOrders(agentIds, startDate, endDate, statuses, pageable);
 
         // Wrap in PerAgentReportResponse
         OrderMapperService.PerAgentReportResponse response = new OrderMapperService.PerAgentReportResponse(

@@ -13,7 +13,7 @@ public interface CommissionRuleRepository extends JpaRepository<CommissionScheme
     @Query("""
         SELECT r FROM CommissionSchemeRule r 
         WHERE r.product.id = :productId
-        AND :qty BETWEEN r.minQty AND r.maxQty
+        AND :qty BETWEEN r.minQty AND r.maxQty AND r.archived = 0
     """)
     Optional<CommissionSchemeRule> findRuleForProductAndQty(Long productId, Integer qty);
 

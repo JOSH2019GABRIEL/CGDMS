@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -174,25 +175,41 @@ public class CommisionSchemeService {
     }
 
     // apply commision
-    public Double applyCommission(Long productId, Integer quantity, double totalPrice) throws BadRequestException {
+    public Double applyCommission(Long productId, Integer quantity, double totalPrice)
+            throws BadRequestException {
+
         if (productId == null || quantity == null) {
             throw new BadRequestException("Product ID and quantity cannot be null");
         }
-        CommissionSchemeRule rule = ruleRepository
-                .findRuleForProductAndQty(productId, quantity)
-                .orElseThrow(() -> new BadRequestException(
-                        "No commission rule found for product " + productId + " and qty " + quantity
-                ));
 
-        double commissionAmount;
-        if (rule.getCommissionType() == CommissionSchemeRule.CommissionType.PERCENTAGE) {
-            commissionAmount = (totalPrice * rule.getCommissionValue()) / 100;
-        } else if (rule.getCommissionType() == CommissionSchemeRule.CommissionType.PER_UNIT) {
-            commissionAmount = rule.getCommissionValue() * quantity;
-        } else {
-            throw new BadRequestException("Unknown commission type");
+        Optional<CommissionSchemeRule> optionalRule =
+                ruleRepository.findRuleForProductAndQty(productId, quantity);
+
+        // If no rule exists → no commission
+        if (optionalRule.isEmpty()) {
+            return 0.0;
         }
-        return commissionAmount;
+
+        CommissionSchemeRule rule = optionalRule.get();
+
+        Integer minQty = rule.getMinQty();
+        Integer maxQty = rule.getMaxQty();
+
+        // Apply ONLY if quantity is within range
+        if (quantity < minQty || quantity > maxQty) {
+            return 0.0;
+        }
+
+        if (rule.getCommissionType() == CommissionSchemeRule.CommissionType.PERCENTAGE) {
+            return (totalPrice * rule.getCommissionValue()) / 100;
+        }
+
+        if (rule.getCommissionType() == CommissionSchemeRule.CommissionType.PER_UNIT) {
+            return rule.getCommissionValue() * quantity;
+        }
+
+        throw new BadRequestException("Unknown commission type");
     }
+
 
 }
