@@ -18,7 +18,7 @@ const AddNominalLoss = () => {
     id: "",
     rate: "",
     description: "",
-    value: 0,
+    value: "",
     category: "",
   });
 

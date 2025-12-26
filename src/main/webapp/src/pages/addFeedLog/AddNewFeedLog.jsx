@@ -44,21 +44,6 @@ const FeedLog = () => {
     fetchPonds();
   }, [token]);
 
-  // useEffect(() => {
-  //   const fetchBatches = async () => {
-  //     try {
-  //       const response = await axios.get(`${baseUrl}batch`, {
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       });
-  //       setBatches(response.data.content);
-  //     } catch (error) {
-  //       console.error("Error fetching batches:", error);
-  //       toast.error("Could not load batches");
-  //     }
-  //   };
-  //   fetchBatches();
-  // }, [token]);
-
   useEffect(() => {
     if (id) {
       const fetchFeedLog = async () => {
@@ -140,28 +125,11 @@ const FeedLog = () => {
                   <option value="">-- Select Pond --</option>
                   {ponds.map((pond) => (
                     <option key={pond.id} value={pond.id}>
-                      {pond.name}
+                      {pond.name} - Available {pond.availableFingerlin}
                     </option>
                   ))}
                 </select>
               </div>
-
-              {/* <div className="formInput">
-                <label>Batch:</label>
-                <select
-                  name="batchId"
-                  value={feedLog.batchId || ""}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">-- Select Batch --</option>
-                  {batches.map((batch) => (
-                    <option key={batch.id} value={batch.id}>
-                      {batch.id}
-                    </option>
-                  ))}
-                </select>
-              </div> */}
 
               <div className="formInput">
                 <label>Feed Type:</label>

@@ -103,7 +103,7 @@ const AddNewBatch = () => {
                   <option value="">-- Select Pond --</option>
                   {ponds.map((pond) => (
                     <option key={pond.id} value={pond.id}>
-                      {pond.name}
+                      {pond.name} - Available {pond.availableFingerlin}
                     </option>
                   ))}
                 </select>

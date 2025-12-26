@@ -90,9 +90,13 @@ const AddFishPerformance = () => {
 
     try {
       if (id) {
-        await axios.put(`${baseUrl}fish-performance/${id}`, fishPerformanceLog, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        await axios.put(
+          `${baseUrl}fish-performance/${id}`,
+          fishPerformanceLog,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         toast.success("Fish performance log updated successfully!");
       } else {
         await axios.post(`${baseUrl}fish-performance`, fishPerformanceLog, {
@@ -118,7 +122,9 @@ const AddFishPerformance = () => {
       <div className="newContainer">
         <Navbar />
         <div className="top">
-          <h1>{id ? "Edit Fish Performance Log" : "Add Fish Performance Log"}</h1>
+          <h1>
+            {id ? "Edit Fish Performance Log" : "Add Fish Performance Log"}
+          </h1>
         </div>
         <div className="bottom">
           <div className="right">
@@ -145,7 +151,7 @@ const AddFishPerformance = () => {
                   <option value="">-- Select Pond --</option>
                   {ponds.map((pond) => (
                     <option key={pond.id} value={pond.id}>
-                      {pond.name}
+                      {pond.name} - Available {pond.availableFingerlin}
                     </option>
                   ))}
                 </select>

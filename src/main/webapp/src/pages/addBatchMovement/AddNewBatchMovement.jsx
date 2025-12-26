@@ -126,7 +126,7 @@ const AddNewBatchMovement = () => {
                   <option value="">-- Select Batch --</option>
                   {batch.map((b) => (
                     <option key={b.id} value={b.id}>
-                      {b.id}
+                      BATCH-ID: {b.id} - {b.stockDate}
                     </option>
                   ))}
                 </select>
@@ -143,7 +143,7 @@ const AddNewBatchMovement = () => {
                   <option value="">-- Select Pond --</option>
                   {ponds.map((pond) => (
                     <option key={pond.id} value={pond.id}>
-                      {pond.name}
+                    {pond.name} - Available {pond.availableFingerlin}
                     </option>
                   ))}
                 </select>
@@ -160,7 +160,7 @@ const AddNewBatchMovement = () => {
                   <option value="">-- Select Pond --</option>
                   {ponds.map((pond) => (
                     <option key={pond.id} value={pond.id}>
-                      {pond.name}
+                    {pond.name} - Available {pond.availableFingerlin}
                     </option>
                   ))}
                 </select>

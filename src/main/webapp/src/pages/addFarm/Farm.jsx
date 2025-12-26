@@ -52,7 +52,7 @@ const Farm = () => {
     { field: "id", headerName: "ID", width: 90 },
     { field: "farmName", headerName: "Name", width: 200 },
     { field: "location", headerName: "Location", width: 200 },
-    { field: "organizationName", headerName: "Organization Name", width: 200 },
+    { field: "organizationId", headerName: "Organization Name", width: 200 },
     {
       field: "action",
       headerName: "Action",

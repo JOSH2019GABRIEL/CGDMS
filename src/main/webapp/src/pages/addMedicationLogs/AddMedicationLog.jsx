@@ -148,7 +148,7 @@ const AddNewMedicationLog = () => {
                   <option value="">-- Select Pond --</option>
                   {ponds.map((pond) => (
                     <option key={pond.id} value={pond.id}>
-                      {pond.name}
+                      {pond.name} - Available {pond.availableFingerlin}
                     </option>
                   ))}
                 </select>
@@ -266,8 +266,8 @@ const AddNewMedicationLog = () => {
                 />
               </div>
               <div className="formInput">
-                    <input hidden/>
-                  </div>
+                <input hidden />
+              </div>
 
               <button type="submit">{id ? "Update" : "Save"}</button>
             </form>

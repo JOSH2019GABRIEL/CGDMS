@@ -59,7 +59,6 @@ const FishLiveSale = () => {
   // ✅ Define DataGrid columns
   const columns = [
     { field: "id", headerName: "ID", width: 80 },
-    { field: "postHarvestId", headerName: "Post-Harvest ID", width: 160 },
     { field: "buyName", headerName: "Buyer Name", width: 180 },
     { field: "salePricePerKg", headerName: "Price/Kg (₦)", width: 150 },
     { field: "totalSaleValue", headerName: "Total Sale (₦)", width: 160 },

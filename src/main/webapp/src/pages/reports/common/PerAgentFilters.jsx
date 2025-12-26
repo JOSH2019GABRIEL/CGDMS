@@ -96,36 +96,45 @@ const PerAgentFilters = ({ filters, setFilters, onGenerate, loading }) => {
 
       {/* AGENT SELECT */}
       <TextField
-        select
-        size="small"
-        label="Agent"
-        value={filters.agentId || ""}
-        onChange={(e) =>
-          setFilters((f) => ({
-            ...f,
-            agentId: e.target.value || "",
-            page: 0,
-          }))
-        }
-        sx={{ minWidth: 220 }}
-        disabled={loadingAgents}
-        error={!!error}
-        helperText={error}
-      >
-        <MenuItem value="">All Agents</MenuItem>
-        {loadingAgents ? (
-          <MenuItem disabled>Loading agents...</MenuItem>
-        ) : agents.length === 0 ? (
-          <MenuItem disabled>No agents available</MenuItem>
-        ) : (
-          agents.map((a) => (
-            <MenuItem key={a.id} value={a.id}>
-              {a.firstname || a.firstName || ''} {a.lastname || a.lastName || ''}
-              {!a.firstname && !a.firstName && (a.name || `Agent ${a.id}`)}
-            </MenuItem>
-          ))
-        )}
-      </TextField>
+  select
+  size="small"
+  label="Agent"
+  value={filters.agentId === null || filters.agentId === undefined ? "" : filters.agentId}
+  onChange={(e) =>
+    setFilters((f) => ({
+      ...f,
+      agentId: e.target.value === "" ? "" : e.target.value,
+      page: 0,
+    }))
+  }
+  sx={{ minWidth: 220 }}
+  disabled={loadingAgents}
+  error={!!error}
+  helperText={error}
+>
+  {/* ALL AGENTS — ALWAYS SELECTABLE */}
+  <MenuItem value="">
+    <em>Select Agents</em>
+  </MenuItem>
+  <MenuItem value=" ">
+    <em>All Agents</em>
+  </MenuItem>
+
+  {loadingAgents ? (
+    <MenuItem disabled>Loading agents...</MenuItem>
+  ) : agents.length === 0 ? (
+    <MenuItem disabled>No agents available</MenuItem>
+  ) : (
+    agents.map((a) => (
+      <MenuItem key={a.id} value={a.id}>
+        {(a.firstname || a.firstName || "")}{" "}
+        {(a.lastname || a.lastName || "")}
+        {!a.firstname && !a.firstName && (a.name || `Agent ${a.id}`)}
+      </MenuItem>
+    ))
+  )}
+</TextField>
+
 
       {/* STATUS */}
       <TextField
@@ -142,7 +151,8 @@ const PerAgentFilters = ({ filters, setFilters, onGenerate, loading }) => {
         }
         sx={{ minWidth: 160 }}
       >
-        <MenuItem value="">All</MenuItem>
+        <MenuItem value="">-------Select Status-----</MenuItem>
+        <MenuItem value="All">All</MenuItem>
         <MenuItem value="FULFILLED">Fulfilled</MenuItem>
         <MenuItem value="PROCESSING">Processing</MenuItem>
         <MenuItem value="CANCELLED">Cancelled</MenuItem>

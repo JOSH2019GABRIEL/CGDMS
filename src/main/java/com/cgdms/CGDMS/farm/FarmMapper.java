@@ -25,7 +25,7 @@ public class FarmMapper {
                 .farmName(farm.getFarmName())
                 .location(farm.getLocation())
                 .sizeInHectares(farm.getSizeInHectares())
-                .organizationId(farm.getOrganization() != null ? farm.getOrganization().getId() : null)
+                .organizationId(farm.getOrganization() != null ? farm.getOrganization().getName() : null)
                 .build();
     }
 

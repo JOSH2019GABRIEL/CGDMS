@@ -739,7 +739,6 @@ const FulfilmentOrder = () => {
                 "&:hover": { backgroundColor: "#1a5ed8" },
               }}
               onClick={() => {
-                // 🔴 VALIDATE ONLY FOR PROCESSED
                 if (modalAction === "processed") {
                   const newErrors = {};
 
@@ -778,13 +777,11 @@ const FulfilmentOrder = () => {
                   setErrors(newErrors);
 
                   // TOAST ERRORS
-                  Object.values(newErrors).forEach((err) => toast.error(err));
+                  // Object.values(newErrors).forEach((err) => toast.error(err));
 
                   // ❌ STOP HERE IF ANY ERROR
                   if (Object.keys(newErrors).length > 0) return;
                 }
-
-                // ✅ ALL OTHER ACTIONS COME STRAIGHT HERE
                 executeAction();
 
                 setModalOpen(false);

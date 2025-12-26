@@ -90,10 +90,10 @@ const AddScheme = () => {
         ...prev.rules,
         {
           productId: "",
-          minQty: 0,
-          maxQty: 0,
-          commissionType: "PER_UNIT",
-          commissionValue: 0,
+          minQty: "",
+          maxQty: "",
+          commissionType: "",
+          commissionValue: "",
         },
       ],
     }));

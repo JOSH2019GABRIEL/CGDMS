@@ -125,10 +125,10 @@ application:
 #      max-file-size: 50MB
 #
 #  mail:
-#    host: localhost
-#    port: 1025
-#    username: josh
-#    password: josh
+#    host: ${SPRING_MAIL_HOST:mail-dev}
+#    port: ${SPRING_MAIL_PORT:1025}
+#    username: ${SPRING_MAIL_USERNAME:josh}
+#    password: ${SPRING_MAIL_PASSWORD:josh}
 #    properties:
 #      mail:
 #        smtp:

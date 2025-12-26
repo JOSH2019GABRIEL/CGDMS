@@ -16,5 +16,5 @@ public class FarmResponse {
     private String farmName;
     private String location;
     private double sizeInHectares;
-    private Long organizationId;
+    private String organizationId;
 }

@@ -263,7 +263,7 @@ const AddOrder = () => {
                 >
                   <option value="">-- Select Category --</option>
                   <option value="Live">Live</option>
-                  <option value="Processed">Processed</option>
+                  <option value="Processed">Smoked</option>
                 </select>
               </div>
 
